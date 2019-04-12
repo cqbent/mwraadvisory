@@ -1,0 +1,9 @@
+drwxr-xr-x   2 mwra     mwra         4096 Aug  2  2018 .
+drwxr-xr-x   7 mwra     mwra         4096 Aug  2  2018 ..
+-rw-r--r--   1 mwra     mwra        10795 Aug  2  2018 bestFitClass.php
+-rw-r--r--   1 mwra     mwra         4251 Aug  2  2018 exponentialBestFitClass.php
+-rw-r--r--   1 mwra     mwra         3370 Aug  2  2018 linearBestFitClass.php
+-rw-r--r--   1 mwra     mwra         3612 Aug  2  2018 logarithmicBestFitClass.php
+-rw-r--r--   1 mwra     mwra         6243 Aug  2  2018 polynomialBestFitClass.php
+-rw-r--r--   1 mwra     mwra         4084 Aug  2  2018 powerBestFitClass.php
+-rw-r--r--   1 mwra     mwra         5642 Aug  2  2018 trendClass.php

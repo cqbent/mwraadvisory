@@ -1,0 +1,5 @@
+drwxr-xr-x   4 mwra     mwra         4096 Aug 17  2016 .
+drwxr-xr-x   8 mwra     mwra         4096 Aug 17  2016 ..
+drwxr-xr-x   2 mwra     mwra         4096 Aug 17  2016 Helper
+drwxr-xr-x   2 mwra     mwra         4096 Aug 17  2016 Internal
+-rw-r--r--   1 mwra     mwra         4471 Aug 17  2016 Writer.php

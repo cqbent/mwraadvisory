@@ -1,0 +1,6 @@
+drwxr-xr-x   2 mwra     mwra         4096 Oct 19  2016 .
+drwxr-xr-x   3 mwra     mwra         4096 Oct 19  2016 ..
+-rw-r--r--   1 mwra     mwra         1069 Oct 19  2016 LICENSE.txt
+-rw-r--r--   1 mwra     mwra       106797 Oct 19  2016 jquery.flot.js
+-rw-r--r--   1 mwra     mwra         2458 Oct 19  2016 jquery.flot.resize.js
+-rw-r--r--   1 mwra     mwra         6968 Oct 19  2016 jquery.flot.stack.js

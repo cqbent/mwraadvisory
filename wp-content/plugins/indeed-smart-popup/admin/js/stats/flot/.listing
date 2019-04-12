@@ -1,0 +1,5 @@
+drwxr-xr-x   2 mwra     mwra         4096 Dec 17  2016 .
+drwxr-xr-x   4 mwra     mwra         4096 Dec 17  2016 ..
+-rw-r--r--   1 mwra     mwra       121033 Dec 17  2016 jquery.flot.js
+-rw-r--r--   1 mwra     mwra        23869 Dec 17  2016 jquery.flot.pie.js
+-rw-r--r--   1 mwra     mwra        12031 Dec 17  2016 jquery.flot.time.js

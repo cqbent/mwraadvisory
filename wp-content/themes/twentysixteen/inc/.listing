@@ -1,0 +1,5 @@
+drwxr-xr-x   2 mwra     mwra         4096 Nov 19 21:11 .
+drwxr-xr-x   8 mwra     mwra         4096 Nov 19 21:11 ..
+-rw-r--r--   1 mwra     mwra         2328 Dec 17  2015 back-compat.php
+-rw-r--r--   1 mwra     mwra        29511 Dec 17  2015 customizer.php
+-rw-r--r--   1 mwra     mwra         7787 Dec 17  2015 template-tags.php

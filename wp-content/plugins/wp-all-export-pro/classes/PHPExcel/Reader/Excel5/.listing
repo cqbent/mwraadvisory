@@ -1,0 +1,9 @@
+drwxr-xr-x   4 mwra     mwra         4096 Aug  2  2018 .
+drwxr-xr-x   4 mwra     mwra         4096 Aug  2  2018 ..
+drwxr-xr-x   2 mwra     mwra         4096 Aug  2  2018 Color
+-rw-r--r--   1 mwra     mwra         1011 Aug  2  2018 Color.php
+-rw-r--r--   1 mwra     mwra          539 Aug  2  2018 ErrorCode.php
+-rw-r--r--   1 mwra     mwra        21789 Aug  2  2018 Escher.php
+-rw-r--r--   1 mwra     mwra         7940 Aug  2  2018 MD5.php
+-rw-r--r--   1 mwra     mwra         2536 Aug  2  2018 RC4.php
+drwxr-xr-x   2 mwra     mwra         4096 Aug  2  2018 Style

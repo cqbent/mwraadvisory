@@ -1,0 +1,10 @@
+drwxr-xr-x   5 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x   9 mwra     mwra         4096 Jul 23  2016 ..
+-rw-r--r--   1 mwra     mwra          893 Dec 17  2015 3rd-party.php
+-rw-r--r--   1 mwra     mwra          485 Dec 17  2015 buddypress.php
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 hosting
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 i18n
+-rw-r--r--   1 mwra     mwra          377 Dec 17  2015 kk-star-ratings.php
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 slider
+-rw-r--r--   1 mwra     mwra          402 Dec 17  2015 wp-postratings.php
+-rw-r--r--   1 mwra     mwra          452 Dec 17  2015 wp-print.php

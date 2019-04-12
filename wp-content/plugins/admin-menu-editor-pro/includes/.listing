@@ -1,0 +1,16 @@
+drwxr-xr-x   3 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x  11 mwra     mwra         4096 Jul 23  2016 ..
+-rw-r--r--   1 mwra     mwra          185 Nov 11  2015 .htaccess
+drwxr-xr-x   3 mwra     mwra         4096 Jul 23  2016 PHP-CSS-Parser
+-rw-r--r--   1 mwra     mwra         2158 Nov 11  2015 admin-menu-editor-mu.php
+-rw-r--r--   1 mwra     mwra         5116 Nov 11  2015 auto-versioning.php
+-rw-r--r--   1 mwra     mwra         3691 Nov 11  2015 consistency-check.php
+-rw-r--r--   1 mwra     mwra        21262 Nov 11  2015 editor-page.php
+-rw-r--r--   1 mwra     mwra         3146 Nov 11  2015 generate-menu-dashicons.php
+-rw-r--r--   1 mwra     mwra       114591 Nov 11  2015 menu-editor-core.php
+-rw-r--r--   1 mwra     mwra        22218 Nov 11  2015 menu-item.php
+-rw-r--r--   1 mwra     mwra        14269 Nov 11  2015 menu.php
+-rw-r--r--   1 mwra     mwra         1630 Nov 11  2015 role-utils.php
+-rw-r--r--   1 mwra     mwra         6761 Nov 11  2015 settings-page.php
+-rw-r--r--   1 mwra     mwra        10777 Nov 11  2015 shadow_plugin_framework.php
+-rw-r--r--   1 mwra     mwra          819 Nov 11  2015 version-conflict-check.php

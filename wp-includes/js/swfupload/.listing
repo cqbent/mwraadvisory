@@ -1,0 +1,8 @@
+drwxr-xr-x   3 mwra     mwra         4096 Oct 31  2017 .
+drwxr-xr-x  11 mwra     mwra         4096 Oct 31  2017 ..
+-rw-r--r--   1 mwra     mwra        12655 Feb 24  2014 handlers.js
+-rw-r--r--   1 mwra     mwra         8867 Jun 21  2013 handlers.min.js
+-rw-r--r--   1 mwra     mwra         1540 Jul 29  2011 license.txt
+drwxr-xr-x   2 mwra     mwra         4096 Oct 31  2017 plugins
+-rw-r--r--   1 mwra     mwra        37691 Aug 13  2014 swfupload.js
+-rw-r--r--   1 mwra     mwra        13133 Jul 29  2013 swfupload.swf

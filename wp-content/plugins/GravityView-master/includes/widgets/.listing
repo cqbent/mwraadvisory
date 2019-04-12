@@ -1,0 +1,10 @@
+drwxr-xr-x   4 mwra     mwra         4096 Jul 27  2017 .
+drwxr-xr-x  10 mwra     mwra         4096 Jul 27  2017 ..
+-rw-r--r--   1 mwra     mwra         2573 Jul 27  2017 class-gravityview-widget-custom-content.php
+-rw-r--r--   1 mwra     mwra         2618 Jul 27  2017 class-gravityview-widget-page-links.php
+-rw-r--r--   1 mwra     mwra         1939 Jul 27  2017 class-gravityview-widget-pagination-info.php
+-rw-r--r--   1 mwra     mwra         7542 Jul 27  2017 class-gravityview-widget.php
+-rw-r--r--   1 mwra     mwra           26 Jul 27  2017 index.php
+drwxr-xr-x   3 mwra     mwra         4096 Jul 27  2017 poll
+-rw-r--r--   1 mwra     mwra         1125 Jul 27  2017 register-gravityview-widgets.php
+drwxr-xr-x   4 mwra     mwra         4096 Jul 27  2017 search-widget

@@ -1,0 +1,12 @@
+drwxr-xr-x   9 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x   5 mwra     mwra         4096 Jul 23  2016 ..
+drwxr-xr-x   5 mwra     mwra         4096 Jul 23  2016 3rd-party
+drwxr-xr-x   3 mwra     mwra         4096 Jul 23  2016 admin
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 api
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 common
+-rw-r--r--   1 mwra     mwra         1194 Dec 17  2015 compat.php
+-rw-r--r--   1 mwra     mwra         6454 Dec 17  2015 deprecated.php
+-rw-r--r--   1 mwra     mwra         1688 Dec 17  2015 domain-mapping.php
+drwxr-xr-x   3 mwra     mwra         4096 Jul 23  2016 front
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 functions
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 vendors

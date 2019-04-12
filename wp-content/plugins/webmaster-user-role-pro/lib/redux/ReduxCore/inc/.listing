@@ -1,0 +1,16 @@
+drwxr-xr-x   4 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x   6 mwra     mwra         4096 Jul 23  2016 ..
+-rw-r--r--   1 mwra     mwra        52226 Nov 11  2015 browser.php
+-rw-r--r--   1 mwra     mwra         5480 Nov 11  2015 class.redux_filesystem.php
+-rw-r--r--   1 mwra     mwra        10843 Nov 11  2015 class.redux_functions.php
+-rw-r--r--   1 mwra     mwra         6164 Nov 11  2015 class.redux_helpers.php
+-rw-r--r--   1 mwra     mwra         1945 Nov 11  2015 class.redux_instances.php
+-rw-r--r--   1 mwra     mwra         3810 Nov 11  2015 debug.php
+drwxr-xr-x  37 mwra     mwra         4096 Jul 23  2016 fields
+-rw-r--r--   1 mwra     mwra        12007 Nov 11  2015 import_export.php
+-rw-r--r--   1 mwra     mwra          935 Nov 11  2015 lib.redux_instances.php
+-rw-r--r--   1 mwra     mwra        10047 Nov 11  2015 p.php
+-rw-r--r--   1 mwra     mwra        13467 Nov 11  2015 sysinfo.php
+-rw-r--r--   1 mwra     mwra        25526 Nov 11  2015 tracking.php
+drwxr-xr-x  21 mwra     mwra         4096 Jul 23  2016 validation
+-rw-r--r--   1 mwra     mwra        23477 Nov 11  2015 welcome.php

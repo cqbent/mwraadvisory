@@ -1,0 +1,9 @@
+drwxr-xr-x   2 mwra     mwra         4096 Apr  5  2018 .
+drwxr-xr-x  93 mwra     mwra         4096 Dec 19 18:24 ..
+-rw-r--r--   1 mwra     mwra         1311 Apr  5  2018 captcha_code.php
+-rw-r--r--   1 mwra     mwra         2728 Apr  5  2018 captcha_images.php
+-rw-r--r--   1 mwra     mwra         3430 Apr  5  2018 cartpauj-register-captcha.php
+-rw-r--r--   1 mwra     mwra         8891 Apr  5  2018 logo-login.png
+-rw-r--r--   1 mwra     mwra        41036 Apr  5  2018 monofont.ttf
+-rw-r--r--   1 mwra     mwra         2078 Apr  5  2018 readme.txt
+-rw-r--r--   1 mwra     mwra         3599 Apr  5  2018 shared.php

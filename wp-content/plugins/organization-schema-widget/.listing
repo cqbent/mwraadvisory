@@ -1,0 +1,7 @@
+drwxr-xr-x   4 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x  93 mwra     mwra         4096 Dec 19 18:24 ..
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 css
+drwxr-xr-x   2 mwra     mwra         4096 Nov 11  2015 languages
+-rw-r--r--   1 mwra     mwra        46566 Nov 11  2015 organization-schema-widget.php
+-rw-r--r--   1 mwra     mwra         3920 Nov 11  2015 readme.txt
+-rw-r--r--   1 mwra     mwra          377 Nov 11  2015 uninstall.php

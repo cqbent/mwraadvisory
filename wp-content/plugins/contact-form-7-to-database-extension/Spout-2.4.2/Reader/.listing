@@ -1,0 +1,12 @@
+drwxr-xr-x   7 mwra     mwra         4096 Aug 17  2016 .
+drwxr-xr-x   6 mwra     mwra         4096 Aug 17  2016 ..
+-rw-r--r--   1 mwra     mwra         3899 Aug 17  2016 AbstractReader.php
+drwxr-xr-x   2 mwra     mwra         4096 Aug 17  2016 CSV
+drwxr-xr-x   2 mwra     mwra         4096 Aug 17  2016 Exception
+-rw-r--r--   1 mwra     mwra          289 Aug 17  2016 IteratorInterface.php
+drwxr-xr-x   3 mwra     mwra         4096 Aug 17  2016 ODS
+-rw-r--r--   1 mwra     mwra         1319 Aug 17  2016 ReaderFactory.php
+-rw-r--r--   1 mwra     mwra          845 Aug 17  2016 ReaderInterface.php
+-rw-r--r--   1 mwra     mwra          280 Aug 17  2016 SheetInterface.php
+drwxr-xr-x   2 mwra     mwra         4096 Aug 17  2016 Wrapper
+drwxr-xr-x   3 mwra     mwra         4096 Aug 17  2016 XLSX

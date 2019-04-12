@@ -1,0 +1,8 @@
+drwxr-xr-x   6 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x   3 mwra     mwra         4096 Jul 23  2016 ..
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 langs
+-rw-r--r--   1 mwra     mwra        26427 Nov 11  2015 license.txt
+drwxr-xr-x  44 mwra     mwra         4096 Jul 23  2016 plugins
+drwxr-xr-x   3 mwra     mwra         4096 Jul 23  2016 skins
+drwxr-xr-x   3 mwra     mwra         4096 Jul 23  2016 themes
+-rw-r--r--   1 mwra     mwra       307378 Nov 11  2015 tinymce.min.js

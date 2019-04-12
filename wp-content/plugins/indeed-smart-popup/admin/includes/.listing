@@ -1,0 +1,12 @@
+drwxr-xr-x   2 mwra     mwra         4096 Dec 17  2016 .
+drwxr-xr-x   5 mwra     mwra         4096 Dec 17  2016 ..
+-rw-r--r--   1 mwra     mwra       233606 Dec 17  2016 add_edit_popups.php
+-rw-r--r--   1 mwra     mwra         1558 Dec 17  2016 add_from_template.php
+-rw-r--r--   1 mwra     mwra         7406 Dec 17  2016 export_stats.php
+-rw-r--r--   1 mwra     mwra         1020 Dec 17  2016 help.php
+-rw-r--r--   1 mwra     mwra           20 Dec 17  2016 index.php
+-rw-r--r--   1 mwra     mwra         5698 Dec 17  2016 ips_home.php
+-rw-r--r--   1 mwra     mwra        13212 Dec 17  2016 ips_manage.php
+-rw-r--r--   1 mwra     mwra        19687 Dec 17  2016 ips_stats.php
+-rw-r--r--   1 mwra     mwra         4600 Dec 17  2016 main_page.php
+-rw-r--r--   1 mwra     mwra        16457 Dec 17  2016 opt_in_settings.php

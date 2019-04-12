@@ -1,0 +1,6 @@
+drwxr-xr-x   2 mwra     mwra         4096 Dec 21  2016 .
+drwxr-xr-x   3 mwra     mwra         4096 Dec 21  2016 ..
+-rw-r--r--   1 mwra     mwra          442 Dec 21  2016 stop-spam-comments-en_US.mo
+-rw-r--r--   1 mwra     mwra         1182 Dec 21  2016 stop-spam-comments-en_US.po
+-rw-r--r--   1 mwra     mwra         1581 Dec 21  2016 stop-spam-comments-it_IT.mo
+-rw-r--r--   1 mwra     mwra         1475 Dec 21  2016 stop-spam-comments.pot

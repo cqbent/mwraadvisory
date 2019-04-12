@@ -1,0 +1,8 @@
+drwxr-xr-x   2 mwra     mwra         4096 Oct  5  2016 .
+drwxr-xr-x   6 mwra     mwra         4096 Oct  5  2016 ..
+-rw-r--r--   1 mwra     mwra          785 Oct  5  2016 admin-columns.js
+-rw-r--r--   1 mwra     mwra          503 Oct  5  2016 admin-columns.min.js
+-rw-r--r--   1 mwra     mwra        22846 Oct  5  2016 admin-settings.js
+-rw-r--r--   1 mwra     mwra        12676 Oct  5  2016 admin-settings.min.js
+-rw-r--r--   1 mwra     mwra          855 Oct  5  2016 upgrade.js
+-rw-r--r--   1 mwra     mwra          410 Oct  5  2016 upgrade.min.js

@@ -1,0 +1,80 @@
+$color-tornadoOrange : rgba(255, 204, 102, 1);
+
+/*
+Bootstrap Elements
+*/
+
+button {
+  &.btn-wide {
+    width: 100%;
+  }
+  &.btn-TorCo-orange {
+    background-color: $color-tornadoOrange;
+    color: black;
+  }
+}
+
+select.select-wide {
+  width: 100%;
+}
+
+table.table-striped {
+  tr {
+    background-color: #ffffff;
+    &:nth-child(even) {
+      background-color: $color-tornadoOrange;
+    }
+  }
+}
+
+table.table-config {
+  td:nth-child(2) {
+    input {
+      float: right;
+    }
+    textarea {
+      width: 100%;
+    }
+  }
+}
+
+.modal {
+  z-index: 10500;
+}
+.modal-header {
+  background-color: $color-tornadoOrange;
+}
+
+/*
+Map Control
+*/
+
+#mapControl {
+  button {
+    @extend .btn-wide, .btn-TorCo-orange;
+    margin-bottom: 10px;
+  }
+}
+
+#mapCanvas {
+  width: 100%;
+  height: 600px;
+  margin-bottom: 15px;
+}
+
+/*
+Data Table
+*/
+
+#dataTable {
+  td:nth-child(2), td:nth-child(3) {
+    text-align: left;
+    width: 31%;
+  }
+}.retightenedimd{
+border: 1px solid;
+    height: 200px;
+    margin-bottom: 25px;
+    margin-top: 30px;
+	
+}

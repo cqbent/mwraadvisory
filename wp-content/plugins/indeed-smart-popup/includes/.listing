@@ -1,0 +1,10 @@
+drwxr-xr-x   3 mwra     mwra         4096 Dec 17  2016 .
+drwxr-xr-x   7 mwra     mwra         4096 Dec 17  2016 ..
+-rw-r--r--   1 mwra     mwra         6354 Dec 17  2016 Ips_mail_services.php
+drwxr-xr-x  10 mwra     mwra         4096 Dec 17  2016 email_services
+-rw-r--r--   1 mwra     mwra        63463 Dec 17  2016 front_end_functions.php
+-rw-r--r--   1 mwra     mwra           20 Dec 17  2016 index.php
+-rw-r--r--   1 mwra     mwra         1435 Dec 17  2016 ips_view.php
+-rw-r--r--   1 mwra     mwra          250 Dec 17  2016 isp_template.php
+-rw-r--r--   1 mwra     mwra         7201 Dec 17  2016 show_in.php
+-rw-r--r--   1 mwra     mwra         5043 Dec 17  2016 subscribe.php

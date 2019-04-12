@@ -1,0 +1,13 @@
+drwxr-xr-x   5 mwra     mwra         4096 Dec 17  2016 .
+drwxr-xr-x   5 mwra     mwra         4096 Dec 17  2016 ..
+-rw-r--r--   1 mwra     mwra        48853 Dec 17  2016 CHANGES.md
+-rw-r--r--   1 mwra     mwra        68193 Dec 17  2016 LICENSE.md
+-rw-r--r--   1 mwra     mwra         1344 Dec 17  2016 README.md
+-rw-r--r--   1 mwra     mwra         3200 Dec 17  2016 build-config.js
+-rw-r--r--   1 mwra     mwra       510541 Dec 17  2016 ckeditor.js
+-rw-r--r--   1 mwra     mwra         3542 Dec 17  2016 config.js
+-rw-r--r--   1 mwra     mwra         1754 Dec 17  2016 contents.css
+drwxr-xr-x   2 mwra     mwra         4096 Dec 17  2016 lang
+drwxr-xr-x  30 mwra     mwra         4096 Dec 17  2016 plugins
+drwxr-xr-x   4 mwra     mwra         4096 Dec 17  2016 skins
+-rw-r--r--   1 mwra     mwra         3595 Dec 17  2016 styles.js

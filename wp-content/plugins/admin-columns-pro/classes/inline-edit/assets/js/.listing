@@ -1,0 +1,7 @@
+drwxr-xr-x   3 mwra     mwra         4096 Oct  5  2016 .
+drwxr-xr-x   6 mwra     mwra         4096 Oct  5  2016 ..
+-rw-r--r--   1 mwra     mwra        35034 Oct  5  2016 admin-edit.js
+-rw-r--r--   1 mwra     mwra        18750 Oct  5  2016 admin-edit.min.js
+-rw-r--r--   1 mwra     mwra          420 Oct  5  2016 admin-options-admincolumns.js
+-rw-r--r--   1 mwra     mwra          260 Oct  5  2016 admin-options-admincolumns.min.js
+drwxr-xr-x   3 mwra     mwra         4096 Oct  5  2016 xeditable

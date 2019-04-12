@@ -1,0 +1,15 @@
+drwxr-xr-x  11 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x  93 mwra     mwra         4096 Dec 19 18:24 ..
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 css
+drwxr-xr-x   4 mwra     mwra         4096 Jul 23  2016 extras
+-rw-r--r--   1 mwra     mwra        53893 Nov 11  2015 extras.php
+drwxr-xr-x   5 mwra     mwra         4096 Jul 23  2016 images
+drwxr-xr-x   3 mwra     mwra         4096 Jul 23  2016 includes
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 js
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 license-manager
+-rw-r--r--   1 mwra     mwra          854 Nov 11  2015 menu-editor.php
+drwxr-xr-x   3 mwra     mwra         4096 Jul 23  2016 modules
+drwxr-xr-x   5 mwra     mwra         4096 Jul 23  2016 plugin-updates
+-rw-r--r--   1 mwra     mwra        31888 Nov 11  2015 readme.txt
+drwxr-xr-x   4 mwra     mwra         4096 Jul 23  2016 tests
+-rw-r--r--   1 mwra     mwra          973 Nov 11  2015 uninstall.php

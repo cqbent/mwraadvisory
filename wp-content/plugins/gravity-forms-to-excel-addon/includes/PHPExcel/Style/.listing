@@ -1,0 +1,12 @@
+drwxr-xr-x   2 mwra     mwra         4096 Dec 15  2016 .
+drwxr-xr-x  14 mwra     mwra         4096 Dec 15  2016 ..
+-rw-r--r--   1 mwra     mwra        10111 Dec 15  2016 Alignment.php
+-rw-r--r--   1 mwra     mwra         7948 Dec 15  2016 Border.php
+-rw-r--r--   1 mwra     mwra        11142 Dec 15  2016 Borders.php
+-rw-r--r--   1 mwra     mwra        12913 Dec 15  2016 Color.php
+-rw-r--r--   1 mwra     mwra         6390 Dec 15  2016 Conditional.php
+-rw-r--r--   1 mwra     mwra         8717 Dec 15  2016 Fill.php
+-rw-r--r--   1 mwra     mwra        12430 Dec 15  2016 Font.php
+-rw-r--r--   1 mwra     mwra        21005 Dec 15  2016 NumberFormat.php
+-rw-r--r--   1 mwra     mwra         5359 Dec 15  2016 Protection.php
+-rw-r--r--   1 mwra     mwra         3190 Dec 15  2016 Supervisor.php

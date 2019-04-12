@@ -1,0 +1,12 @@
+drwxr-xr-x   2 mwra     mwra         4096 Jul 27  2017 .
+drwxr-xr-x   3 mwra     mwra         4096 Jul 27  2017 ..
+-rw-r--r--   1 mwra     mwra         3100 Jul 27  2017 data-source.php
+-rw-r--r--   1 mwra     mwra          523 Jul 27  2017 gravityview-content.php
+-rw-r--r--   1 mwra     mwra          721 Jul 27  2017 gravityview-navigation.php
+-rw-r--r--   1 mwra     mwra           26 Jul 27  2017 index.php
+-rw-r--r--   1 mwra     mwra         2123 Jul 27  2017 select-template.php
+-rw-r--r--   1 mwra     mwra          576 Jul 27  2017 shortcode-hint.php
+-rw-r--r--   1 mwra     mwra          450 Jul 27  2017 single-entry.php
+-rw-r--r--   1 mwra     mwra         1525 Jul 27  2017 sort-filter.php
+-rw-r--r--   1 mwra     mwra         3825 Jul 27  2017 view-configuration.php
+-rw-r--r--   1 mwra     mwra         1277 Jul 27  2017 view-settings.php

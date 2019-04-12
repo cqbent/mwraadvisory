@@ -1,0 +1,10 @@
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x  37 mwra     mwra         4096 Jul 23  2016 ..
+-rw-r--r--   1 mwra     mwra         1609 Nov 11  2015 field_switch.css
+-rw-r--r--   1 mwra     mwra         2908 Nov 11  2015 field_switch.js
+-rw-r--r--   1 mwra     mwra         1487 Nov 11  2015 field_switch.less
+-rw-r--r--   1 mwra     mwra         1188 Nov 11  2015 field_switch.min.js
+-rw-r--r--   1 mwra     mwra         3022 Nov 11  2015 field_switch.php
+-rw-r--r--   1 mwra     mwra         3034 Nov 11  2015 field_switch.scss
+-rw-r--r--   1 mwra     mwra         1690 Nov 11  2015 slider-control.png
+-rw-r--r--   1 mwra     mwra         1233 Nov 11  2015 switch.gif

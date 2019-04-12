@@ -1,0 +1,10 @@
+drwxr-xr-x   2 mwra     mwra         4096 Oct 31  2017 .
+drwxr-xr-x  11 mwra     mwra         4096 Oct 31  2017 ..
+-rw-r--r--   1 mwra     mwra        15901 May 16  2017 handlers.js
+-rw-r--r--   1 mwra     mwra        10336 May 16  2017 handlers.min.js
+-rw-r--r--   1 mwra     mwra        17987 Jul 29  2011 license.txt
+-rw-r--r--   1 mwra     mwra        29570 May  6  2016 plupload.flash.swf
+-rw-r--r--   1 mwra     mwra       113081 Oct 10  2015 plupload.full.min.js
+-rw-r--r--   1 mwra     mwra        63118 Oct 10  2015 plupload.silverlight.xap
+-rw-r--r--   1 mwra     mwra        12692 Sep 11  2015 wp-plupload.js
+-rw-r--r--   1 mwra     mwra         4907 Sep 11  2015 wp-plupload.min.js

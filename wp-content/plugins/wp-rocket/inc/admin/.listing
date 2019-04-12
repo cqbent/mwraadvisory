@@ -1,0 +1,11 @@
+drwxr-xr-x   3 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x   9 mwra     mwra         4096 Jul 23  2016 ..
+-rw-r--r--   1 mwra     mwra        11922 Dec 17  2015 admin.php
+-rw-r--r--   1 mwra     mwra         2080 Dec 17  2015 ajax.php
+-rw-r--r--   1 mwra     mwra         4473 Dec 17  2015 class-repeater-field.php
+-rw-r--r--   1 mwra     mwra         4552 Dec 17  2015 faq.inc.php
+-rw-r--r--   1 mwra     mwra        39977 Dec 17  2015 options.php
+-rw-r--r--   1 mwra     mwra         6072 Dec 17  2015 plugin-compatibility.php
+drwxr-xr-x   6 mwra     mwra         4096 Jul 23  2016 ui
+-rw-r--r--   1 mwra     mwra         3572 Dec 17  2015 updater.php
+-rw-r--r--   1 mwra     mwra         7560 Dec 17  2015 upgrader.php

@@ -1,0 +1,12 @@
+drwxr-xr-x   2 mwra     mwra         4096 Aug  2  2018 .
+drwxr-xr-x  13 mwra     mwra         4096 Aug  2  2018 ..
+-rw-r--r--   1 mwra     mwra        11099 Aug  2  2018 Alignment.php
+-rw-r--r--   1 mwra     mwra         7952 Aug  2  2018 Border.php
+-rw-r--r--   1 mwra     mwra        11146 Aug  2  2018 Borders.php
+-rw-r--r--   1 mwra     mwra        12917 Aug  2  2018 Color.php
+-rw-r--r--   1 mwra     mwra         6394 Aug  2  2018 Conditional.php
+-rw-r--r--   1 mwra     mwra         8721 Aug  2  2018 Fill.php
+-rw-r--r--   1 mwra     mwra        12434 Aug  2  2018 Font.php
+-rw-r--r--   1 mwra     mwra        21427 Aug  2  2018 NumberFormat.php
+-rw-r--r--   1 mwra     mwra         5359 Aug  2  2018 Protection.php
+-rw-r--r--   1 mwra     mwra         3194 Aug  2  2018 Supervisor.php

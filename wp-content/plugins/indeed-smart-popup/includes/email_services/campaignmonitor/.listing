@@ -1,0 +1,6 @@
+drwxr-xr-x   3 mwra     mwra         4096 Dec 17  2016 .
+drwxr-xr-x  10 mwra     mwra         4096 Dec 17  2016 ..
+drwxr-xr-x   2 mwra     mwra         4096 Dec 17  2016 class
+-rw-r--r--   1 mwra     mwra        16527 Dec 17  2016 csrest_clients.php
+-rw-r--r--   1 mwra     mwra         9735 Dec 17  2016 csrest_subscribers.php
+-rw-r--r--   1 mwra     mwra            0 Dec 17  2016 index.html

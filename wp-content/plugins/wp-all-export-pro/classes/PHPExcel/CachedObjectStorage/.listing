@@ -1,0 +1,15 @@
+drwxr-xr-x   2 mwra     mwra         4096 Aug  2  2018 .
+drwxr-xr-x  15 mwra     mwra         4096 Aug  2  2018 ..
+-rw-r--r--   1 mwra     mwra         9548 Aug  2  2018 APC.php
+-rw-r--r--   1 mwra     mwra        10594 Aug  2  2018 CacheBase.php
+-rw-r--r--   1 mwra     mwra         6776 Aug  2  2018 DiscISAM.php
+-rw-r--r--   1 mwra     mwra         3484 Aug  2  2018 ICache.php
+-rw-r--r--   1 mwra     mwra         4862 Aug  2  2018 Igbinary.php
+-rw-r--r--   1 mwra     mwra        10709 Aug  2  2018 Memcache.php
+-rw-r--r--   1 mwra     mwra         3800 Aug  2  2018 Memory.php
+-rw-r--r--   1 mwra     mwra         4333 Aug  2  2018 MemoryGZip.php
+-rw-r--r--   1 mwra     mwra         4319 Aug  2  2018 MemorySerialized.php
+-rw-r--r--   1 mwra     mwra         6451 Aug  2  2018 PHPTemp.php
+-rw-r--r--   1 mwra     mwra        10363 Aug  2  2018 SQLite.php
+-rw-r--r--   1 mwra     mwra        11230 Aug  2  2018 SQLite3.php
+-rw-r--r--   1 mwra     mwra         9945 Aug  2  2018 Wincache.php

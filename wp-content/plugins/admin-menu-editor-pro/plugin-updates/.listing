@@ -1,0 +1,12 @@
+drwxr-xr-x   5 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x  11 mwra     mwra         4096 Jul 23  2016 ..
+-rw-r--r--   1 mwra     mwra         4789 Nov 11  2015 README.md
+-rw-r--r--   1 mwra     mwra          630 Nov 11  2015 composer.json
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 css
+-rw-r--r--   1 mwra     mwra         4560 Nov 11  2015 debug-bar-panel.php
+-rw-r--r--   1 mwra     mwra         2597 Nov 11  2015 debug-bar-plugin.php
+-rw-r--r--   1 mwra     mwra        13406 Nov 11  2015 github-checker.php
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 js
+-rw-r--r--   1 mwra     mwra         1055 Nov 11  2015 license.txt
+-rw-r--r--   1 mwra     mwra        42642 Nov 11  2015 plugin-update-checker.php
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 vendor

@@ -1,0 +1,16 @@
+drwxr-xr-x   5 mwra     mwra         4096 Dec 17  2016 .
+drwxr-xr-x   5 mwra     mwra         4096 Dec 17  2016 ..
+-rw-r--r--   1 mwra     mwra        13706 Dec 17  2016 bootstrap-colorpicker.js
+-rw-r--r--   1 mwra     mwra        28746 Dec 17  2016 bootstrap.min.js
+drwxr-xr-x   5 mwra     mwra         4096 Dec 17  2016 ckeditor
+-rw-r--r--   1 mwra     mwra         9846 Dec 17  2016 functions.js
+-rw-r--r--   1 mwra     mwra        73635 Dec 17  2016 jquery-ui-timepicker-addon.js
+-rw-r--r--   1 mwra     mwra        12278 Dec 17  2016 jquery.adaptor.js
+-rw-r--r--   1 mwra     mwra       122071 Dec 17  2016 jquery.flot.js
+-rw-r--r--   1 mwra     mwra        24215 Dec 17  2016 jquery.flot.pie.js
+-rw-r--r--   1 mwra     mwra        12197 Dec 17  2016 jquery.flot.time.js
+-rw-r--r--   1 mwra     mwra         4016 Dec 17  2016 jquery.icheck.min.js
+-rw-r--r--   1 mwra     mwra          426 Dec 17  2016 open_media_3_4.js
+-rw-r--r--   1 mwra     mwra          974 Dec 17  2016 open_media_3_5.js
+drwxr-xr-x   4 mwra     mwra         4096 Dec 17  2016 stats
+drwxr-xr-x   2 mwra     mwra         4096 Dec 17  2016 vmap

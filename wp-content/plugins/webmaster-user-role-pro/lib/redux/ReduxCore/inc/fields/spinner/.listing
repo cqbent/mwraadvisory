@@ -1,0 +1,11 @@
+drwxr-xr-x   3 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x  37 mwra     mwra         4096 Jul 23  2016 ..
+-rw-r--r--   1 mwra     mwra          150 Nov 11  2015 arrow_left.png
+-rw-r--r--   1 mwra     mwra          154 Nov 11  2015 arrow_right.png
+-rw-r--r--   1 mwra     mwra         2825 Nov 11  2015 field_spinner.css
+-rw-r--r--   1 mwra     mwra         4254 Nov 11  2015 field_spinner.js
+-rw-r--r--   1 mwra     mwra         3138 Nov 11  2015 field_spinner.less
+-rw-r--r--   1 mwra     mwra         1487 Nov 11  2015 field_spinner.min.js
+-rw-r--r--   1 mwra     mwra         5342 Nov 11  2015 field_spinner.php
+-rw-r--r--   1 mwra     mwra         3051 Nov 11  2015 field_spinner.scss
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 vendor

@@ -1,0 +1,12 @@
+drwxr-xr-x   2 mwra     mwra         4096 Oct 31  2017 .
+drwxr-xr-x  16 mwra     mwra        12288 Nov 19 21:11 ..
+-rw-r--r--   1 mwra     mwra         5631 Oct 23  2015 byte_safe_strings.php
+-rw-r--r--   1 mwra     mwra         2395 Oct 23  2015 cast_to_int.php
+-rw-r--r--   1 mwra     mwra         1533 Oct 23  2015 error_polyfill.php
+-rw-r--r--   1 mwra     mwra         6028 Jan 11  2016 random.php
+-rw-r--r--   1 mwra     mwra         2536 Nov 10  2015 random_bytes_com_dotnet.php
+-rw-r--r--   1 mwra     mwra         4537 Dec 22  2015 random_bytes_dev_urandom.php
+-rw-r--r--   1 mwra     mwra         2574 Nov 10  2015 random_bytes_libsodium.php
+-rw-r--r--   1 mwra     mwra         2312 Nov 10  2015 random_bytes_mcrypt.php
+-rw-r--r--   1 mwra     mwra         2551 Nov 10  2015 random_bytes_openssl.php
+-rw-r--r--   1 mwra     mwra         5691 Oct 23  2015 random_int.php

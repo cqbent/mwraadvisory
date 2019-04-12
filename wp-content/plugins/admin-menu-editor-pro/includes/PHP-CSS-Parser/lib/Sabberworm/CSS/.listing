@@ -1,0 +1,10 @@
+drwxr-xr-x   8 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x   3 mwra     mwra         4096 Jul 23  2016 ..
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 CSSList
+-rw-r--r--   1 mwra     mwra        18147 Nov 11  2015 Parser.php
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 Parsing
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 Property
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 Rule
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 RuleSet
+-rw-r--r--   1 mwra     mwra         1340 Nov 11  2015 Settings.php
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 Value

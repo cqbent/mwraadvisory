@@ -1,0 +1,8 @@
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x   8 mwra     mwra         4096 Jul 23  2016 ..
+-rw-r--r--   1 mwra     mwra         7256 Dec 17  2015 Base.php
+-rw-r--r--   1 mwra     mwra         2171 Dec 17  2015 Files.php
+-rw-r--r--   1 mwra     mwra         2895 Dec 17  2015 Groups.php
+-rw-r--r--   1 mwra     mwra         9273 Dec 17  2015 MinApp.php
+-rw-r--r--   1 mwra     mwra         2249 Dec 17  2015 Page.php
+-rw-r--r--   1 mwra     mwra         3971 Dec 17  2015 Version1.php

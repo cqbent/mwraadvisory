@@ -1,0 +1,7 @@
+drwxr-xr-x   3 mwra     mwra         4096 Sep  1  2016 .
+drwxr-xr-x  93 mwra     mwra         4096 Dec 19 18:24 ..
+-rw-r--r--   1 mwra     mwra         2110 Sep  1  2016 README.md
+drwxr-xr-x   4 mwra     mwra         4096 Sep  1  2016 includes
+-rw-r--r--   1 mwra     mwra        18091 Sep  1  2016 license.txt
+-rw-r--r--   1 mwra     mwra         4093 Sep  1  2016 readme.txt
+-rw-r--r--   1 mwra     mwra        10209 Sep  1  2016 wp-post-cloner.php

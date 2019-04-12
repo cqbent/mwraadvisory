@@ -1,0 +1,13 @@
+drwxr-xr-x   5 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x   3 mwra     mwra         4096 Jul 23  2016 ..
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 .tx
+-rw-r--r--   1 mwra     mwra        14385 Nov 11  2015 Gruntfile.js
+drwxr-xr-x   6 mwra     mwra         4096 Jul 23  2016 ReduxCore
+-rw-r--r--   1 mwra     mwra        16198 Nov 11  2015 class.redux-plugin.php
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 codestyles
+-rw-r--r--   1 mwra     mwra          489 Nov 11  2015 composer.json
+-rw-r--r--   1 mwra     mwra           30 Nov 11  2015 index.php
+-rw-r--r--   1 mwra     mwra         1183 Nov 11  2015 package.json
+-rw-r--r--   1 mwra     mwra          321 Nov 11  2015 phpunit.xml
+-rw-r--r--   1 mwra     mwra         2144 Nov 11  2015 redux-framework.php
+-rw-r--r--   1 mwra     mwra          326 Nov 11  2015 uninstall.php

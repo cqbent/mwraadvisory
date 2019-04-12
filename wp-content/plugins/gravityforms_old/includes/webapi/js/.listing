@@ -1,0 +1,8 @@
+drwxr-xr-x   2 mwra     mwra         4096 Nov 16  2016 .
+drwxr-xr-x   4 mwra     mwra         4096 Nov 16  2016 ..
+-rw-r--r--   1 mwra     mwra          869 Nov 16  2016 enc-base64-min.js
+-rw-r--r--   1 mwra     mwra          725 Nov 16  2016 enc-base64-min.min.js
+-rw-r--r--   1 mwra     mwra         3215 Nov 16  2016 gfwebapi_settings.js
+-rw-r--r--   1 mwra     mwra         1713 Nov 16  2016 gfwebapi_settings.min.js
+-rw-r--r--   1 mwra     mwra         4757 Nov 16  2016 hmac-sha1.min.js
+-rw-r--r--   1 mwra     mwra           27 Nov 16  2016 index.php

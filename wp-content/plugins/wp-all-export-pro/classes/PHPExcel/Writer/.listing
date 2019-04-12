@@ -1,0 +1,15 @@
+drwxr-xr-x   6 mwra     mwra         4096 Aug  2  2018 .
+drwxr-xr-x  15 mwra     mwra         4096 Aug  2  2018 ..
+-rw-r--r--   1 mwra     mwra         5070 Aug  2  2018 Abstract.php
+-rw-r--r--   1 mwra     mwra         8508 Aug  2  2018 CSV.php
+drwxr-xr-x   2 mwra     mwra         4096 Aug  2  2018 Excel2007
+-rw-r--r--   1 mwra     mwra        21996 Aug  2  2018 Excel2007.php
+drwxr-xr-x   2 mwra     mwra         4096 Aug  2  2018 Excel5
+-rw-r--r--   1 mwra     mwra        40805 Aug  2  2018 Excel5.php
+-rw-r--r--   1 mwra     mwra         1546 Aug  2  2018 Exception.php
+-rw-r--r--   1 mwra     mwra        58260 Aug  2  2018 HTML.php
+-rw-r--r--   1 mwra     mwra         1348 Aug  2  2018 IWriter.php
+drwxr-xr-x   3 mwra     mwra         4096 Aug  2  2018 OpenDocument
+-rw-r--r--   1 mwra     mwra         6542 Aug  2  2018 OpenDocument.php
+drwxr-xr-x   2 mwra     mwra         4096 Aug  2  2018 PDF
+-rw-r--r--   1 mwra     mwra         3250 Aug  2  2018 PDF.php

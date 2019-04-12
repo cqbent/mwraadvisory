@@ -1,0 +1,9 @@
+drwxr-xr-x   2 mwra     mwra         4096 Dec 17  2016 .
+drwxr-xr-x   3 mwra     mwra         4096 Dec 17  2016 ..
+-rw-r--r--   1 mwra     mwra         7464 Dec 17  2016 base_classes.php
+-rw-r--r--   1 mwra     mwra       248401 Dec 17  2016 cacert.pem
+-rw-r--r--   1 mwra     mwra            0 Dec 17  2016 index.html
+-rw-r--r--   1 mwra     mwra          508 Dec 17  2016 log.php
+-rw-r--r--   1 mwra     mwra         3297 Dec 17  2016 serialisation.php
+-rw-r--r--   1 mwra     mwra        34049 Dec 17  2016 services_json.php
+-rw-r--r--   1 mwra     mwra         9583 Dec 17  2016 transport.php

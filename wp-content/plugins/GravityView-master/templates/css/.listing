@@ -1,0 +1,13 @@
+drwxr-xr-x   3 mwra     mwra         4096 Jul 27  2017 .
+drwxr-xr-x   4 mwra     mwra         4096 Jul 27  2017 ..
+-rw-r--r--   1 mwra     mwra         1284 Jul 27  2017 field-approval.css
+-rw-r--r--   1 mwra     mwra         4570 Jul 27  2017 gv-default-styles-rtl.css
+-rw-r--r--   1 mwra     mwra         4568 Jul 27  2017 gv-default-styles.css
+-rw-r--r--   1 mwra     mwra         3994 Jul 27  2017 gv-legacy-search-rtl.css
+-rw-r--r--   1 mwra     mwra         3993 Jul 27  2017 gv-legacy-search.css
+-rw-r--r--   1 mwra     mwra           26 Jul 27  2017 index.php
+-rw-r--r--   1 mwra     mwra         1255 Jul 27  2017 list-view-rtl.css
+-rw-r--r--   1 mwra     mwra         1255 Jul 27  2017 list-view.css
+-rw-r--r--   1 mwra     mwra         1416 Jul 27  2017 search-legacy.css
+drwxr-xr-x   2 mwra     mwra         4096 Jul 27  2017 source
+-rw-r--r--   1 mwra     mwra          265 Jul 27  2017 table-view.css

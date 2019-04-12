@@ -1,0 +1,10 @@
+drwxr-xr-x   2 mwra     mwra         4096 Aug  2  2018 .
+drwxr-xr-x   6 mwra     mwra         4096 Aug  2  2018 ..
+-rw-r--r--   1 mwra     mwra        25145 Aug  2  2018 clike.js
+-rw-r--r--   1 mwra     mwra         8113 Aug  2  2018 codemirror.css
+-rw-r--r--   1 mwra     mwra       350618 Aug  2  2018 codemirror.js
+-rw-r--r--   1 mwra     mwra         5300 Aug  2  2018 htmlmixed.js
+-rw-r--r--   1 mwra     mwra        26933 Aug  2  2018 javascript.js
+-rw-r--r--   1 mwra     mwra         5254 Aug  2  2018 matchbrackets.js
+-rw-r--r--   1 mwra     mwra        18177 Aug  2  2018 php.js
+-rw-r--r--   1 mwra     mwra        12401 Aug  2  2018 xml.js

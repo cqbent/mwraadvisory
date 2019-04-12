@@ -1,0 +1,6 @@
+drwxr-xr-x   2 mwra     mwra         4096 Jul 27  2017 .
+drwxr-xr-x  10 mwra     mwra         4096 Jul 27  2017 ..
+-rw-r--r--   1 mwra     mwra        13402 Jul 27  2017 class-gravityview-recent-entries-widget.php
+-rw-r--r--   1 mwra     mwra         9255 Jul 27  2017 class-gravityview-search-wp-widget.php
+-rw-r--r--   1 mwra     mwra           26 Jul 27  2017 index.php
+-rw-r--r--   1 mwra     mwra          785 Jul 27  2017 register-wordpress-widgets.php

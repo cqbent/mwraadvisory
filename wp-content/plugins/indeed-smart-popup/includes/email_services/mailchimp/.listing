@@ -1,0 +1,6 @@
+drwxr-xr-x   2 mwra     mwra         4096 Dec 17  2016 .
+drwxr-xr-x  10 mwra     mwra         4096 Dec 17  2016 ..
+-rw-r--r--   1 mwra     mwra         1100 Dec 17  2016 LICENSE
+-rw-r--r--   1 mwra     mwra         3360 Dec 17  2016 MailChimp.php
+-rw-r--r--   1 mwra     mwra         1495 Dec 17  2016 README.md
+-rw-r--r--   1 mwra     mwra          443 Dec 17  2016 composer.json

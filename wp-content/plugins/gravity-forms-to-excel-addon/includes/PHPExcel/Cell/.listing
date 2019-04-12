@@ -1,0 +1,8 @@
+drwxr-xr-x   2 mwra     mwra         4096 Dec 15  2016 .
+drwxr-xr-x  14 mwra     mwra         4096 Dec 15  2016 ..
+-rw-r--r--   1 mwra     mwra         8904 Dec 15  2016 AdvancedValueBinder.php
+-rw-r--r--   1 mwra     mwra         3538 Dec 15  2016 DataType.php
+-rw-r--r--   1 mwra     mwra        10423 Dec 15  2016 DataValidation.php
+-rw-r--r--   1 mwra     mwra         3350 Dec 15  2016 DefaultValueBinder.php
+-rw-r--r--   1 mwra     mwra         2993 Dec 15  2016 Hyperlink.php
+-rw-r--r--   1 mwra     mwra         1545 Dec 15  2016 IValueBinder.php

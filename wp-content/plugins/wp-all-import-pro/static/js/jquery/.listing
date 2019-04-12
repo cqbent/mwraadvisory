@@ -1,0 +1,12 @@
+drwxr-xr-x   3 mwra     mwra         4096 Aug  2  2018 .
+drwxr-xr-x   4 mwra     mwra         4096 Aug  2  2018 ..
+-rw-r--r--   1 mwra     mwra         7281 Aug  2  2018 browserplus-min.js
+drwxr-xr-x   5 mwra     mwra         4096 Aug  2  2018 css
+-rw-r--r--   1 mwra     mwra         7260 Aug  2  2018 jquery.ddslick.min.js
+-rw-r--r--   1 mwra     mwra        14123 Aug  2  2018 jquery.mjs.nestedSortable.js
+-rw-r--r--   1 mwra     mwra         7389 Aug  2  2018 jquery.tipsy.js
+-rw-r--r--   1 mwra     mwra         6266 Aug  2  2018 jquery.ui-contextmenu.min.js
+-rw-r--r--   1 mwra     mwra        12423 Aug  2  2018 moment.js
+-rw-r--r--   1 mwra     mwra        60960 Aug  2  2018 select2.min.js
+-rw-r--r--   1 mwra     mwra        16406 Aug  2  2018 ui.autocomplete.js
+-rw-r--r--   1 mwra     mwra        69877 Aug  2  2018 ui.datepicker.js

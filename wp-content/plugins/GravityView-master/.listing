@@ -1,0 +1,12 @@
+drwxr-xr-x   7 mwra     mwra         4096 Jul 27  2017 .
+drwxr-xr-x  93 mwra     mwra         4096 Dec 19 18:24 ..
+drwxr-xr-x   7 mwra     mwra         4096 Jul 27  2017 assets
+-rw-r--r--   1 mwra     mwra          165 Jul 27  2017 bower.json
+-rw-r--r--   1 mwra     mwra          342 Jul 27  2017 composer.json
+drwxr-xr-x   4 mwra     mwra         4096 Jul 27  2017 future
+-rw-r--r--   1 mwra     mwra        13903 Jul 27  2017 gravityview.php
+drwxr-xr-x  10 mwra     mwra         4096 Jul 27  2017 includes
+-rw-r--r--   1 mwra     mwra           26 Jul 27  2017 index.php
+drwxr-xr-x   2 mwra     mwra         4096 Jul 27  2017 languages
+-rw-r--r--   1 mwra     mwra       114473 Jul 27  2017 readme.txt
+drwxr-xr-x   4 mwra     mwra         4096 Jul 27  2017 templates

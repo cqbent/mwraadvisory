@@ -1,0 +1,11 @@
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x  11 mwra     mwra         4096 Jul 23  2016 ..
+-rw-r--r--   1 mwra     mwra        19477 Nov 11  2015 BasicPluginLicensingUi.php
+-rw-r--r--   1 mwra     mwra          701 Nov 11  2015 Database.php
+-rw-r--r--   1 mwra     mwra        19293 Nov 11  2015 LicenseManager.php
+-rw-r--r--   1 mwra     mwra        20822 Nov 11  2015 LicenseServer.php
+-rw-r--r--   1 mwra     mwra          657 Nov 11  2015 PdoDatabase.php
+-rw-r--r--   1 mwra     mwra         1700 Nov 11  2015 ProductLicense.php
+-rw-r--r--   1 mwra     mwra          709 Nov 11  2015 WpDatabase.php
+-rw-r--r--   1 mwra     mwra         2003 Nov 11  2015 pretty-json.php
+-rw-r--r--   1 mwra     mwra         1691 Nov 11  2015 ui.css

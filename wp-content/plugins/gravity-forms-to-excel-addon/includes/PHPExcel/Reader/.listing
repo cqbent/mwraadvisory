@@ -1,0 +1,17 @@
+drwxr-xr-x   4 mwra     mwra         4096 Dec 15  2016 .
+drwxr-xr-x  14 mwra     mwra         4096 Dec 15  2016 ..
+-rw-r--r--   1 mwra     mwra         6211 Dec 15  2016 Abstract.php
+-rw-r--r--   1 mwra     mwra         9437 Dec 15  2016 CSV.php
+-rw-r--r--   1 mwra     mwra         1799 Dec 15  2016 DefaultReadFilter.php
+-rw-r--r--   1 mwra     mwra        27848 Dec 15  2016 Excel2003XML.php
+drwxr-xr-x   2 mwra     mwra         4096 Dec 15  2016 Excel2007
+-rw-r--r--   1 mwra     mwra        92708 Dec 15  2016 Excel2007.php
+drwxr-xr-x   2 mwra     mwra         4096 Dec 15  2016 Excel5
+-rw-r--r--   1 mwra     mwra       237450 Dec 15  2016 Excel5.php
+-rw-r--r--   1 mwra     mwra         1636 Dec 15  2016 Exception.php
+-rw-r--r--   1 mwra     mwra        30456 Dec 15  2016 Gnumeric.php
+-rw-r--r--   1 mwra     mwra        13901 Dec 15  2016 HTML.php
+-rw-r--r--   1 mwra     mwra         1534 Dec 15  2016 IReadFilter.php
+-rw-r--r--   1 mwra     mwra         1593 Dec 15  2016 IReader.php
+-rw-r--r--   1 mwra     mwra        26291 Dec 15  2016 OOCalc.php
+-rw-r--r--   1 mwra     mwra        14177 Dec 15  2016 SYLK.php

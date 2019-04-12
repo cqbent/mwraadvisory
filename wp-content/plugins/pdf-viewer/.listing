@@ -1,0 +1,8 @@
+drwxr-xr-x   4 mwra     mwra         4096 Sep 16  2016 .
+drwxr-xr-x  93 mwra     mwra         4096 Dec 19 18:24 ..
+drwxr-xr-x   4 mwra     mwra         4096 Sep 16  2016 beta
+-rw-r--r--   1 mwra     mwra        18092 Sep 16  2016 license.txt
+-rw-r--r--   1 mwra     mwra        12192 Sep 16  2016 pdf-viewer.php
+-rw-r--r--   1 mwra     mwra         2194 Sep 16  2016 readme.txt
+drwxr-xr-x   4 mwra     mwra         4096 Sep 16  2016 stable
+-rw-r--r--   1 mwra     mwra          197 Sep 16  2016 uninstall.php

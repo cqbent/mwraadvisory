@@ -1,0 +1,13 @@
+drwxr-xr-x   4 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x  11 mwra     mwra         4096 Jul 23  2016 ..
+-rw-r--r--   1 mwra     mwra          120 Nov 11  2015 .htaccess
+-rw-r--r--   1 mwra     mwra          788 Nov 11  2015 copy-permissions-dialog.php
+-rw-r--r--   1 mwra     mwra         2919 Nov 11  2015 menu-color-dialog.php
+-rw-r--r--   1 mwra     mwra         3798 Nov 11  2015 menu-color-generator.php
+-rw-r--r--   1 mwra     mwra         3966 Nov 11  2015 menu-color-template.txt
+-rw-r--r--   1 mwra     mwra         3558 Nov 11  2015 menu-colors.css
+-rw-r--r--   1 mwra     mwra         3713 Nov 11  2015 menu-colors.scss
+drwxr-xr-x   3 mwra     mwra         4096 Jul 23  2016 modules
+-rw-r--r--   1 mwra     mwra         1234 Nov 11  2015 page-dropdown.php
+drwxr-xr-x   4 mwra     mwra         4096 Jul 23  2016 phpColors
+-rw-r--r--   1 mwra     mwra         4627 Nov 11  2015 wp-cli-integration.php

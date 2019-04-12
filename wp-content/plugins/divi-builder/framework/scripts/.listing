@@ -1,0 +1,17 @@
+drwxr-xr-x   3 mwra     mwra         4096 Sep 15  2016 .
+drwxr-xr-x   8 mwra     mwra         4096 Sep 15  2016 ..
+-rw-r--r--   1 mwra     mwra       278753 Nov 11  2015 builder.js
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 ext
+-rw-r--r--   1 mwra     mwra       109380 Sep 15  2016 frontend-builder-custom-scripts.js
+-rw-r--r--   1 mwra     mwra         4228 Nov 11  2015 frontend-builder-global-functions.js
+-rw-r--r--   1 mwra     mwra         1676 Nov 11  2015 frontend-builder-preview.js
+-rw-r--r--   1 mwra     mwra       109383 Sep 15  2016 frontend-builder-scripts.js
+-rw-r--r--   1 mwra     mwra         9193 Nov 11  2015 jquery.easypiechart.js
+-rw-r--r--   1 mwra     mwra         1073 Nov 11  2015 jquery.fittext.js
+-rw-r--r--   1 mwra     mwra         2856 Nov 11  2015 jquery.fitvids.js
+-rw-r--r--   1 mwra     mwra        16117 Nov 11  2015 jquery.hashchange.js
+-rw-r--r--   1 mwra     mwra        22380 Nov 11  2015 jquery.magnific-popup.js
+-rw-r--r--   1 mwra     mwra         8278 Nov 11  2015 library_scripts.js
+-rw-r--r--   1 mwra     mwra         5694 Nov 11  2015 roles_admin.js
+-rw-r--r--   1 mwra     mwra         8469 Nov 11  2015 salvattore.min.js
+-rw-r--r--   1 mwra     mwra         8044 Nov 11  2015 waypoints.min.js

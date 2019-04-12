@@ -1,0 +1,13 @@
+drwxr-xr-x   2 mwra     mwra         4096 Dec 17  2016 .
+drwxr-xr-x  10 mwra     mwra         4096 Dec 17  2016 ..
+-rw-r--r--   1 mwra     mwra         9419 Dec 17  2016 aweber.php
+-rw-r--r--   1 mwra     mwra          196 Dec 17  2016 aweber_api.php
+-rw-r--r--   1 mwra     mwra        10001 Dec 17  2016 aweber_collection.php
+-rw-r--r--   1 mwra     mwra        10969 Dec 17  2016 aweber_entry.php
+-rw-r--r--   1 mwra     mwra         1415 Dec 17  2016 aweber_entry_data_array.php
+-rw-r--r--   1 mwra     mwra         2007 Dec 17  2016 aweber_response.php
+-rw-r--r--   1 mwra     mwra         1567 Dec 17  2016 curl_response.php
+-rw-r--r--   1 mwra     mwra         3629 Dec 17  2016 exceptions.php
+-rw-r--r--   1 mwra     mwra           19 Dec 17  2016 index.php
+-rw-r--r--   1 mwra     mwra          176 Dec 17  2016 oauth_adapter.php
+-rw-r--r--   1 mwra     mwra        21581 Dec 17  2016 oauth_application.php

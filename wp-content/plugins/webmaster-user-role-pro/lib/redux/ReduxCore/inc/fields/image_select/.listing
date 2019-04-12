@@ -1,0 +1,8 @@
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x  37 mwra     mwra         4096 Jul 23  2016 ..
+-rw-r--r--   1 mwra     mwra         1448 Nov 11  2015 field_image_select.css
+-rw-r--r--   1 mwra     mwra         4656 Nov 11  2015 field_image_select.js
+-rw-r--r--   1 mwra     mwra         1231 Nov 11  2015 field_image_select.less
+-rw-r--r--   1 mwra     mwra         1943 Nov 11  2015 field_image_select.min.js
+-rw-r--r--   1 mwra     mwra        10604 Nov 11  2015 field_image_select.php
+-rw-r--r--   1 mwra     mwra         1112 Nov 11  2015 field_image_select.scss

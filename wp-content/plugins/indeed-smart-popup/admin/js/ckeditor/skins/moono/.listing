@@ -1,0 +1,17 @@
+drwxr-xr-x   3 mwra     mwra         4096 Dec 17  2016 .
+drwxr-xr-x   4 mwra     mwra         4096 Dec 17  2016 ..
+-rw-r--r--   1 mwra     mwra        15383 Dec 17  2016 dialog.css
+-rw-r--r--   1 mwra     mwra        16294 Dec 17  2016 dialog_ie.css
+-rw-r--r--   1 mwra     mwra        16851 Dec 17  2016 dialog_ie7.css
+-rw-r--r--   1 mwra     mwra        16466 Dec 17  2016 dialog_ie8.css
+-rw-r--r--   1 mwra     mwra        16321 Dec 17  2016 dialog_iequirks.css
+-rw-r--r--   1 mwra     mwra        15511 Dec 17  2016 dialog_opera.css
+-rw-r--r--   1 mwra     mwra        31046 Dec 17  2016 editor.css
+-rw-r--r--   1 mwra     mwra        31127 Dec 17  2016 editor_gecko.css
+-rw-r--r--   1 mwra     mwra        32045 Dec 17  2016 editor_ie.css
+-rw-r--r--   1 mwra     mwra        34070 Dec 17  2016 editor_ie7.css
+-rw-r--r--   1 mwra     mwra        32220 Dec 17  2016 editor_ie8.css
+-rw-r--r--   1 mwra     mwra        32658 Dec 17  2016 editor_iequirks.css
+-rw-r--r--   1 mwra     mwra        20881 Dec 17  2016 icons.png
+drwxr-xr-x   2 mwra     mwra         4096 Dec 17  2016 images
+-rw-r--r--   1 mwra     mwra         2529 Dec 17  2016 readme.md

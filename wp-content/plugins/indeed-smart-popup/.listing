@@ -1,0 +1,11 @@
+drwxr-xr-x   7 mwra     mwra         4096 Dec 17  2016 .
+drwxr-xr-x  93 mwra     mwra         4096 Dec 19 18:24 ..
+drwxr-xr-x   5 mwra     mwra         4096 Dec 17  2016 admin
+drwxr-xr-x   5 mwra     mwra         4096 Dec 17  2016 assets
+-rw-r--r--   1 mwra     mwra         7472 Dec 17  2016 functions.php
+drwxr-xr-x   3 mwra     mwra         4096 Dec 17  2016 includes
+-rw-r--r--   1 mwra     mwra        15419 Dec 17  2016 indeed-smart-popup.php
+-rw-r--r--   1 mwra     mwra           20 Dec 17  2016 index.php
+drwxr-xr-x  12 mwra     mwra         4096 Dec 17  2016 templates
+drwxr-xr-x   2 mwra     mwra         4096 Dec 17  2016 tmp
+-rw-r--r--   1 mwra     mwra         1114 Dec 17  2016 uninstall.php

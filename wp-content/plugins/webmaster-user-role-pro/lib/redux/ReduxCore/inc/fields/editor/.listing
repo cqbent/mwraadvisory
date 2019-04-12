@@ -1,0 +1,8 @@
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x  37 mwra     mwra         4096 Jul 23  2016 ..
+-rw-r--r--   1 mwra     mwra         1254 Nov 11  2015 field_editor.css
+-rw-r--r--   1 mwra     mwra         1219 Nov 11  2015 field_editor.js
+-rw-r--r--   1 mwra     mwra         1330 Nov 11  2015 field_editor.less
+-rw-r--r--   1 mwra     mwra          549 Nov 11  2015 field_editor.min.js
+-rw-r--r--   1 mwra     mwra         4021 Nov 11  2015 field_editor.php
+-rw-r--r--   1 mwra     mwra         1352 Nov 11  2015 field_editor.scss

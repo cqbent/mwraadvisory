@@ -1,0 +1,7 @@
+drwxr-xr-x   2 mwra     mwra         4096 Jul 27  2017 .
+drwxr-xr-x   4 mwra     mwra         4096 Jul 27  2017 ..
+-rw-r--r--   1 mwra     mwra          562 Jul 27  2017 .bower.json
+-rw-r--r--   1 mwra     mwra          240 Jul 27  2017 bower.json
+-rw-r--r--   1 mwra     mwra           26 Jul 27  2017 index.php
+-rw-r--r--   1 mwra     mwra         3121 Jul 27  2017 jquery.cookie.js
+-rw-r--r--   1 mwra     mwra         1699 Jul 27  2017 jquery.cookie.min.js

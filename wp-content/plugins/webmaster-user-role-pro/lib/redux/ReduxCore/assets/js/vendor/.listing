@@ -1,0 +1,13 @@
+drwxr-xr-x   4 mwra     mwra         4096 Jul 23  2016 .
+drwxr-xr-x   5 mwra     mwra         4096 Jul 23  2016 ..
+-rw-r--r--   1 mwra     mwra         2319 Nov 11  2015 cookie.js
+-rw-r--r--   1 mwra     mwra        23309 Nov 11  2015 jquery.alphanum.js
+-rw-r--r--   1 mwra     mwra         1658 Nov 11  2015 jquery.serializeForm.js
+-rw-r--r--   1 mwra     mwra         2548 Nov 11  2015 jquery.typewatch.js
+-rw-r--r--   1 mwra     mwra        10829 Nov 11  2015 jsonview.js
+-rw-r--r--   1 mwra     mwra         5592 Nov 11  2015 jsonview.min.js
+-rw-r--r--   1 mwra     mwra        10042 Nov 11  2015 lte-ie7.js
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 qtip
+drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 select2
+-rw-r--r--   1 mwra     mwra         3413 Nov 11  2015 select2.sortable.js
+-rw-r--r--   1 mwra     mwra         1742 Nov 11  2015 select2.sortable.min.js

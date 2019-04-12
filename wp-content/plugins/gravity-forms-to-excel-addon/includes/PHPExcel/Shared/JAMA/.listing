@@ -1,0 +1,10 @@
+drwxr-xr-x   3 mwra     mwra         4096 Dec 15  2016 .
+drwxr-xr-x   7 mwra     mwra         4096 Dec 15  2016 ..
+-rw-r--r--   1 mwra     mwra          500 Dec 15  2016 CHANGELOG.TXT
+-rw-r--r--   1 mwra     mwra         3358 Dec 15  2016 CholeskyDecomposition.php
+-rw-r--r--   1 mwra     mwra        22708 Dec 15  2016 EigenvalueDecomposition.php
+-rw-r--r--   1 mwra     mwra         6231 Dec 15  2016 LUDecomposition.php
+-rw-r--r--   1 mwra     mwra        30148 Dec 15  2016 Matrix.php
+-rw-r--r--   1 mwra     mwra         5795 Dec 15  2016 QRDecomposition.php
+-rw-r--r--   1 mwra     mwra        13005 Dec 15  2016 SingularValueDecomposition.php
+drwxr-xr-x   2 mwra     mwra         4096 Dec 15  2016 utils
