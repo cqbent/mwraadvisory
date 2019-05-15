@@ -1477,7 +1477,7 @@ class NewsletterControls {
         echo $output;
     }
 
-    function language($name = 'language') {
+    function language($name = 'language', $empty_label='All') {
         if (!class_exists('SitePress') && !function_exists('pll_default_language') && !class_exists('TRP_Translate_Press')) {
             echo __('Install a multilanguage plugin.', 'newsletter');
             echo ' <a href="https://www.thenewsletterplugin.com/documentation/multilanguage" target="_blank">', __('Read more', 'newsletter'), '</a>';
@@ -1485,8 +1485,9 @@ class NewsletterControls {
         }
 
         $languages = Newsletter::instance()->get_languages();
-        $languages = array_merge(array('' => 'All'), $languages);
-
+        if (!empty($empty_label)) {
+            $languages = array_merge(array('' => $empty_label), $languages);
+        }
         $this->select($name, $languages);
     }
 

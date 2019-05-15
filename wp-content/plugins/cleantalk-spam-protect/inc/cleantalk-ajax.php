@@ -134,6 +134,11 @@ $cleantalk_hooked_actions[]='rwp-submit-wrap';
 
 $cleantalk_hooked_actions[]='post_update';
 
+/* Ninja Forms hoocked actions */
+$cleantalk_hooked_actions[]='ninja_forms_ajax_submit';
+$cleantalk_hooked_actions[]='nf_ajax_submit';
+$cleantalk_hooked_actions[]='ninja_forms_process'; // Depricated ?
+
 function ct_validate_email_ajaxlogin($email=null, $is_ajax=true){
 	
 	require_once(CLEANTALK_PLUGIN_DIR . 'cleantalk-public.php');
@@ -157,7 +162,7 @@ function ct_validate_email_ajaxlogin($email=null, $is_ajax=true){
 				'sender_email'    => $email,
 				'sender_nickname' => '',
 				'sender_info'     => $sender_info,
-				'checkjs'         => $checkjs,
+				'js_on'           => $checkjs,
 			),
 			true
 		);
@@ -208,7 +213,7 @@ function ct_user_register_ajaxlogin($user_id)
 				'sender_email'    => sanitize_email($_POST['email']),
 				'sender_nickname' => sanitize_email($_POST['login']),
 				'sender_info'     => $sender_info,
-				'checkjs'         => $checkjs,
+				'js_on'           => $checkjs,
 			),
 			true
 		);
@@ -275,11 +280,23 @@ function ct_ajax_hook($message_obj = false, $additional = false)
         'simbatfa-init-otp', //Two-Factor Auth 
         'wppb_msf_check_required_fields', //ProfileBuilder skip step checking
         'boss_we_login', //Login form
+        'sidebar_login_process', // Login CF7
+		'cp_update_style_settings', // Convert Pro. Saving settings
+		'updraft_savesettings', // UpdraftPlus
+		'wpdUpdateAutomatically', //Comments update
+		'upload-attachment', // Skip ulpload attachments
+		'iwj_update_profile', //Skip profile page checker
+		'st_partner_create_service', //Skip add hotel via admin
     );
 	
 	//General post_info for all ajax calls
 	$post_info = array('comment_type' => 'feedback_ajax');
-
+		
+	// Use exclusions
+	if(check_url_exclusions()){
+		return false;
+	}
+	
 	$checkjs = apbct_js_test('ct_checkjs', $_COOKIE, true);
     if ($checkjs && // Spammers usually fail the JS test
         (isset($_POST['action']) && in_array($_POST['action'], $skip_post))
@@ -351,6 +368,9 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 	 // Mailpoet fix
     if (isset($message['wysijaData'], $message['wysijaplugin'], $message['task'], $message['controller']) && $message['wysijaplugin'] == 'wysija-newsletters' && $message['controller'] == 'campaigns')
         return false;
+    // Mailpoet3 admin skip fix
+    if (isset($_POST['action'], $_POST['method']) && $_POST['action'] == 'mailpoet' && $_POST['method'] =='save')
+    	return false;
 	
 	// WP Foto Vote Fix
 	if (!empty($_FILES)){
@@ -385,7 +405,7 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 			'sender_nickname' => $sender_nickname,
 			'sender_info'     => array('post_checkjs_passed' => $checkjs),
 			'post_info'       => $post_info,
-			'checkjs'         => $checkjs,
+			'js_on'           => $checkjs,
 		)
 	);
 	$ct_result = $base_call_result['ct_result'];

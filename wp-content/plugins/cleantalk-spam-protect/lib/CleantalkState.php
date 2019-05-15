@@ -21,7 +21,6 @@ class CleantalkState
 	public $def_settings = array(
 	
 		'spam_firewall'       => 1,
-        'server'              => 'http://moderate.cleantalk.org',
         'apikey'              => '',
 		'custom_key'          => 0,
         'autoPubRevelantMess' => 0,
@@ -48,6 +47,7 @@ class CleantalkState
 		'use_ajax' =>              1,
 		'general_postdata_test' => 0, //CAPD
         'set_cookies'=>            1, // Disable cookies generatation to be compatible with Varnish.
+        'set_cookies__sessions'=>  0, // Use alt sessions for cookies.
 		'alternative_sessions'=>   0, // AJAX Sessions.
         'ssl_on' =>                0, // Secure connection to servers 
 		'use_buitin_http_api' =>   0, // Using Wordpress HTTP built in API
@@ -73,8 +73,10 @@ class CleantalkState
 		'gdpr_text'    => 'By using this form you agree with the storage and processing of your data by using the Privacy Policy on this website.',
 		
 		// Msic
-		'store_urls'           => 1,
-		'store_urls__sessions' => 1,
+		'store_urls'            => 1,
+		'store_urls__sessions'  => 1,
+		'comment_notify'        => 1,
+		'comment_notify__roles' => array('administrator'),
     );
 	
 	public $def_data = array(
@@ -169,6 +171,9 @@ class CleantalkState
 		'update_plugin' => array(
 			'last_call' => 0,
 		),
+		'update_settings' => array(
+			'last_call' => 0,
+		),
 	);
 	
 	public function __construct($option_prefix, $options = array('settings'), $wpms = false)
@@ -212,11 +217,9 @@ class CleantalkState
 	private function getOption($option_name)
 	{
 		$option = get_option('cleantalk_'.$option_name, null);
-		
-		if(gettype($option) === 'array')
-			$this->$option_name = new ArrayObject($option);
-		else
-			$this->$option_name = $option;
+		$this->$option_name = gettype($option) === 'array'
+			? new ArrayObject($option)
+			: $option;
 	}
 	
 	public function save($option_name, $use_perfix = true, $autoload = true)

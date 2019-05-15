@@ -114,7 +114,7 @@ function apbct_update_to_5_109_0(){
 	
 	global $apbct, $wpdb;
 	
-	if(is_plugin_active_for_network($apbct->base_name) && !defined('CLEANTALK_ACCESS_KEY')){
+	if(apbct_is_plugin_active_for_network($apbct->base_name) && !defined('CLEANTALK_ACCESS_KEY')){
 		
 		$sfw_data_query = 'CREATE TABLE IF NOT EXISTS `%s` (
 			`network` int(11) unsigned NOT NULL,
@@ -204,4 +204,21 @@ function apbct_update_to_5_116_2(){
 		PRIMARY KEY (`id`, `name`(10)))
 		ENGINE = MYISAM;'
 	);
+}
+
+function apbct_update_to_5_118_0(){
+	global $wpdb;
+	$wpdb->query(
+		'DELETE
+			FROM `'. APBCT_TBL_SESSIONS .'`
+			WHERE last_update < NOW() - INTERVAL '. APBCT_SEESION__LIVE_TIME .' SECOND;'
+	);
+	delete_option('cleantalk_server');
+}
+
+function apbct_update_to_5_118_2(){
+	global $apbct;
+	$apbct->data['connection_reports'] = $apbct->def_data['connection_reports'];
+	$apbct->data['connection_reports']['since'] = date('d M');
+	$apbct->saveData();
 }

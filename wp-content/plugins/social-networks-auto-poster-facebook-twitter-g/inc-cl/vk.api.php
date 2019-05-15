@@ -43,7 +43,7 @@ if (!class_exists("nxs_class_SNAP_VK")) { class nxs_class_SNAP_VK {
       //## Check settings
       if (!is_array($options)) { $badOut['Error'] = 'No Options'; return $badOut; }      
       if (empty($options['imgSize'])) $options['imgSize'] = '';
-      if (!isset($options['appAuthToken']) || trim($options['appAuthToken'])=='')  { $badOut['Error'] = 'Not Configured'; return $badOut; }                  
+      if (!isset($options['appAuthToken']) || trim($options['appAuthToken'])=='')  { $badOut['Error'] = 'Not Configured'; return $badOut; } $options['pgIntID'] = str_replace('"','',$options['pgIntID']);                 
       //## Format
       if (!empty($message['pText'])) $msg = $message['pText']; else $msg = nxs_doFormatMsg($options['msgFormat'], $message); $urlToGo = (!empty($message['url']))?$message['url']:'';      
       $postType = $options['postType']; //$link = urlencode($link); $desc = urlencode(substr($msg, 0, 500));        

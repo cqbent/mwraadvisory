@@ -133,24 +133,6 @@ function apbct_admin__init(){
 	
 	global $apbct;
 	
-	// Update logic	
-	if($apbct->plugin_version != APBCT_VERSION){
-		if(is_main_site()){
-			require_once('cleantalk-updater.php');
-			$result = apbct_run_update_actions($apbct->plugin_version, APBCT_VERSION);
-			ct_send_feedback('0:' . CLEANTALK_AGENT ); // Send feedback to let cloud know about updated version.
-			//If update is successfull
-			if($result === true){
-				$apbct->data['plugin_version'] = APBCT_VERSION;
-				$apbct->saveData();
-			}
-		// Update version for side blogs
-		}else{
-			$apbct->data['plugin_version'] = APBCT_VERSION;
-			$apbct->saveData();
-		}
-	}
-	
 	// Getting dashboard widget statistics
 	if(!empty($_POST['ct_brief_refresh'])){
 		$apbct->data['brief_data'] = CleantalkAPI::method__get_antispam_report_breif($apbct->api_key);
@@ -259,6 +241,11 @@ function apbct_admin__enqueue_scripts($hook){
 		// Preparing widget data
 		// Parsing brief data 'spam_stat' {"yyyy-mm-dd": spam_count, "yyyy-mm-dd": spam_count} to [["yyyy-mm-dd", "spam_count"], ["yyyy-mm-dd", "spam_count"]]
 		$to_chart = array();
+		
+		// Crunch. Response contains error.
+		if(!empty($apbct->data['brief_data']['error']))
+			$apbct->data['brief_data'] = array_merge($apbct->data['brief_data'], $apbct->def_data['brief_data']);
+		
 		foreach( $apbct->data['brief_data']['spam_stat'] as $key => $value ){
 			$to_chart[] = array( $key, $value );
 		} unset( $key, $value );

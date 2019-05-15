@@ -3,14 +3,14 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: Responsive Posts Carousel Pro\n"
-"POT-Creation-Date: 2018-11-28 14:55+0500\n"
+"POT-Creation-Date: 2019-05-01 12:07+0500\n"
 "PO-Revision-Date: 2018-01-23 14:06+0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: index.php\n"
@@ -21,99 +21,165 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
-#: carousel.class.php:57 inc/settings-fields.php:78
+#: carousel.class.php:58 inc/settings-fields.php:87
 msgid "Content"
 msgstr ""
 
-#: carousel.class.php:62
+#: carousel.class.php:63
 msgid "Slider"
 msgstr ""
 
-#: carousel.class.php:67
+#: carousel.class.php:68
 msgid "Colors"
 msgstr ""
 
-#: carousel.class.php:72
+#: carousel.class.php:73
 msgid "Typography"
 msgstr ""
 
-#: carousel.class.php:77 inc/settings-fields.php:159
+#: carousel.class.php:78 inc/settings-fields.php:225
 msgid "Arrows"
 msgstr ""
 
-#: carousel.class.php:82
+#: carousel.class.php:83
 msgid "Advanced"
 msgstr ""
 
-#: carousel.class.php:163
+#: carousel.class.php:170
 msgid "Default"
 msgstr ""
 
-#: carousel.class.php:192 carousel.class.php:354
+#: carousel.class.php:199 carousel.class.php:395
 msgid "Sorry! this Taxonomy has no Terms."
 msgstr ""
 
-#: carousel.class.php:206
+#: carousel.class.php:213
 msgid "Please select any taxonomy first"
 msgstr ""
 
-#: carousel.class.php:255
+#: carousel.class.php:262
 msgid "Enable"
 msgstr ""
 
-#: carousel.class.php:269
+#: carousel.class.php:276
 msgid "Paste above shortcode in the page where you want to display slider."
 msgstr ""
 
-#: carousel.class.php:281
-msgid "You can contact us"
+#: carousel.class.php:306
+msgid "Upgrade to premium version and unlock the following features."
 msgstr ""
 
-#: carousel.class.php:282
-msgid "here"
+#: carousel.class.php:309
+msgid "50+ Premium Templates"
 msgstr ""
 
-#: carousel.class.php:283
-msgid "for help"
-msgstr ""
-
-#: carousel.class.php:284
-msgid "Purchase Premium version and unlock"
-msgstr ""
-
-#: carousel.class.php:287
-msgid "20+ Premium Templates"
-msgstr ""
-
-#: carousel.class.php:288
+#: carousel.class.php:310
 msgid "15+ Networks for Social Sharing"
 msgstr ""
 
-#: carousel.class.php:289
+#: carousel.class.php:311
+msgid "Live Template Editor"
+msgstr ""
+
+#: carousel.class.php:312
+msgid "Vertical Slide Mode"
+msgstr ""
+
+#: carousel.class.php:313
+msgid "Center Mode"
+msgstr ""
+
+#: carousel.class.php:314
+msgid "24+ Slide Animations"
+msgstr ""
+
+#: carousel.class.php:315
+msgid "Lazy Loading of Images"
+msgstr ""
+
+#: carousel.class.php:316
+msgid "WooCommerce Support"
+msgstr ""
+
+#: carousel.class.php:317
 msgid "Access to Premium Support Forum"
 msgstr ""
 
-#: carousel.class.php:290
+#: carousel.class.php:318
 msgid "Lifetime Free Updates"
 msgstr ""
 
-#: carousel.class.php:294
+#: carousel.class.php:322
 msgid "Purchase Pro Version"
 msgstr ""
 
-#: carousel.class.php:322
+#: carousel.class.php:363
 msgid "Please provide carousel id in shortcode"
 msgstr ""
 
-#: carousel.class.php:343
+#: carousel.class.php:384
 msgid "All"
 msgstr ""
 
-#: carousel.class.php:531
+#: carousel.class.php:433 carousel.class.php:436
+msgid "Carousel updated."
+msgstr ""
+
+#: carousel.class.php:434
+msgid "Custom field updated."
+msgstr ""
+
+#: carousel.class.php:435
+msgid "Custom field deleted."
+msgstr ""
+
+#. translators: %s: date and time of the revision
+#: carousel.class.php:438
+msgid "Carousel restored to revision"
+msgstr ""
+
+#: carousel.class.php:439
+msgid "Carousel published."
+msgstr ""
+
+#: carousel.class.php:440
+msgid "Carousel saved."
+msgstr ""
+
+#: carousel.class.php:441
+msgid "Carousel submitted."
+msgstr ""
+
+#: carousel.class.php:443
+msgid "Carousel scheduled."
+msgstr ""
+
+#. translators: Publish box date format, see http://php.net/date
+#: carousel.class.php:445
+msgid "M j, Y @ G:i"
+msgstr ""
+
+#: carousel.class.php:447
+msgid "Carousel draft updated."
+msgstr ""
+
+#: carousel.class.php:453 inc/register-carousel.php:11
+msgid "View Carousel"
+msgstr ""
+
+#: carousel.class.php:459
+msgid "Preview Carousel"
+msgstr ""
+
+#: carousel.class.php:627
 msgid "Shortcode"
 msgstr ""
 
-#: carousel.class.php:596
+#: carousel.class.php:628
+msgid "Template"
+msgstr ""
+
+#: carousel.class.php:697
 msgid "Template not Found"
 msgstr ""
 
@@ -152,10 +218,6 @@ msgstr ""
 
 #: inc/register-carousel.php:10
 msgid "Edit Carousel"
-msgstr ""
-
-#: inc/register-carousel.php:11
-msgid "View Carousel"
 msgstr ""
 
 #: inc/register-carousel.php:12
@@ -243,481 +305,544 @@ msgid "Title"
 msgstr ""
 
 #: inc/settings-fields.php:69
-msgid "Provide post meta key to display as heading."
+msgid ""
+"Provide post meta key to display as heading. You can use only one meta key "
+"here."
 msgstr ""
 
 #: inc/settings-fields.php:70 inc/settings-fields.php:80
-#: inc/settings-fields.php:90 inc/settings-fields.php:217
-#: inc/settings-fields.php:228
+#: inc/settings-fields.php:89 inc/settings-fields.php:99
+#: inc/settings-fields.php:275 inc/settings-fields.php:286
 msgid "Example"
 msgstr ""
 
+#: inc/settings-fields.php:78
+msgid "Title Words Length"
+msgstr ""
+
 #: inc/settings-fields.php:79
-msgid "Provide post meta key to display as description."
+msgid "Maximum words to display for title."
 msgstr ""
 
 #: inc/settings-fields.php:88
-msgid "Description Words Length"
-msgstr ""
-
-#: inc/settings-fields.php:89
-msgid "Maximum words to display for description."
+msgid ""
+"Provide post meta key to display as description. You can use only one meta "
+"key here."
 msgstr ""
 
 #: inc/settings-fields.php:97
-msgid "Read More Button Text"
+msgid "Content Words Length"
 msgstr ""
 
 #: inc/settings-fields.php:98
-msgid "Provide text for read more button, leave blank to disable"
-msgstr ""
-
-#: inc/settings-fields.php:105
-msgid "Read More Button CSS Classes"
+msgid "Maximum words to display for description."
 msgstr ""
 
 #: inc/settings-fields.php:106
-msgid "Provide css classes for styling of button"
+msgid "Append to Trimmed Text"
 msgstr ""
 
-#: inc/settings-fields.php:113
-msgid "Link Target"
+#: inc/settings-fields.php:107
+msgid "What to append if Maximum Words is defined. Default: "
 msgstr ""
 
-#: inc/settings-fields.php:114
-msgid "How you want to open links"
+#: inc/settings-fields.php:115
+msgid "Shortcodes/Page Builders"
 msgstr ""
 
 #: inc/settings-fields.php:116
+msgid ""
+"Check this if you are using any page builder or shortcodes inside post/page "
+"contents."
+msgstr ""
+
+#: inc/settings-fields.php:123
+msgid "Read More Button Text"
+msgstr ""
+
+#: inc/settings-fields.php:124
+msgid "Provide text for read more button, leave blank to disable"
+msgstr ""
+
+#: inc/settings-fields.php:131
+msgid "Read More Button CSS Classes"
+msgstr ""
+
+#: inc/settings-fields.php:132
+msgid "Provide css classes for styling of button"
+msgstr ""
+
+#: inc/settings-fields.php:139
+msgid "Link Target"
+msgstr ""
+
+#: inc/settings-fields.php:140
+msgid "How you want to open links"
+msgstr ""
+
+#: inc/settings-fields.php:142
 msgid "Same Tab"
 msgstr ""
 
-#: inc/settings-fields.php:117
+#: inc/settings-fields.php:143
 msgid "New Tab"
 msgstr ""
 
-#: inc/settings-fields.php:125
+#: inc/settings-fields.php:151
 msgid "Disable Post Meta (author, date etc)"
 msgstr ""
 
-#: inc/settings-fields.php:126
+#: inc/settings-fields.php:152
 msgid "Check this button to hide post meta"
 msgstr ""
 
-#: inc/settings-fields.php:135
+#: inc/settings-fields.php:161
 msgid "Accessibility"
 msgstr ""
 
-#: inc/settings-fields.php:136
+#: inc/settings-fields.php:162
 msgid "Enables tabbing and arrow key navigation"
 msgstr ""
 
-#: inc/settings-fields.php:143
+#: inc/settings-fields.php:169
 msgid "Auto Play"
 msgstr ""
 
-#: inc/settings-fields.php:144
+#: inc/settings-fields.php:170
 msgid "Enables auto play of slides"
 msgstr ""
 
-#: inc/settings-fields.php:151
-msgid "Bottom Dots"
-msgstr ""
-
-#: inc/settings-fields.php:152
-msgid "Check to enable current slide indicator dots"
-msgstr ""
-
-#: inc/settings-fields.php:160
-msgid "Check to enable Next/Prev arrows"
-msgstr ""
-
-#: inc/settings-fields.php:167
+#: inc/settings-fields.php:177
 msgid "Auto Play Speed"
 msgstr ""
 
-#: inc/settings-fields.php:168
+#: inc/settings-fields.php:178
 msgid "Auto play change interval in milliseconds"
 msgstr ""
 
-#: inc/settings-fields.php:175
-msgid "Number of Columns (Desktop)"
+#: inc/settings-fields.php:185
+msgid "Linear CSS Ease"
 msgstr ""
 
-#: inc/settings-fields.php:176
-msgid "Number of posts to show at a time in a row for desktop view"
+#: inc/settings-fields.php:186
+msgid "Enable it for smooth scrolling. (Auto Play Speed must be set to 0)"
 msgstr ""
 
-#: inc/settings-fields.php:183
-msgid "Number of Columns (Tablet)"
+#: inc/settings-fields.php:193
+msgid "Pause on Hover"
 msgstr ""
 
-#: inc/settings-fields.php:184
-msgid "Number of posts to show at a time in a row for tablet view"
+#: inc/settings-fields.php:194
+msgid "Enable it to pause the auto play when user hover over the slider."
 msgstr ""
 
-#: inc/settings-fields.php:191
-msgid "Number of Columns (Mobile)"
+#: inc/settings-fields.php:201
+msgid "Infinite"
 msgstr ""
 
-#: inc/settings-fields.php:192
-msgid "Number of posts to show at a time in a row for mobile view"
+#: inc/settings-fields.php:202
+msgid "Infinite loop sliding."
 msgstr ""
 
-#: inc/settings-fields.php:199
-msgid "Number of Posts To Slide"
+#: inc/settings-fields.php:209
+msgid "Initial Slide"
 msgstr ""
 
-#: inc/settings-fields.php:200
-msgid "Number of posts to slide at a time"
+#: inc/settings-fields.php:210
+msgid "Set the initial slide here, starting from 0"
 msgstr ""
 
-#: inc/settings-fields.php:207
-msgid "Slide Speed"
+#: inc/settings-fields.php:217
+msgid "Bottom Dots"
 msgstr ""
 
-#: inc/settings-fields.php:208
-msgid "Transition speed in milliseconds"
-msgstr ""
-
-#: inc/settings-fields.php:215
-msgid "Space Between Posts"
-msgstr ""
-
-#: inc/settings-fields.php:216
-msgid "Margin will apply to both sides. Provide with unit."
+#: inc/settings-fields.php:218
+msgid "Check to enable current slide indicator dots"
 msgstr ""
 
 #: inc/settings-fields.php:226
-msgid "Border Width"
+msgid "Check to enable Next/Prev arrows"
 msgstr ""
 
-#: inc/settings-fields.php:227
-msgid "Provide width for border with unit. Leave blank to disable border."
+#: inc/settings-fields.php:233
+msgid "Number of Columns (Desktop)"
 msgstr ""
 
-#: inc/settings-fields.php:235
-msgid "Border Color"
+#: inc/settings-fields.php:234
+msgid "Number of posts to show at a time in a row for desktop view"
 msgstr ""
 
-#: inc/settings-fields.php:236
-msgid "Choose color for border"
+#: inc/settings-fields.php:241
+msgid "Number of Columns (Tablet)"
 msgstr ""
 
-#: inc/settings-fields.php:244
-msgid "Solid"
-msgstr ""
-
-#: inc/settings-fields.php:245
-msgid "Dotted"
-msgstr ""
-
-#: inc/settings-fields.php:246
-msgid "Dashed"
-msgstr ""
-
-#: inc/settings-fields.php:247
-msgid "Double"
-msgstr ""
-
-#: inc/settings-fields.php:248
-msgid "Groove"
+#: inc/settings-fields.php:242
+msgid "Number of posts to show at a time in a row for tablet view"
 msgstr ""
 
 #: inc/settings-fields.php:249
-msgid "Ridge"
+msgid "Number of Columns (Mobile)"
 msgstr ""
 
 #: inc/settings-fields.php:250
-msgid "Inset"
+msgid "Number of posts to show at a time in a row for mobile view"
 msgstr ""
 
-#: inc/settings-fields.php:251
-msgid "Outset"
+#: inc/settings-fields.php:257
+msgid "Number of Posts To Slide"
 msgstr ""
 
-#: inc/settings-fields.php:253
-msgid "Border Type"
+#: inc/settings-fields.php:258
+msgid "Number of posts to slide at a time"
 msgstr ""
 
-#: inc/settings-fields.php:254
-msgid "Choose type for border"
+#: inc/settings-fields.php:265
+msgid "Slide Speed"
 msgstr ""
 
-#: inc/settings-fields.php:261
-msgid "Title Background Color"
+#: inc/settings-fields.php:266
+msgid "Transition speed in milliseconds"
 msgstr ""
 
-#: inc/settings-fields.php:262
-msgid "Choose Title Background Color."
+#: inc/settings-fields.php:273
+msgid "Space Between Posts"
 msgstr ""
 
-#: inc/settings-fields.php:263 inc/settings-fields.php:272
-#: inc/settings-fields.php:281 inc/settings-fields.php:290
-#: inc/settings-fields.php:299 inc/settings-fields.php:308
-#: inc/settings-fields.php:317
-msgid "Leave blank for default settings."
+#: inc/settings-fields.php:274
+msgid "Margin will apply to both sides. Provide with unit."
 msgstr ""
 
-#: inc/settings-fields.php:270
-msgid "Title Color"
+#: inc/settings-fields.php:284
+msgid "Border Width"
 msgstr ""
 
-#: inc/settings-fields.php:271
-msgid "Choose Title text color."
+#: inc/settings-fields.php:285
+msgid "Provide width for border with unit. Leave blank to disable border."
 msgstr ""
 
-#: inc/settings-fields.php:279
-msgid "Description Color"
+#: inc/settings-fields.php:293
+msgid "Border Color"
 msgstr ""
 
-#: inc/settings-fields.php:280
-msgid "Choose description text color."
+#: inc/settings-fields.php:294
+msgid "Choose color for border"
 msgstr ""
 
-#: inc/settings-fields.php:288
-msgid "Description Background Color"
+#: inc/settings-fields.php:302
+msgid "Solid"
 msgstr ""
 
-#: inc/settings-fields.php:289
-msgid "Choose description background color."
+#: inc/settings-fields.php:303
+msgid "Dotted"
 msgstr ""
 
-#: inc/settings-fields.php:297
-msgid "Date Background Color"
+#: inc/settings-fields.php:304
+msgid "Dashed"
 msgstr ""
 
-#: inc/settings-fields.php:298
-msgid "Choose date background color."
+#: inc/settings-fields.php:305
+msgid "Double"
 msgstr ""
 
 #: inc/settings-fields.php:306
-msgid "Date Text Color"
+msgid "Groove"
 msgstr ""
 
 #: inc/settings-fields.php:307
-msgid "Choose date text color."
+msgid "Ridge"
 msgstr ""
 
-#: inc/settings-fields.php:315
-msgid "Overlay Background Color"
+#: inc/settings-fields.php:308
+msgid "Inset"
 msgstr ""
 
-#: inc/settings-fields.php:316
-msgid "Choose color for overlay."
+#: inc/settings-fields.php:309
+msgid "Outset"
 msgstr ""
 
-#: inc/settings-fields.php:324
-msgid "Shadow"
+#: inc/settings-fields.php:311
+msgid "Border Type"
 msgstr ""
 
-#: inc/settings-fields.php:325
-msgid "Provide shadow values as"
+#: inc/settings-fields.php:312
+msgid "Choose type for border"
 msgstr ""
 
-#: inc/settings-fields.php:327
-msgid "Generate Shadow"
+#: inc/settings-fields.php:319
+msgid "Title Background Color"
 msgstr ""
 
-#: inc/settings-fields.php:335
-msgid "Custom CSS"
+#: inc/settings-fields.php:320
+msgid "Choose Title Background Color."
 msgstr ""
 
-#: inc/settings-fields.php:336
-msgid "Paste custom css code here"
+#: inc/settings-fields.php:321 inc/settings-fields.php:330
+#: inc/settings-fields.php:339 inc/settings-fields.php:348
+#: inc/settings-fields.php:357 inc/settings-fields.php:366
+#: inc/settings-fields.php:375
+msgid "Leave blank for default settings."
 msgstr ""
 
-#: inc/settings-fields.php:345
-msgid "Title Font Family"
+#: inc/settings-fields.php:328
+msgid "Title Color"
+msgstr ""
+
+#: inc/settings-fields.php:329
+msgid "Choose Title text color."
+msgstr ""
+
+#: inc/settings-fields.php:337
+msgid "Description Color"
+msgstr ""
+
+#: inc/settings-fields.php:338
+msgid "Choose description text color."
 msgstr ""
 
 #: inc/settings-fields.php:346
-msgid "Provide font name for title"
+msgid "Description Background Color"
 msgstr ""
 
-#: inc/settings-fields.php:353
-msgid "Title Font Size"
+#: inc/settings-fields.php:347
+msgid "Choose description background color."
 msgstr ""
 
-#: inc/settings-fields.php:354
-msgid "Provide font size for title with unit"
+#: inc/settings-fields.php:355
+msgid "Date Background Color"
 msgstr ""
 
-#: inc/settings-fields.php:361
-msgid "Description Font Family"
+#: inc/settings-fields.php:356
+msgid "Choose date background color."
 msgstr ""
 
-#: inc/settings-fields.php:362
-msgid "Provide font name for description"
+#: inc/settings-fields.php:364
+msgid "Date Text Color"
 msgstr ""
 
-#: inc/settings-fields.php:369
-msgid "Description Font Size"
+#: inc/settings-fields.php:365
+msgid "Choose date text color."
 msgstr ""
 
-#: inc/settings-fields.php:370
-msgid "Provide font size for description with unit"
+#: inc/settings-fields.php:373
+msgid "Overlay Background Color"
 msgstr ""
 
-#: inc/settings-fields.php:379
-msgid "Arrows Type"
+#: inc/settings-fields.php:374
+msgid "Choose color for overlay."
 msgstr ""
 
-#: inc/settings-fields.php:380
-msgid "Choose navigation arrows type here"
-msgstr ""
-
-#: inc/settings-fields.php:382 inc/settings-fields.php:404
-msgid "Circle"
+#: inc/settings-fields.php:382
+msgid "Shadow"
 msgstr ""
 
 #: inc/settings-fields.php:383
-msgid "Circle Inverted"
-msgstr ""
-
-#: inc/settings-fields.php:384
-msgid "Simple"
+msgid "Provide shadow values as"
 msgstr ""
 
 #: inc/settings-fields.php:385
-msgid "Long"
+msgid "Generate Shadow"
 msgstr ""
 
-#: inc/settings-fields.php:386
-msgid "Angle"
+#: inc/settings-fields.php:393
+msgid "Custom CSS"
 msgstr ""
 
-#: inc/settings-fields.php:387
-msgid "Double Angle"
-msgstr ""
-
-#: inc/settings-fields.php:388
-msgid "Caret"
-msgstr ""
-
-#: inc/settings-fields.php:389
-msgid "Caret Square"
-msgstr ""
-
-#: inc/settings-fields.php:390
-msgid "Hand"
-msgstr ""
-
-#: inc/settings-fields.php:391
-msgid "Chevron"
-msgstr ""
-
-#: inc/settings-fields.php:399
-msgid "Arrows Style"
-msgstr ""
-
-#: inc/settings-fields.php:400
-msgid "Choose arrow appearance here"
-msgstr ""
-
-#: inc/settings-fields.php:402
-msgid "Transparent"
+#: inc/settings-fields.php:394
+msgid "Paste custom css code here"
 msgstr ""
 
 #: inc/settings-fields.php:403
-msgid "Square"
+msgid "Title Font Family"
+msgstr ""
+
+#: inc/settings-fields.php:404
+msgid "Provide font name for title"
+msgstr ""
+
+#: inc/settings-fields.php:411
+msgid "Title Font Size"
 msgstr ""
 
 #: inc/settings-fields.php:412
-msgid "Arrows Color"
+msgid "Provide font size for title with unit"
 msgstr ""
 
-#: inc/settings-fields.php:413
-msgid "Choose arrow color"
+#: inc/settings-fields.php:419
+msgid "Description Font Family"
 msgstr ""
 
 #: inc/settings-fields.php:420
-msgid "Arrows Background Color"
+msgid "Provide font name for description"
 msgstr ""
 
-#: inc/settings-fields.php:421
-msgid "Choose arrow background color"
+#: inc/settings-fields.php:427
+msgid "Description Font Size"
 msgstr ""
 
-#: inc/settings-fields.php:430
-msgid "Images Size"
+#: inc/settings-fields.php:428
+msgid "Provide font size for description with unit"
 msgstr ""
 
-#: inc/settings-fields.php:431
-msgid "Choose images size for thumbnails"
+#: inc/settings-fields.php:437
+msgid "Arrows Type"
 msgstr ""
 
 #: inc/settings-fields.php:438
+msgid "Choose navigation arrows type here"
+msgstr ""
+
+#: inc/settings-fields.php:440 inc/settings-fields.php:462
+msgid "Circle"
+msgstr ""
+
+#: inc/settings-fields.php:441
+msgid "Circle Inverted"
+msgstr ""
+
+#: inc/settings-fields.php:442
+msgid "Simple"
+msgstr ""
+
+#: inc/settings-fields.php:443
+msgid "Long"
+msgstr ""
+
+#: inc/settings-fields.php:444
+msgid "Angle"
+msgstr ""
+
+#: inc/settings-fields.php:445
+msgid "Double Angle"
+msgstr ""
+
+#: inc/settings-fields.php:446
+msgid "Caret"
+msgstr ""
+
+#: inc/settings-fields.php:447
+msgid "Caret Square"
+msgstr ""
+
+#: inc/settings-fields.php:448
+msgid "Hand"
+msgstr ""
+
+#: inc/settings-fields.php:449
+msgid "Chevron"
+msgstr ""
+
+#: inc/settings-fields.php:457
+msgid "Arrows Style"
+msgstr ""
+
+#: inc/settings-fields.php:458
+msgid "Choose arrow appearance here"
+msgstr ""
+
+#: inc/settings-fields.php:460
+msgid "Transparent"
+msgstr ""
+
+#: inc/settings-fields.php:461
+msgid "Square"
+msgstr ""
+
+#: inc/settings-fields.php:470
+msgid "Arrows Color"
+msgstr ""
+
+#: inc/settings-fields.php:471
+msgid "Choose arrow color"
+msgstr ""
+
+#: inc/settings-fields.php:478
+msgid "Arrows Background Color"
+msgstr ""
+
+#: inc/settings-fields.php:479
+msgid "Choose arrow background color"
+msgstr ""
+
+#: inc/settings-fields.php:488
+msgid "Images Size"
+msgstr ""
+
+#: inc/settings-fields.php:489
+msgid "Choose images size for thumbnails"
+msgstr ""
+
+#: inc/settings-fields.php:496
 msgid "Rows"
 msgstr ""
 
-#: inc/settings-fields.php:439
+#: inc/settings-fields.php:497
 msgid ""
 "Setting this to more than 1 initializes grid mode. Use slidesPerRow to set "
 "how many slides should be in each row."
 msgstr ""
 
-#: inc/settings-fields.php:446
+#: inc/settings-fields.php:504
 msgid "Skip Posts"
 msgstr ""
 
-#: inc/settings-fields.php:447
+#: inc/settings-fields.php:505
 msgid "Number of posts to skip from initial posts regarding current settings."
 msgstr ""
 
-#: inc/settings-fields.php:454
+#: inc/settings-fields.php:512
 msgid "Total Posts"
 msgstr ""
 
-#: inc/settings-fields.php:455
+#: inc/settings-fields.php:513
 msgid ""
 "Number of posts to display from current settings. Leave blank to display all."
 msgstr ""
 
-#: inc/settings-fields.php:462
+#: inc/settings-fields.php:520
 msgid "Slides Per Row"
 msgstr ""
 
-#: inc/settings-fields.php:463
+#: inc/settings-fields.php:521
 msgid ""
 "With grid mode initialized via the rows option, this sets how many slides "
 "are in each grid row."
 msgstr ""
 
-#: inc/settings-fields.php:470
+#: inc/settings-fields.php:528
 msgid "Placeholder Image Url"
 msgstr ""
 
-#: inc/settings-fields.php:471
+#: inc/settings-fields.php:529
 msgid ""
 "Provide placeholder image url for that posts which do not have featured "
 "images."
 msgstr ""
 
-#: inc/settings-fields.php:478
+#: inc/settings-fields.php:536
 msgid "Disable Current Post"
 msgstr ""
 
-#: inc/settings-fields.php:479
+#: inc/settings-fields.php:537
 msgid ""
 "Check to exclude the current post from slider if you are using it under a "
 "post."
 msgstr ""
 
-#: inc/settings-fields.php:486
+#: inc/settings-fields.php:544
 msgid "Equal Height Mode"
 msgstr ""
 
-#: inc/settings-fields.php:487
+#: inc/settings-fields.php:545
 msgid "Checking this make all images same in height."
 msgstr ""
 
-#: inc/settings-fields.php:494
+#: inc/settings-fields.php:552
 msgid "Images Height"
 msgstr ""
 
-#: inc/settings-fields.php:495
-msgid "Fixed Height for images in px. Eg: 450px"
+#: inc/settings-fields.php:553
+msgid ""
+"Fixed Height for images in px if Equal Height Mode is enabled. Eg: 450px"
 msgstr ""
 
 #. Plugin Name of the plugin/theme

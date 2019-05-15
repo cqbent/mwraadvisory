@@ -209,7 +209,7 @@ $warning |= empty($status_options['mail']);
         <a href="<?php echo $_SERVER['REQUEST_URI'] . '&noheader=1&dismiss=newsletter-page' ?>" class="tnp-dismiss">&times;</a>
 
         You should create a blog page to show the subscription form and the subscription messages. Go to the
-        <a href="?page=newsletter_subscription_options">subscription panel</a> to configure it.
+        <a href="?page=newsletter_main_main">general settings panel</a> to configure it.
 
     </div>
 <?php } ?>

@@ -1,8 +1,8 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing,automation,automated,mailing list
 Requires at least: 3.4.0
-Tested up to: 5.0.3
-Stable tag: 5.8.9
+Tested up to: 5.2
+Stable tag: 5.9.4
 Contributors: satollo,webagile,michael-travan
 
 Add a real newsletter system to your blog. For free. With unlimited newsletters and subscribers.
@@ -122,13 +122,38 @@ Thank you, The Newsletter Team
 
 == Changelog ==
 
+= 5.9.4 =
+
+* Added multi subscriber deletion
+
+= 5.9.3 =
+
+* Fixed multi newsletter deletion warning
+* Fixed privacy checkbox
+* Fixed a link on header warning
+
+= 5.9.2 =
+
+* Fixed a debug notice on subscription page
+
+= 5.9.1 =
+
+* Fixed language support on some shortcodes
+
+= 5.9.0 =
+
+* Fixes on privacy setting with multilanguage plugins
+* Added per language statistics on subscribers statistics panel
+* Added language set action on subscribers maintenance panel
+* Separated the pre confirm and post confirm tokens
+
 = 5.8.9 =
 
 * Global constant to block the media resizing
 * Resized thumbnails folder changed to the uploads folder (newsletter/thumbnails subfolder)
 * Fall back on first post gallery image if the featured image is missing
 * Patch to block third party plugins visual editor injection in out pages
-* Fix media selector button on visual composer 
+* Fix media selector button on visual composer
 
 = 5.8.8 =
 

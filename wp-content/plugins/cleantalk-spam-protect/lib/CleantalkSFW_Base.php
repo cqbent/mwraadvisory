@@ -28,6 +28,10 @@ class CleantalkSFW_Base
 	protected $data_table;
 	protected $log_table;
 	
+	public $debug;
+	public $debug_data = '';
+	public $debug_networks = array();
+	
 	/**
 	* Creates connection to database
 	* 
@@ -38,9 +42,8 @@ class CleantalkSFW_Base
 	*
 	* @return void
 	*/
-	public function __construct($params, $username, $password)
+	public function __construct()
 	{
-		
 		// Creating database object
 		$this->db = new ClentalkDB();
 		
@@ -53,14 +56,14 @@ class CleantalkSFW_Base
 	*	Getting arrays of IP (REMOTE_ADDR, X-Forwarded-For, X-Real-Ip, Cf_Connecting_Ip)
 	*	reutrns array('remote_addr' => 'val', ['x_forwarded_for' => 'val', ['x_real_ip' => 'val', ['cloud_flare' => 'val']]])
 	*/
-	public function ip_get($ips_input = array('real', 'remote_addr', 'x_forwarded_for', 'x_real_ip', 'cloud_flare'), $v4_only = true){
+	public function ip__get($ips_input = array('real', 'remote_addr', 'x_forwarded_for', 'x_real_ip', 'cloud_flare'), $v4_only = true){
 		
-		$result = (array)CleantalkHelper::ip_get($ips_input, $v4_only);
+		$result = (array)CleantalkHelper::ip__get($ips_input, $v4_only);
 		
 		$result = !empty($result) ? $result : array();
 		
 		if(isset($_GET['sfw_test_ip'])){
-			if(CleantalkHelper::ip_validate($_GET['sfw_test_ip']) !== false){
+			if(CleantalkHelper::ip__validate($_GET['sfw_test_ip']) !== false){
 				$result['sfw_test'] = $_GET['sfw_test_ip'];
 				$this->is_test = true;
 			}
@@ -78,13 +81,14 @@ class CleantalkSFW_Base
 		foreach($this->ip_array as $current_ip){
 		
 			$query = "SELECT 
-				COUNT(network) AS cnt
+				COUNT(network) AS cnt, network, mask
 				FROM ".$this->data_table."
 				WHERE network = ".sprintf("%u", ip2long($current_ip))." & mask;";
 			$this->db->query($query)->fetch();
 			if($this->db->result['cnt']){
 				$this->result = true;
 				$this->blocked_ip = $current_ip;
+				$this->debug_networks[] = $this->db->result['network'].'/'.$this->db->result['mask'];
 			}else{
 				$this->passed_ip = $current_ip;
 			}
@@ -162,35 +166,84 @@ class CleantalkSFW_Base
 	* 
 	* return mixed true || array('error' => true, 'error_string' => STRING)
 	*/
-	public function sfw_update($ct_key){
+	public function sfw_update($ct_key, $file_url = null, $immediate = false){
 		
-		$result = CleantalkAPI::method__get_2s_blacklists_db($ct_key);
-		
-		if(empty($result['error'])){
+		// Getting remote file name
+		if(!$file_url){
 			
-			$this->db->query("DELETE FROM ".$this->data_table.";", true);
+			sleep(6);
+			
+			$result = CleantalkAPI::method__get_2s_blacklists_db($ct_key, 'file');
 						
-			// Cast result to int
-//			foreach($result as &$value){
-//				$value[0] = preg_replace('/[^\d]*/', '', $value[0]);
-//				$value[1] = preg_replace('/[^\d]*/', '', $value[0]);
-//				$value[0] = empty($value[0]) ? 0 : $value[0];
-//				$value[1] = empty($value[1]) ? 0 : $value[1];
-//			} unset($value);
+			if(empty($result['error'])){
 			
-			$query = "INSERT INTO ".$this->data_table." VALUES ";
-			
-			for($i=0, $arr_count = count($result); $i < $arr_count; $i++){
-				$query.="(".$result[$i][0].",".$result[$i][1]."),";
-			}
-			$query = substr($query, 0, -1).';';
-			$this->db->query($query, true);
-			
-			return true;
-			
+				if( !empty($result['file_url']) ){
+					
+					$pattenrs = array();
+					$pattenrs[] = 'get';
+					if(!$immediate) $pattenrs[] = 'dont_wait_for_answer';
+					
+					return CleantalkHelper::http__request(
+						get_option('siteurl'), 
+						array(
+							'spbc_remote_call_token'  => md5($ct_key),
+							'spbc_remote_call_action' => 'sfw_update',
+							'plugin_name'             => 'apbct',
+							'file_url'                => $result['file_url'],
+						),
+						$pattenrs
+					);
+					
+				}else
+					return array('error' => true, 'error_string' => 'BAD_RESPONSE');
+			}else
+				return $result;
 		}else{
-			return $result;
-		}
+						
+			if(CleantalkHelper::http__request($file_url, array(), 'get_code') === 200){ // Check if it's there
+				
+				$gf = gzopen($file_url, 'rb');
+				
+				if($gf){
+					
+					$this->db->query("DELETE FROM ".$this->data_table.";", true);
+					
+					for($count_result = 0; !gzeof($gf); ){
+						
+						
+						$query = "INSERT INTO ".$this->data_table." VALUES %s";
+						
+						for($i=0, $values = array(); APBCT_WRITE_LIMIT !== $i && !gzeof($gf); $i++, $count_result++){
+							
+							$entry = trim(gzgets($gf, 1024));
+							
+							if(empty($entry)) continue;
+							
+							$entry = explode(',', $entry);
+							
+							// Cast result to int
+							$ip   = preg_replace('/[^\d]*/', '', $entry[0]);
+							$mask = preg_replace('/[^\d]*/', '', $entry[1]);
+							
+							if(!$ip || !$mask) continue;
+							
+							$values[] = '('. $ip .','. $mask .')';
+							
+						}
+						
+						$query = sprintf($query, implode(',', $values).';');
+						$this->db->query($query, true);
+												
+					}
+					
+					gzclose($gf);
+					return $count_result;
+					
+				}else
+					return array('error' => true, 'error_string' => 'ERROR_OPEN_GZ_FILE');
+			}else
+				return array('error' => true, 'error_string' => 'NO_REMOTE_FILE_FOUND');
+		}			
 	}
 	
 	/*

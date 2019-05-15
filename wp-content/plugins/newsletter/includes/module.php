@@ -65,16 +65,19 @@ abstract class TNP_Email {
  * @property string $id Theme identifier
  * @property string $dir Absolute path to the theme folder
  * @property string $name Theme name
- **/
+ * */
 class TNP_Theme {
+
     var $dir;
     var $name;
-    
+
     public function get_defaults() {
         @include $this->dir . '/theme-defaults.php';
-        if (!isset($theme_defaults) || !is_array($theme_defaults)) return array();
+        if (!isset($theme_defaults) || !is_array($theme_defaults))
+            return array();
         return $theme_defaults;
     }
+
 }
 
 class NewsletterModule {
@@ -668,7 +671,7 @@ class NewsletterModule {
             $newsletter = Newsletter::instance();
             $capability = ($newsletter->options['editor'] == 1) ? 'manage_categories' : 'manage_options';
         }
-        
+
         $name = 'newsletter_' . $this->module . '_' . $page;
         $name = apply_filters('newsletter_admin_page', $name);
         add_submenu_page(null, $title, $title, $capability, $name, array($this, 'menu_page'));
@@ -796,12 +799,22 @@ class NewsletterModule {
         return $email;
     }
 
+    /**
+     * 
+     * @global wpdb $wpdb
+     * @param int|array $id
+     * @return boolean
+     */
     function delete_email($id) {
         global $wpdb;
         $r = $this->store->delete(NEWSLETTER_EMAILS_TABLE, $id);
         if ($r !== false) {
-            $wpdb->delete(NEWSLETTER_STATS_TABLE, array('email_id' => $id));
-            $wpdb->delete(NEWSLETTER_SENT_TABLE, array('email_id' => $id));
+            // $id could be an array if IDs
+            $id = (array) $id;
+            foreach ($id as $email_id) {
+                $wpdb->delete(NEWSLETTER_STATS_TABLE, array('email_id' => $email_id));
+                $wpdb->delete(NEWSLETTER_SENT_TABLE, array('email_id' => $email_id));
+            }
         }
         return $r;
     }
@@ -883,7 +896,7 @@ class NewsletterModule {
      *
      * @return TNP_User
      */
-    function check_user() {
+    function check_user($context = '') {
         global $wpdb;
 
         $user = null;
@@ -896,8 +909,14 @@ class NewsletterModule {
 
         if (isset($id)) {
             $user = $this->get_user($id);
-            if ($token != $user->token) {
-                $user = null;
+            if ($context == 'preconfirm') {
+                if ($token != md5($user->token)) {
+                    $user = null;
+                }
+            } else {
+                if ($token != $user->token) {
+                    $user = null;
+                }
             }
         }
 
@@ -948,7 +967,10 @@ class NewsletterModule {
      * @param TNP_User $user
      * @return string
      */
-    function get_user_key($user) {
+    function get_user_key($user, $context = '') {
+        if ($context == 'preconfirm') {
+            return $user->id . '-' . md5($user->token);
+        }
         return $user->id . '-' . $user->token;
     }
 
@@ -960,14 +982,28 @@ class NewsletterModule {
      * @param bool $die_on_fail
      * @return TNP_User
      */
-    function get_user_from_request($die_on_fail = false) {
+    function get_user_from_request($die_on_fail = false, $context = '') {
         $id = 0;
         if (isset($_REQUEST['nk'])) {
             list($id, $token) = @explode('-', $_REQUEST['nk'], 2);
         }
         $user = $this->get_user($id);
 
-        if ($user == null || $token != $user->token) {
+        if ($user == null) {
+            if ($die_on_fail) {
+                die(__('No subscriber found.', 'newsletter'));
+            } else {
+                return null;
+            }
+        }
+
+        if ($context == 'preconfirm') {
+            $user_token = md5($user->token);
+        } else {
+            $user_token = $user->token;
+        }
+
+        if ($token != $user_token) {
             if ($die_on_fail) {
                 die(__('No subscriber found.', 'newsletter'));
             } else {
@@ -976,7 +1012,7 @@ class NewsletterModule {
         }
         return $user;
     }
-    
+
     /**
      * @param string $language The language for the list labels (it does not affect the lists returned)
      * @return TNP_Profile[]
@@ -1156,7 +1192,7 @@ class NewsletterModule {
         global $wpdb;
         $this->query($wpdb->prepare("update " . NEWSLETTER_USERS_TABLE . " set last_activity=%d where id=%d limit 1", time(), $user->id));
     }
-    
+
     function update_user_ip($user, $ip) {
         global $wpdb;
         // Only if changed
@@ -1209,18 +1245,22 @@ class NewsletterModule {
      * Deletes a subscriber and cleans up all the stats table with his correlated data.
      * 
      * @global wpdb $wpdb
-     * @param int $id
+     * @param int|id[] $id
      */
     function delete_user($id) {
         global $wpdb;
-        $user = $this->get_user($id);
-        if ($user) {
-            $r = $this->store->delete(NEWSLETTER_USERS_TABLE, $id);
-            do_action('newsletter_user_deleted', $user);
+        $id = (array) $id;
+        foreach ($id as $user_id) {
+            $user = $this->get_user($user_id);
+            if ($user) {
+                $r = $this->store->delete(NEWSLETTER_USERS_TABLE, $user_id);
+                $wpdb->delete(NEWSLETTER_STATS_TABLE, array('user_id' => $user_id));
+                $wpdb->delete(NEWSLETTER_SENT_TABLE, array('user_id' => $user_id));
+                do_action('newsletter_user_deleted', $user);
+            }
         }
-        // Anyway try a table clean up, nothing bad happens
-        $wpdb->delete(NEWSLETTER_STATS_TABLE, array('user_id' => $id));
-        $wpdb->delete(NEWSLETTER_SENT_TABLE, array('user_id' => $id));
+
+        return count($id);
     }
 
     /**
@@ -1241,7 +1281,12 @@ class NewsletterModule {
             if (!is_object($user)) {
                 $user = $this->get_user($user);
             }
-            $params .= '&nk=' . urlencode($this->get_user_key($user));
+            if ($message_key == 'confirmation') {
+                $params .= '&nk=' . urlencode($this->get_user_key($user, 'preconfirm'));
+            } else {
+                $params .= '&nk=' . urlencode($this->get_user_key($user));
+            }
+
             $language = $this->get_user_language($user);
         }
 
@@ -1820,7 +1865,7 @@ class NewsletterModule {
         if (function_exists('pll_current_language')) {
             return pll_current_language();
         }
-        
+
         $current_language = apply_filters('newsletter_current_language', '');
 
         return $current_language;
@@ -1864,7 +1909,7 @@ class NewsletterModule {
                 $language_options[$code] = $language['native_name'];
             }
             return $language_options;
-        } 
+        }
 
         return apply_filters('newsletter_languages', $language_options);
     }

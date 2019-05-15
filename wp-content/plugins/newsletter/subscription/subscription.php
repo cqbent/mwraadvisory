@@ -1054,6 +1054,10 @@ class NewsletterSubscription extends NewsletterModule {
         $style = esc_attr($attrs['style']);
         $buffer = '<form method="post" action="' . $action . '" class="' . $class . '" style="' . $style . '">' . "\n";
 
+        $language = $this->get_current_language();
+                
+        $buffer .= '<input type="hidden" name="nlang" value="' . esc_attr($language) . '">' . "\n";
+        
         if (isset($attrs['referrer'])) {
             $buffer .= '<input type="hidden" name="nr" value="' . esc_attr($referrer) . '">' . "\n";
         }
@@ -1094,6 +1098,8 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     function _shortcode_label($name, $attrs, $suffix = null) {
+        $options_profile = $this->get_options('profile', $this->get_current_language());
+        
         if (!$suffix) {
             $suffix = $name;
         }
@@ -1105,7 +1111,7 @@ class NewsletterSubscription extends NewsletterModule {
                 $buffer .= esc_html($attrs['label']);
             }
         } else {
-            $buffer .= esc_html($this->options_profile[$name]);
+            $buffer .= esc_html($options_profile[$name]);
         }
         $buffer .= "</label>\n";
         return $buffer;
@@ -1276,13 +1282,13 @@ class NewsletterSubscription extends NewsletterModule {
         }
 
         if (strpos($name, 'privacy') === 0) {
-
+            $options_profile = $this->get_options('profile', $this->get_current_language());
             if (!isset($attrs['url'])) {
-                $attrs['url'] = $this->options_profile['privacy_url'];
+                $attrs['url'] = $this->get_privacy_url();
             }
 
             if (!isset($attrs['label'])) {
-                $attrs['label'] = $this->options_profile['privacy_label'];
+                $attrs['label'] = $options_profile['privacy'];
             }
 
             $buffer .= '<div class="tnp-field tnp-field-checkbox tnp-field-privacy">';
@@ -1686,8 +1692,12 @@ class NewsletterSubscription extends NewsletterModule {
     function shortcode_newsletter($attrs, $content) {
         global $wpdb;
 
-        $user = $this->get_user_from_request();
         $message_key = $this->get_message_key_from_request();
+        if ($message_key == 'confirmation') {
+            $user = $this->get_user_from_request(false, 'preconfirm');
+        } else {
+            $user = $this->get_user_from_request();
+        }
 
         $message = apply_filters('newsletter_page_text', '', $message_key, $user);
 

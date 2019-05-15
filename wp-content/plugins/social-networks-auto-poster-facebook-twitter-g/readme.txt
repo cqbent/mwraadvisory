@@ -5,7 +5,7 @@ Donate link: https://www.nextscripts.com/social-networks-auto-poster-for-wordpre
 Tags: automation, autopost, auto-post, auto post, socialnetworks, socialnetwork, social networks, social network, facebook, Flipboard, google, google+, Flickr, twitter, google plus, pinterest, google my business, 500px, tumblr, blogger, blogspot, linkedin, reddit, reddit.com, plugin, links, Post, posts, api, automatic, seo, scoop.it, integration, bookmark, bookmarks, admin, images, image, social, sharing, share, repost, re-post, wordpress.com, Diigo, vBulletin, Plurk, forums, vKontakte, open graph, LiveJournal, SETT, YouTube, Telegram, Instagram, xing, medium, yo, Weibo, mailchimp, line, Odnoklassniki, ok.ru
 Requires at least: 3.4
 Tested up to: 5.0.3
-Stable tag: 4.3.3
+Stable tag: 4.3.5
 License: GPLv2 or later
 
 Automatically publishes blogposts to profiles/pages/groups on Facebook, Twitter, Instagram, Google+, Pinterest, LinkedIn, Blogger, Tumblr ... 22 more
@@ -26,7 +26,7 @@ Automatically publishes blogposts to profiles/pages/groups on Facebook, Twitter,
 * **Flipboard** (*with third party API library*) - post to your magazines.
 * **Instagram** - (*with third party API library*) - Post your blogpost's featured image to your Instagram account.
 * **Instapaper** - Auto-submit bookmark to your account. 
-* **Google+** (*with third party API library*) - Autopost to your profile, business page or community. Ability to attach your blogpost to Google+ post. Ability to make "Image" posts.
+* **Google+ for G Suite** (*with third party API library*) - Autopost to your profile, business page or community. Ability to attach your blogpost to Google+ post. Ability to make "Image" posts.
 * **Google My Business** (*with third party API library*) - Autopost to your Google My Business listings.
 * **Line** - Autopost to your channel, group or room.
 * **LinkedIn** - Autopost to your account. Ability to attach your blogpost to LinkedIn post. Autopost to LinkedIn Company pages and/or Groups (*with third party API library*)
@@ -183,6 +183,20 @@ Please see more <a href="https://www.nextscripts.com/faq/">Frequently asked ques
 = Details = 
 
 == Changelog ==
+
+= 4.3.5 [04/16/2019] =
+
+* New [Instagram] – Location is now supported.
+* Bug Fix [Instagram] Location is no longer pre-set to NJ.
+* Bug Fix - Plugin will no longer be trying to post to "unfinished" networks.
+* Bug Fix - Sunday is no longer ignored in the reposter schedule. 
+
+= 4.3.4 [04/03/2019] =
+
+* New [Google My Business] – Events are now supported.
+* Changed - [Google+] Google+ is no longer available for consumer (personal) and brand accounts. SNAP now supports only Google+ for G Suite. 
+* Removed - [500px] 500px API has been shut down, so it was removed from SNAP.
+* Bug Fix - [vk.com] Better compatibility with groups/publics.
 
 = 4.3.3 [02/08/2019] =
 

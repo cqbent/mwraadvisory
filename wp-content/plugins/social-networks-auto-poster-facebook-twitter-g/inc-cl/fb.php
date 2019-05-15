@@ -388,12 +388,12 @@ if (!class_exists("nxs_snapClassFB")) { class nxs_snapClassFB extends nxs_snapCl
           }
         } else $options[$ii]['pgID'] = (!empty($pval['pgID']))?trim($pval['pgID']):'';        
         
-        
+        //prr($options[$ii]);
         
         if ( !empty($options[$ii]['apiToUse']) && $options[$ii]['apiToUse'] == 'nxv2') {
             if (substr($options[$ii]['pgID'],0,1)=='p') { $options[$ii]['pgID'] = substr($options[$ii]['pgID'],1); $options[$ii] = $this->getPageToken($options[$ii]); 
               if (!empty($options[$ii]['uMsg']) && function_exists('nxs_LogIt')) nxs_LogIt('E', 'FB', 'Page Auth', '', 'Error - FB Auth', print_r($options[$ii]['uMsg'], true));
-            } else $options[$ii]['pageAccessToken'] = $options[$ii]['accessToken'];
+            } else $options[$ii]['pageAccessToken'] = !empty($options[$ii]['accessToken'])?$options[$ii]['accessToken']:'';
         }
         
         //prr($options[$ii],'TT');
@@ -489,7 +489,7 @@ if (!class_exists("nxs_snapClassFB")) { class nxs_snapClassFB extends nxs_snapCl
     if (empty($options)) {  global $nxs_SNAP; $options = $nxs_SNAP->nxs_options; } if (isset($_POST['ii'])) $options = $options[$_POST['nt']][$_POST['ii']];  $ptype =  get_post_type( $postID ); 
     if (empty($po)) { $po =  maybe_unserialize(get_post_meta($postID, 'snap'.strtoupper($_POST['nt']), true)); $po = $po[$_POST['ii']]; }  
     //NXS API
-    if (!empty($options) && !empty($options['apiToUse']) && $options['apiToUse']=='nx' && !empty($options['uPass'])) { 
+    if (!empty($options) && !empty($options['apiToUse']) && $options['apiToUse']=='nx' && !empty($options['uPass'])) { //## Session ID
        $email = $options['uName'];  $pass = (substr($options['uPass'], 0, 5)=='n5g9a' || substr($options['uPass'], 0, 5)=='g9c1a')?nsx_doDecode(substr($options['uPass'], 5)):$options['uPass'];          
        $nt = new nxsAPI_FB(); if(!empty($options['ck'])) $nt->ck = $options['ck'];  $nt->debug = false; $nt->sid = array('cn'=>$options['uName'],'xs'=>$pass); $res = $nt->getComments($po['pgID']);
        if (!empty($res) && is_array($res)) { $impCmnts = get_post_meta($postID, 'snapImportedFBCommentsNXAPI', true); if (empty($impCmnts)) $impCmnts = array(); //prr($impCmnts, 'IMP'); //$impCmnts = array();
@@ -502,18 +502,20 @@ if (!class_exists("nxs_snapClassFB")) { class nxs_snapClassFB extends nxs_snapCl
          }} delete_post_meta($postID, 'snapImportedFBCommentsNXAPI'); add_post_meta($postID, 'snapImportedFBCommentsNXAPI', $impCmnts); 
        }       
        //## if Importing manually from Button echo result.
-       if (isset($_POST['pid']) && $_POST['pid']!='') printf( _n( '%d comment has been imported.', '%d comments has been imported.', $ci, 'social-networks-auto-poster-facebook-twitter-g'), $ci );
+       if (isset($_POST['pid']) && $_POST['pid']!='') { $txt = sprintf( _n( '%d comment has been imported.', '%d comments has been imported.', $ci, 'social-networks-auto-poster-facebook-twitter-g'), $ci );
+         echo $txt; nxsLogIt('{Comments Import} - NXSAPI [SessionID] - '.$txt);
+       }
        return;
     }    
-    if (!empty($options) && !empty($options['apiToUse']) && $options['apiToUse']=='nxv2' && !empty($options['uPass'])) {
+    if (!empty($options) && !empty($options['apiToUse']) && $options['apiToUse']=='nxv2' && !empty($options['uPass'])) { //## U/P
        $email = $options['uName'];  $pass = (substr($options['uPass'], 0, 5)=='n5g9a' || substr($options['uPass'], 0, 5)=='g9c1a')?nsx_doDecode(substr($options['uPass'], 5)):$options['uPass'];               
        $opVal = array(); $opNm = 'nxs_snap_fb_'.sha1('nxs_snap_fb'.$email.$pass); $opVal = nxs_getOption($opNm); if (!empty($opVal) & is_array($opVal)) $options = array_merge($options, $opVal); 
        if (!empty($options) && empty($options['pageAccessToken']) && !empty($options['accessToken'])) $options['pageAccessToken'] = $options['accessToken'];
-    }     
+    } 
     //## FB API
     if (empty($options) || empty($options['pageAccessToken'])) return; 
     $aacct = array('access_token'=>$options['pageAccessToken'], 'method'=>'get'); if (empty($options['tpt'])) $aacct['appsecret_proof'] = hash_hmac('sha256', $options['pageAccessToken'], nxs_gas($options['appSec']));
-    $res = nxs_remote_get( "https://graph.facebook.com/".$po['pgID']."/comments?filter=toplevel&limit=250&".http_build_query($aacct, null, '&'), nxs_mkRemOptsArr(nxs_getNXSHeaders()));
+    $res = nxs_remote_get( "https://graph.facebook.com/".$po['pgID']."/comments?filter=toplevel&limit=250&".http_build_query($aacct, null, '&'), nxs_mkRemOptsArr(nxs_getNXSHeaders()));// prr($res); prr($po); prr($options);
     if (is_nxs_error($res) || empty($res['body'])) $badOut['Error'] = ' [ERROR] '.print_r($res, true); else { //prr($res);
     $ret = json_decode($res['body'], true); if (empty($ret)) $badOut['Error'] .= "JSON ERROR: ".print_r($res, true); else { //   prr($ret);    
       $impCmnts = get_post_meta($postID, 'snapImportedFBComments', true); if (!is_array($impCmnts)) $impCmnts = array(); // prr($impCmnts);   
@@ -544,10 +546,16 @@ if (!class_exists("nxs_snapClassFB")) { class nxs_snapClassFB extends nxs_snapCl
           } $ci++; $impCmnts[] = 'fbxcw'.$rCid; 
         }
       }        
-    }    
+    } else { //## Empty Ret (Possible Error)
+        if (isset($_POST['pid']) && $_POST['pid']!='') {
+            prr($res); 
+        }  nxsLogIt('{Comments Import} - '.$eng.' - : '.print_r($res, true));
+    } 
     delete_post_meta($postID, 'snapImportedFBComments'); add_post_meta($postID, 'snapImportedFBComments', $impCmnts ); 
     //## if Importing manually from Button echo result.
-    if (isset($_POST['pid']) && $_POST['pid']!='') printf( _n( '%d comment has been imported.', '%d comments has been imported.', $ci, 'social-networks-auto-poster-facebook-twitter-g'), $ci );
+    if (isset($_POST['pid']) && $_POST['pid']!='') { $txt = sprintf( _n( '%d comment has been imported.', '%d comments has been imported.', $ci, 'social-networks-auto-poster-facebook-twitter-g'), $ci );
+         echo $txt; $eng = (!empty($options) && !empty($options['apiToUse']) && $options['apiToUse']=='nxv2' && !empty($options['uPass']))?'NXSAPI[U/P]':'APP'; nxsLogIt('{Comments Import} - '.$eng.' - '.$txt);
+       }
    }}
   }
   

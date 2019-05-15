@@ -19,7 +19,7 @@ class NewsletterUsers extends NewsletterModule {
     }
 
     function __construct() {
-        parent::__construct('users', '1.2.9');
+        parent::__construct('users', '1.3.0');
         add_action('init', array($this, 'hook_init'));
     }
 

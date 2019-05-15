@@ -89,8 +89,8 @@ if (!function_exists("nxs_snapAjax")) { function nxs_snapAjax() { check_ajax_ref
     
   
   if ($_POST['nxsact']=='svEdFlds') { 
-    $cn = str_replace(']','',$_POST['cname']); $cna = explode('[',$cn);  $id = $_POST['pid']; $nt = $cna[0]; $ntU = strtoupper($nt); $ii = $cna[1]; $fname = $cna[2]; //prr($cna);
-    $savedMeta = maybe_unserialize(get_post_meta($id, 'snap'.$ntU, true)); if (empty($savedMeta)) $savedMeta = array();  $savedMeta[$ii][$fname] = $_POST['cval'];  //prr($savedMeta);
+    $cn = str_replace(']','',$_POST['cname']); $cna = explode('[',$cn);  $id = $_POST['pid']; $nt = $cna[0]; $ntU = strtoupper($nt); $ii = $cna[1]; $fname = $cna[2];// prr($cna);
+    $savedMeta = maybe_unserialize(get_post_meta($id, 'snap'.$ntU, true)); if (empty($savedMeta)) $savedMeta = array();  $savedMeta[$ii][$fname] = $_POST['cval']; // prr($savedMeta);
     delete_post_meta($id, 'snap'.$ntU); add_post_meta($id, 'snap'.$ntU, str_replace('\\','\\\\',serialize($savedMeta)));   
   }
   if ($_POST['nxsact']=='tknzsrch') { $termsOut = array();

@@ -29,9 +29,9 @@ if (!class_exists("nxs_class_SNAP_IG")) { class nxs_class_SNAP_IG {
       $opNm = 'nxs_snap_ig_'.sha1('nxs_snap_ig'.$options['uName'].$options['uPass']); if (function_exists('nxs_getOption')) { $opVal = array(); $opVal = nxs_getOption($opNm); if (!empty($opVal) & is_array($opVal)) $options = array_merge($options, $opVal); } 
       
       $nt = new nxsAPI_IG(); $nt->opNm = $opNm;  if(!empty($options['ck'])) $nt->ck = $options['ck']; if (!empty($message['session']) || !empty($options['session'])) { $nt->sid = !empty($message['session'])?$message['session']:$options['session']; }
-      if (!empty($options['proxy'])&&!empty($options['proxyOn'])){ $nt->proxy['proxy'] = $options['proxy']['proxy']; if (!empty($options['proxy']['up'])) $nt->proxy['up'] = $options['proxy']['up'];};
-      $loginErr = $nt->connect($options['uName'], $pass);      
-      if (!$loginErr) $ret = $nt->post($msg, $imgURL, $options['imgAct']); else { 
+      if (!empty($options['proxy'])&&!empty($options['proxyOn'])){ $nt->proxy['proxy'] = $options['proxy']['proxy']; if (!empty($options['proxy']['up'])) $nt->proxy['up'] = $options['proxy']['up']; };
+      $loginErr = $nt->connect($options['uName'], $pass); if (!is_numeric($options['loc'])) $options['loc'] = '';
+      if (!$loginErr) $ret = $nt->post($msg, $imgURL, $options['imgAct'],$options['loc']); else { 
           if ($loginErr=='cpt'){
             if (!empty($_POST)&&!empty($_POST['nxsact'])){  echo '<br/><b>Security Checkpoint</b><br/>';
               echo 'Code:&nbsp;<input type="text" id="nxsIGCP"/><input type="button" value="Submit Code" onclick="nxs_do2StepCodeCheck(\'ig\', \''.$opNm.'\' ,jQuery(\'#nxsIGCP\').val());"/>';

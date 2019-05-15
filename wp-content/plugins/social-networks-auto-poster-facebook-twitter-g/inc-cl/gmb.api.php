@@ -22,6 +22,7 @@ if (!class_exists("nxs_class_SNAP_GMB")) { class nxs_class_SNAP_GMB {
       //## Make Post      
       $gmbPostType = $options['postType']; $opVal = array(); $opNm = md5('nxs_snap_gmb'.$options['uName'].$options['uPass']); $opVal = nxs_getOption($opNm); if (!empty($opVal) & is_array($opVal)) $options = array_merge($options, $opVal); // prr($opVal);
       if (!empty($message['pText'])) $msg = $message['pText']; else $msg = nxs_doFormatMsg($options['msgFormat'], $message);// prr($msg); die(); // Make "message default"
+      // prr($msg); die(); // Make "message default"
       if (isset($message['imageURL'])) $imgURL = trim(nxs_getImgfrOpt($message['imageURL'], $options['imgSize'])); else $imgURL = '';
       $email = $options['uName'];  $pass = (substr($options['uPass'], 0, 5)=='n5g9a' || substr($options['uPass'], 0, 5)=='g9c1a')?nsx_doDecode(substr($options['uPass'], 5)):$options['uPass'];          
       $nt = new nxsAPI_GMB(); if (!empty($options['proxy'])&&!empty($options['proxyOn'])){ $nt->proxy['proxy'] = $options['proxy']['proxy']; if (!empty($options['proxy']['up'])) $nt->proxy['up'] = $options['proxy']['up']; }      $nt->debug = true;
@@ -31,7 +32,9 @@ if (!class_exists("nxs_class_SNAP_GMB")) { class nxs_class_SNAP_GMB {
         //## Whats New Post
         if ($gmbPostType=='A') { $data['url'] = $message['url']; $data['imgURL'] = $imgURL; $data['btnType'] = $options['btnType']; }
         //## Event Post
-        if ($gmbPostType=='E') { $data['url'] = $message['url']; $data['imgURL'] = $imgURL; $data['btnType'] = $options['btnType']; $data['title'] = $options['title']; $data['dtStart'] = $options['dtStart']; $data['dtStop'] = $options['dtStop'];  }
+        if ($gmbPostType=='E') { $data['url'] = $message['url']; $data['imgURL'] = $imgURL; $data['btnType'] = $options['ebtnType']; $data['dtStart'] = $options['evStDate']; $data['dtStop'] = $options['evEndDate'];  
+          if (!empty($message['title'])) $data['title'] = $message['title']; else $data['title'] = nxs_doFormatMsg($options['eTtlFormat'], $message);
+        }
         //## Offer Post
         if ($gmbPostType=='O') { $data['url'] = $message['url']; $data['imgURL'] = $imgURL; $data['couponCode'] = $options['couponCode']; $data['dtStart'] = $options['dtStart']; $data['dtStop'] = $options['dtStop']; $data['title'] = $options['title']; $data['terms'] = $options['terms'];}
         //## Product Post

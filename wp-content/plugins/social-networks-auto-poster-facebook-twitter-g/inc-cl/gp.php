@@ -47,6 +47,10 @@ if (!class_exists("nxs_snapClassGP")) { class nxs_snapClassGP extends nxs_snapCl
   function accTab($ii, $options, $isNew=false){ if (empty($options['sid'])) $options['sid']=''; if (empty($options['ssid'])) $options['ssid']=''; if (empty($options['nid'])) $options['nid']=''; if (empty($options['hsid'])) $options['hsid']='';// $options['v']='340'; $options = $this->toLatestVer($options);
     $ntInfo = $this->ntInfo; $nt = $ntInfo['lcode']; ?>
     
+    <div id="upsMsg<?php echo $nt.$ii; ?>UPS" style="padding-top: 20px; padding-bottom: 20px;"><b style="color:red;">Google+ is no longer available for consumer (personal) and brand accounts</b>&nbsp;&nbsp;<a href="https://support.google.com/plus/answer/9217723" target="_blank">[Google Notice and FAQ]</a>
+    <br/><b style="color:red;">Personal account (such as @gmail.com account) will not work.</b>
+    <br/>Google+ for G Suite will continue to exist. SNAP works fine with G Suite accounts, so please use only your G Suite login here.</div>
+    
     <div id="ups<?php echo $nt.$ii; ?>UP" class="ups<?php echo $nt.$ii; ?>">
       <?php $p = $options['uPass']; $this->elemUserPass($ii, $options['uName'], $p);  ?>
     </div>

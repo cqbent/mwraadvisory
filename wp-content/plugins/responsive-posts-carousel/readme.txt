@@ -3,8 +3,8 @@ Contributors: Rameez_Iqbal
 Tags: carousel, posts slider, custom posts, gallery, pages, posts, responsive, acf, shortcode, slider, slider plugin, wordpress, dutch, german, multi language, i18n, i10n, french
 Donate link: https://www.paypal.me/webcodingplace
 Requires at least: 3.0
-Tested up to: 5.1
-Stable tag: 5.2
+Tested up to: 5.2
+Stable tag: 5.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,24 @@ Responsive Posts Carousel lets you displays Posts, Pages or any other Custom Pos
 5. Slider in Action
 
 == Changelog ==
+
+= 5.4 - 1st May 2019 =
+* Bug Fixed: Custom CSS code not working
+* Bug Fixed: $words not defined on plugin.class.php
+* Translations: POT file updated
+* Compatibility: Tested with WP 5.2
+
+= 5.3 - 16th April 2019 =
+* Feature Added: Smooth Scrolling (checking linear easing option)
+* Feature Added: Load custom.js script file from theme/child theme (pasting it inside rpc directory)
+* Feature Added: Adaptive Height
+* Feature Added: Append to Trimmed Text option (append custom text with the trimmed one)
+* Feature Added: Shortcodes/Page Builders support
+* Feature Added: Allow users to drag or swipe directly to a slide
+* Feature Added: Query params supported in the shortcode (read the docs for more details)
+* Bug Fixed: Arrows are not symmetrical
+* Bug Fixed: More than 1000 posts break the edit carousel screen is fixed
+* Bug Fixed: Initial slide causing unexpected behavior (empty slides etc)
 
 = 5.2 - 9th March 2019 =
 * Bug Fixed: Carousel content conflict when using content meta key

@@ -694,7 +694,7 @@ $speed = Newsletter::$instance->options['scheduler_max'];
                         </td>
                         <td>
                             <?php if (!$res) { ?>
-                                The blog is not responding to Newsletter URLs: ask the provider or your IT consultant to check this problem. Report the URL and error blow<br>
+                                The blog is not responding to Newsletter URLs: ask the provider or your IT consultant to check this problem. Report the URL and error below<br>
                                 Error: <?php echo esc_html($message) ?><br>
                             <?php } else { ?>
 

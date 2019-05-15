@@ -50,7 +50,7 @@ if (!function_exists("nxs_snapPublishTo")) { function nxs_snapPublishTo($postIDo
         if ($isPost && isset($NXS_POST[$avNt['lcode']])) $po = $NXS_POST[$avNt['lcode']]; else { $po =  get_post_meta($postID, 'snap'.$avNt['code'], true); $po =  maybe_unserialize($po);}       
         if (isset($po) && is_array($po)) $isPostMeta = true; else { $isPostMeta = false; $po = $networks[$avNt['lcode']]; update_post_meta($postID, 'snap'.$avNt['code'], $po); } // prr($po);
         delete_post_meta($postID, 'snap_isAutoPosted'); add_post_meta($postID, 'snap_isAutoPosted', time());
-        $optMt = $networks[$avNt['lcode']][0]; if ($isPostMeta) { $optMt = $ntClInst->adjMetaOpt($optMt, $po[0]); } if (!$ntClInst->checkIfSetupFinished($optMt)) continue; //prr($optMt);        
+        $optMt = $networks[$avNt['lcode']][0]; if ($isPostMeta) $optMt = $ntClInst->adjMetaOpt($optMt, $po[0]); if (!$ntClInst->checkIfSetupFinished($optMt)) continue;  //prr($optMt);        
         if ($optMt['do']=='2') { $rMsg = nxs_snapCheckFilters($optMt, $postObj); if ($rMsg!==false) { nxs_LogIt('I', 'Skipped', $avNt['name'].' ('.$optMt['nName'].')','', 'Filter(Network) - Excluded - Post ID:('.$postID.')',$rMsg, 'snap', $uid ); continue; } else $optMt['do'] = 1;}
         if ($optMt['do']=='1') { $optMt['ii'] = 0;  
             if ($publtype=='A' && ($optMt['nMin']>0 || $optMt['nHrs']>0 || !empty($optMt['nTime']))) $publTempType='S';        
@@ -175,7 +175,7 @@ if (!function_exists("nxs_checkQuery")){ function nxs_checkQuery(){ set_time_lim
                 if (isset($rpstrOpts['rpstBtwHrsType']) && $rpstrOpts['rpstBtwHrsType']=='D'){                   
                   //## Check Days
                   if (isset($rpstrOpts['rpstBtwDays']) && count($rpstrOpts['rpstBtwDays'])>0 ) $rpstBtwDays = $rpstrOpts['rpstBtwDays']; else $rpstBtwDays = array();            
-                  if (is_array($rpstBtwDays) && count($rpstBtwDays)>0) { $currDay = (int)date_i18n('w'); if (!(in_array($currDay, $rpstBtwDays))) { // echo "D :( ";
+                  if (is_array($rpstBtwDays) && count($rpstBtwDays)>0) { $currDay = (int)date('w'); if ($currDay==0) $currDay = 7; if (!(in_array($currDay, $rpstBtwDays))) { // echo "D :( ";
                     nxs_LogIt('I', 'Reposter: Skipped - Excluded Day - '.date_i18n('D'), 'Reposter ID:'.$row['postid'].' (Post ID: '.$ids[0].')', '', '-=[ - ]=-', print_r($rpstrOpts, true)); break;  
                   }}
                   //## Check Hours

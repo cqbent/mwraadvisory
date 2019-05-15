@@ -5,15 +5,16 @@ $nxs_snapAvNts[] = array('code'=>'GMB', 'lcode'=>'gmb', 'name'=>'Google My Busin
 if (!class_exists("nxs_snapClassGMB")) { class nxs_snapClassGMB extends nxs_snapClassNT {   
   var $ntInfo = array('code'=>'GMB', 'lcode'=>'gmb', 'name'=>'Google My Business', 'defNName'=>'uName', 'tstReq' => false, 'imgAct'=>'E', 'instrURL'=>'https://www.nextscripts.com/instructions/setup-installation-google-my-business-social-networks-auto-poster/');
   var $noFuncMsg = 'Sorry, but Full Official Google My Business API doesn\'t available for general public yet. <br/>You need a special API library module to be able to publish your content to My Business';
+  var $defO = array('nName'=>'', 'do'=>'1', 'uName'=>'', 'uPass'=>'', 'postType'=>'A', 'postTo'=>'',  'msgFormat'=>"New post: %TITLE% - %URL%",  'eTtlFormat'=>"%TITLE%", 'eStdate'=>'', 'eEnddate'=>'', 'btnType'=>'', 'ebtnType'=>'');
     
   function checkIfFunc() { return class_exists('nxsAPI_GMB'); }
   //#### Show Common Settings
   function showGenNTSettings($ntOpts){ $this->nt = $ntOpts; $this->showNTGroup(); return; }  
   //#### Show NEW Settings Page
-  function showNewNTSettings($ii){ $defO = array('nName'=>'', 'do'=>'1', 'uName'=>'', 'uPass'=>'', 'postType'=>'A', 'postTo'=>'',  'msgFormat'=>"New post: %TITLE% - %URL%"); $this->showGNewNTSettings($ii, $defO); }
+  function showNewNTSettings($ii){ $this->showGNewNTSettings($ii, $this->defO); }
   //#### Show Unit  Settings  
   function checkIfSetupFinished($options) { return !empty($options['uPass']); }
-  function accTab($ii, $options, $isNew=false){ if (empty($options['sid'])) $options['sid']=''; if (empty($options['ssid'])) $options['ssid']=''; if (empty($options['nid'])) $options['nid']=''; if (empty($options['hsid'])) $options['hsid']='';// $options['v']='340'; $options = $this->toLatestVer($options);
+  function accTab($ii, $options, $isNew=false){ if (empty($options['sid'])) $options['sid']=''; if (empty($options['ssid'])) $options['ssid']=''; if (empty($options['nid'])) $options['nid']=''; if (empty($options['hsid'])) $options['hsid']=''; $options = array_merge($this->defO, $options);
     $ntInfo = $this->ntInfo; $nt = $ntInfo['lcode']; ?> <div style="color:darkred; font-size: 16px;">*****[Early Beta] Can make only "What's New" posts<br/><br/></div>
     
     <div id="ups<?php echo $nt.$ii; ?>UP" class="ups<?php echo $nt.$ii; ?>">
@@ -40,7 +41,7 @@ if (!class_exists("nxs_snapClassGMB")) { class nxs_snapClassGMB extends nxs_snap
     <br/>
     <div style="width:100%;"><strong><?php _e('Where to Post', 'social-networks-auto-poster-facebook-twitter-g'); ?>:</strong><i><?php _e('Your Google My Business URL', 'social-networks-auto-poster-facebook-twitter-g'); ?></i></div><input name="gmb[<?php echo $ii; ?>][postTo]" style="width: 50%;" value="<?php _e(apply_filters('format_to_edit', htmlentities($options['postTo'], ENT_COMPAT, "UTF-8")), 'social-networks-auto-poster-facebook-twitter-g') ?>" /><br/><br/>    
     
-   <div style="width:100%;"><strong id="altFormatText">Post Type:</strong>&lt;-- (<a id="showShAtt" onmouseout="hidePopShAtt('<?php echo $ii; ?>XG');" onmouseover="showPopShAtt('<?php echo $ii; ?>XG', event);" onclick="return false;" class="underdash" href="https://www.nextscripts.com/blog/"><?php _e('What\'s the difference?', 'nxs_snap'); ?></a>)  </div>                      
+   <div style="width:100%;"><strong id="altFormatText">Post Type:</strong> </div>                      
 <div style="margin-left: 10px;">        
         <div id="<?php echo $nt.$ii; ?>PostTypeT" style="margin-left: 5px;">
           <input type="radio" name="gmb[<?php echo $ii; ?>][postType]" value="A" <?php if (empty($options['postType']) || $options['postType'] == 'A') echo 'checked="checked"'; ?> /> <?php _e('What\'s New Post', 'nxs_snap'); ?> - <i><?php _e('Blogpost with link', 'nxs_snap'); ?></i><br/>
@@ -56,7 +57,23 @@ if (!class_exists("nxs_snapClassGMB")) { class nxs_snapClassGMB extends nxs_snap
             </select>
           </div>
         </div>                    
-        Event, Offer and Product are coming soon...
+        <div id="<?php echo $nt.$ii; ?>PostTypeT" style="margin-left: 5px;">
+          <input type="radio" name="gmb[<?php echo $ii; ?>][postType]" value="E" <?php if (!empty($options['postType']) && $options['postType'] == 'E') echo 'checked="checked"'; ?> /> <?php _e('Event', 'nxs_snap'); ?> - <i><?php _e('Event', 'nxs_snap'); ?></i><br/>
+          
+          
+          
+          <div id="<?php echo $nt.$ii; ?>PostTypeTSub"  style="margin-left: 15px;"> <?php $this->elemTitleFormat($ii,'Event Title','eTtlFormat',$options['eTtlFormat']);?>
+            <?php _e('Add Button with link', 'social-networks-auto-poster-facebook-twitter-g'); ?>:
+            <select id="<?php echo $nt.$ii; ?>PostTypeTSubButSel" onchange="" name="<?php echo $nt; ?>[<?php echo $ii; ?>][ebtnType]">  <option value="X"><?php _e('No Button', 'social-networks-auto-poster-facebook-twitter-g'); ?></option>
+              <option <?php if ( $options['ebtnType'] =='BOOK') echo 'selected="selected"'; ?> value="BOOK"><?php _e('Book', 'social-networks-auto-poster-facebook-twitter-g'); ?></option>
+              <option <?php if ( $options['ebtnType'] =='ORDER') echo 'selected="selected"'; ?> value="ORDER"><?php _e('Order Online', 'social-networks-auto-poster-facebook-twitter-g'); ?></option>
+              <option <?php if ( $options['ebtnType'] =='SHOP') echo 'selected="selected"'; ?>  value="SHOP"><?php _e('Buy', 'social-networks-auto-poster-facebook-twitter-g'); ?></option>
+              <option <?php if ( $options['ebtnType'] =='LEARN_MORE') echo 'selected="selected"'; ?>  value="LEARN_MORE"><?php _e('Learn More', 'social-networks-auto-poster-facebook-twitter-g'); ?></option>
+              <option <?php if ( $options['ebtnType'] =='SIGN_UP') echo 'selected="selected"'; ?>  value="SIGN_UP"><?php _e('Sign Up', 'social-networks-auto-poster-facebook-twitter-g'); ?></option>              
+            </select>
+          </div>
+        </div>                    
+        Offer and Product are coming soon...
         
    </div><br/>
     
@@ -104,7 +121,7 @@ if (!class_exists("nxs_snapClassGMB")) { class nxs_snapClassGMB extends nxs_snap
     } return $options;
   }
    
-  function showEdPostNTSettingsV4($ntOpt, $post){ $post_id = $post->ID; $nt = $this->ntInfo['lcode']; $ntU = $this->ntInfo['code']; $ii = $ntOpt['ii']; 
+  function showEdPostNTSettingsV4($ntOpt, $post){ $post_id = $post->ID; $nt = $this->ntInfo['lcode']; $ntU = $this->ntInfo['code']; $ii = $ntOpt['ii']; $ntOpt = array_merge($this->defO, $ntOpt);
         if (empty($ntOpt['imgToUse'])) $ntOpt['imgToUse'] = ''; if (empty($ntOpt['urlToUse'])) $ntOpt['urlToUse'] = ''; if (empty($ntOpt['postType']) || $ntOpt['postType']=='T') $ntOpt['postType']='A';
         $msgFormat = !empty($ntOpt['msgFormat'])?htmlentities($ntOpt['msgFormat'], ENT_COMPAT, "UTF-8"):''; $msgTFormat = !empty($ntOpt['msgTFormat'])?htmlentities($ntOpt['msgTFormat'], ENT_COMPAT, "UTF-8"):'';
         $imgToUse = $ntOpt['imgToUse'];  $urlToUse = $ntOpt['urlToUse']; if (empty($ntOpt['btnType'])) $ntOpt['btnType'] = 'X';
@@ -116,7 +133,7 @@ if (!class_exists("nxs_snapClassGMB")) { class nxs_snapClassGMB extends nxs_snap
      <div class="nxsPostEd_ElemLabel"><?php _e('Post Type:', 'social-networks-auto-poster-facebook-twitter-g'); ?></div>   
      <div class="nxsPostEd_Elem">   
         <div id="<?php echo $nt.$ii; ?>PostTypeT" style="margin-left: 5px;">
-          <input type="radio" name="gmb[<?php echo $ii; ?>][postType]" value="A" <?php if (empty($ntOpt['postType']) || $ntOpt['postType'] == 'A') echo 'checked="checked"'; ?> /> <?php _e('What\'s New Post', 'nxs_snap'); ?> - <i><?php _e('Blogpost with link', 'nxs_snap'); ?></i><br/>
+          <input type="radio" name="gmb[<?php echo $ii; ?>][postType]" value="A" <?php if (empty($ntOpt['postType']) || $ntOpt['postType'] == 'A') echo 'checked="checked"'; ?> class="nxsEdElem" data-ii="<?php echo $ii; ?>" data-nt="<?php echo $nt; ?>" /> <?php _e('What\'s New Post', 'nxs_snap'); ?> - <i><?php _e('Blogpost with link', 'nxs_snap'); ?></i><br/>
           <div id="<?php echo $nt.$ii; ?>PostTypeTSub"  style="margin-left: 15px;">
             <?php _e('Add Button with link', 'social-networks-auto-poster-facebook-twitter-g'); ?>:
             <select class="nxsEdElem" id="<?php echo $nt.$ii; ?>PostTypeTSubButSel" onchange="" name="<?php echo $nt; ?>[<?php echo $ii; ?>][btnType]">  <option value="X"><?php _e('No Button', 'social-networks-auto-poster-facebook-twitter-g'); ?></option>
@@ -131,6 +148,34 @@ if (!class_exists("nxs_snapClassGMB")) { class nxs_snapClassGMB extends nxs_snap
         </div>
      
      </div>
+     
+     <div class="nxsPostEd_Elem">   
+        <div id="<?php echo $nt.$ii; ?>PostTypeE" style="margin-left: 5px;">
+          <input type="radio" name="gmb[<?php echo $ii; ?>][postType]" value="E" <?php if (!empty($ntOpt['postType']) && $ntOpt['postType'] == 'E') echo 'checked="checked"'; ?> class="nxsEdElem" data-ii="<?php echo $ii; ?>" data-nt="<?php echo $nt; ?>" /> <?php _e('Event', 'nxs_snap'); ?><br/>
+          <div id="<?php echo $nt.$ii; ?>PostTypeESub"  style="margin-left: 15px;">
+            
+            
+          Event Title:<input name="<?php echo $nt; ?>[<?php echo $ii; ?>][eTtlFormat]" style="width: 95%;max-width: 610px;" value="<?php echo $ntOpt['eTtlFormat']; ?>" class="nxsEdElem" data-ii="<?php echo $ii; ?>" data-nt="<?php echo $nt; ?>" />  <br/>
+          Event Start Date:<input name="<?php echo $nt; ?>[<?php echo $ii; ?>][evStDate]" style="width: 95%;max-width: 610px;" value="<?php echo date("F j, Y, g:i a", strtotime('+10 min'));  ?>" class="nxsEdElem" data-ii="<?php echo $ii; ?>" data-nt="<?php echo $nt; ?>" /><br/>
+          Event End Date:<input name="<?php echo $nt; ?>[<?php echo $ii; ?>][evEndDate]" style="width: 95%;max-width: 610px;" value="<?php echo date("F j, Y, g:i a", strtotime('+1 day')); ?>" class="nxsEdElem" data-ii="<?php echo $ii; ?>" data-nt="<?php echo $nt; ?>" /><br/>
+            
+            
+            
+            <?php _e('Add Button with link', 'social-networks-auto-poster-facebook-twitter-g'); ?>:
+            <select class="nxsEdElem" id="<?php echo $nt.$ii; ?>PostTypeTSubButSel" onchange="" name="<?php echo $nt; ?>[<?php echo $ii; ?>][ebtnType]">  <option value="X"><?php _e('No Button', 'social-networks-auto-poster-facebook-twitter-g'); ?></option>
+              <option <?php if ( $ntOpt['ebtnType'] =='BOOK') echo 'selected="selected"'; ?> value="BOOK"><?php _e('Book', 'social-networks-auto-poster-facebook-twitter-g'); ?></option>
+              <option <?php if ( $ntOpt['ebtnType'] =='ORDER') echo 'selected="selected"'; ?> value="ORDER"><?php _e('Order Online', 'social-networks-auto-poster-facebook-twitter-g'); ?></option>
+              <option <?php if ( $ntOpt['ebtnType'] =='SHOP') echo 'selected="selected"'; ?>  value="SHOP"><?php _e('Buy', 'social-networks-auto-poster-facebook-twitter-g'); ?></option>
+              <option <?php if ( $ntOpt['ebtnType'] =='LEARN_MORE') echo 'selected="selected"'; ?>  value="LEARN_MORE"><?php _e('Learn More', 'social-networks-auto-poster-facebook-twitter-g'); ?></option>
+              <option <?php if ( $ntOpt['ebtnType'] =='SIGN_UP') echo 'selected="selected"'; ?>  value="SIGN_UP"><?php _e('Sign Up', 'social-networks-auto-poster-facebook-twitter-g'); ?></option>              
+            </select>
+          </div>
+        </div>
+     
+     </div>
+     
+      
+     
    </div><?php
         // ## Select Image & URL 
         nxs_showImgToUseDlg($nt, $ii, $imgToUse, !($ntOpt['postType'] == 'I'));            
@@ -139,11 +184,15 @@ if (!class_exists("nxs_snapClassGMB")) { class nxs_snapClassGMB extends nxs_snap
   //#### Save Meta Tags to the Post
   function adjMetaOpt($optMt, $pMeta){ $optMt = $this->adjMetaOptG($optMt, $pMeta);     
     if (!empty($pMeta['btnType'])) $optMt['btnType'] = $pMeta['btnType'];       
+    if (!empty($pMeta['ebtnType'])) $optMt['ebtnType'] = $pMeta['ebtnType'];       
+    if (!empty($pMeta['eTtlFormat'])) $optMt['eTtlFormat'] = $pMeta['eTtlFormat'];       
+    if (!empty($pMeta['evStDate'])) $optMt['evStDate'] = $pMeta['evStDate'];       
+    if (!empty($pMeta['evEndDate'])) $optMt['evEndDate'] = $pMeta['evEndDate'];       
     return $optMt;
   }
   
-  function adjPublishWP(&$options, &$message, $postID){ 
-      
+  function adjPublishWP(&$options, &$message, $postID){ $addParams = nxs_makeURLParams(array('NTNAME'=>$this->ntInfo['name'], 'NTCODE'=>$this->ntInfo['code'], 'POSTID'=>$postID, 'ACCNAME'=>$options['nName'])); 
+      if (!empty($options['eTtlFormat'])) $options['eTtlFormat'] = nsFormatMessage( $options['eTtlFormat'], $postID, $addParams);
   } 
 
 }}

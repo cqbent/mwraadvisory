@@ -3,8 +3,8 @@ Contributors: kylegilman
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=kylegilman@gmail.com&item_name=Video%20Embed%20And%20Thumbnail%20Generator%20Plugin%20Donation
 Tags: video, video player, video gallery, video thumbnail, ffmpeg, resolution
 Requires at least: 4.4
-Tested up to: 5.0
-Stable tag: 4.6.22
+Tested up to: 5.1
+Stable tag: 4.6.24
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -247,6 +247,15 @@ Enter the username & password in the plugin settings "FFMPEG Settings" tab, or u
 4. Shortcode inserted into the post content by the plugin.
 
 == Changelog ==
+
+= 4.6.24 - April 1, 2019 =
+* Improved method for assigning Google Analytics Event labels.
+
+= 4.6.23 - March 26, 2019 =
+* Added option to override WordPress built-in [video] shortcodes.
+* Fixed bug that prevented generating in-browser thumbnails more than once without reloading the page.
+* Stopped deleting existing thumbnails that are selected from the library.
+* Changed filename of manually selected thumbnails to thumb1.jpg
 
 = 4.6.22 - January 30, 2019 =
 * Modularized video file formats that can be encoded by the plugin to allow other plugins to modify, delete, or create new formats.
