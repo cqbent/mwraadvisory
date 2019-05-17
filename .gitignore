@@ -17,6 +17,7 @@ sitemap.xml.gz
 *.log
 php_errorlog
 core.54987
+.htaccess
 
 # @TODO writable paths
 wp-content/cache/

@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php do_action( 'tribe_events_after_the_title' ) ?>
     <h1 class="tribe-month-year-text"><?php echo tribe_get_current_month_text().'&nbsp;&nbsp;'.tribe_get_current_year_text(); 
 		function tribe_get_current_year_text( ) {
-		return date( Y, strtotime( tribe_get_month_view_date() ) );
+		return date( 'Y', strtotime( tribe_get_month_view_date() ) );
 		}
 	?></h1>
 	<!-- Notices -->

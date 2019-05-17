@@ -551,7 +551,7 @@ div.pagination span.current {
                                     <h4 style="font-size: 13px;left;width: 157px;word-break:initial;"><?php echo $library->post_title; ?></h4>-->
                                     
                                    
-                                    <?php if(!in_array('201',$catName)){ ?>
+                                    <?php if($catId != '201'){ ?>
 					<a href="<?php echo ($library_type == 'video') ? $video_attatchment : $pdf_attatchment;?>" class="<?php echo ($library_type == 'video') ? 'fancybox-vimeo' :'fancybox-pdf';?>" alt="<?php echo $library->post_title; ?> ">
 									<img src="<?php echo $library_thumbnail; ?>" style="<?php echo $library_thumbnail_style ?>"/>
 									</a>
@@ -709,7 +709,10 @@ document.getElementById("from_year").innerHTML = options_from_year;
        
         
         
- });      
+ });
+
+
+
  
  
  /*
@@ -720,7 +723,7 @@ document.getElementById("from_year").innerHTML = options_from_year;
         var to_year =  jQuery('#to_year').val();
         var from_year =  jQuery('#from_year').val();
        
-        window.location  = "<?php echo site_url(); ?>/libraries-category/<?php echo get_query_var('term'); ?>/"+"?order="+order_value+"&to_year="+to_year+"&from_year="+from_year;
+        window.location  = "<php //echo site_url(); ?>/libraries-category/<php echo get_query_var('term'); ?>/"+"?order="+order_value+"&to_year="+to_year+"&from_year="+from_year;
         
         
  });      
@@ -732,7 +735,7 @@ document.getElementById("from_year").innerHTML = options_from_year;
         var to_year =  jQuery('#to_year').val();
         var from_year =  jQuery('#from_year').val();
        
-        window.location  = "<?php echo site_url(); ?>/libraries-category/<?php echo get_query_var('term'); ?>/"+"?order="+order_value+"&to_year="+to_year+"&from_year="+from_year;
+        window.location  = "<php echo site_url(); ?>/libraries-category/<php echo get_query_var('term'); ?>/"+"?order="+order_value+"&to_year="+to_year+"&from_year="+from_year;
         
         
  }); 

@@ -175,7 +175,7 @@ function theme_enqueue_styles() {
     return ( is_archive() || is_author() || is_category() || is_home() || is_single() || is_tag()) && 'post' == get_post_type();
    }
    // Event Title
-   add_filter('tribe_get_events_title', 'my_get_events_title');
+   //add_filter('tribe_get_events_title', 'my_get_events_title');
    
   /* add_filter('get_search_form', 'my_search_for');
     function my_search_form($html) {
