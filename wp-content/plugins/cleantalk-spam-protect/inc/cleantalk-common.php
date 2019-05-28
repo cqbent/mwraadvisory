@@ -161,6 +161,10 @@ function apbct_base_call($params = array(), $reg_flag = false){
        	ct_add_event('yes');
     }
 	
+	// Set cookies if it's not.
+	if(empty($apbct->flags__cookies_setuped))
+		apbct_cookie();
+	
     return array('ct' => $ct, 'ct_result' => $ct_result);
 	
 }
@@ -241,6 +245,8 @@ function apbct_get_sender_info() {
 		'source_url'             => !empty($urls)                                                  ? json_encode($urls)                                                : null,
 		// Debug stuff
 		'amp_detected'           => $amp_detected,
+		'hook'                   => current_action(),
+		'request_type'           => isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'UNKNOWN',
 	);
 }
 

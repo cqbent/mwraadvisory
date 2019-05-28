@@ -34,8 +34,7 @@ if (!class_exists("nxs_snapClassIG")) { class nxs_snapClassIG extends nxs_snapCl
             <div style="font-size: 11px; margin: 0px;"><?php _e('If your post does not have any images this will be used instead.', 'social-networks-auto-poster-facebook-twitter-g'); ?></div>
             </div><input style="width:400px;" name="<?php echo $nt; ?>[<?php echo $ii; ?>][defImg]" style="width: 30%;" value="<?php _e(apply_filters('format_to_edit', htmlentities($options['defImg'], ENT_COMPAT, "UTF-8")), 'social-networks-auto-poster-facebook-twitter-g') ?>" /> 
             <br/><br/>   
-    <div style="width:100%;"><strong><?php _e('Location ID', 'social-networks-auto-poster-facebook-twitter-g'); ?>:</strong> 
-            <div style="font-size: 11px; margin: 0px;"><?php _e('You can find location ID from Facebook Places.', 'social-networks-auto-poster-facebook-twitter-g'); ?></div>
+    <div style="width:100%;"><strong><?php _e('Location ID', 'social-networks-auto-poster-facebook-twitter-g'); ?>:</strong> <i><?php _e('You can find location ID from Facebook Places', 'social-networks-auto-poster-facebook-twitter-g'); ?>. Please see the "Location" section in the <a href="https://nxs.fyi/igl" target="_blank">instructions</a></i>            
             </div><input style="width:400px;" name="<?php echo $nt; ?>[<?php echo $ii; ?>][loc]" style="width: 30%;" value="<?php _e(apply_filters('format_to_edit', htmlentities($options['loc'], ENT_COMPAT, "UTF-8")), 'social-networks-auto-poster-facebook-twitter-g') ?>" /> 
             <br/><br/>           
     <?php 
@@ -75,7 +74,7 @@ if (!class_exists("nxs_snapClassIG")) { class nxs_snapClassIG extends nxs_snapCl
        <div class="nxsPostEd_ElemWrap">        
      <div class="nxsPostEd_Elem">   
         <div style="margin: 0px;">
-          <strong><?php _e('Location ID', 'social-networks-auto-poster-facebook-twitter-g'); ?></strong>
+          <strong><?php _e('Location ID', 'social-networks-auto-poster-facebook-twitter-g'); ?></strong><i>Please see the "Location" section in the <a href="https://nxs.fyi/igl" target="_blank">instructions</a></i>
         
         <input style="width:400px;" name="<?php echo $nt; ?>[<?php echo $ii; ?>][loc]" style="width: 30%;" class="nxsEdElem" data-ii="<?php echo $ii; ?>" data-nt="<?php echo $nt; ?>" value="<?php _e(apply_filters('format_to_edit', htmlentities($ntOpt['loc'], ENT_COMPAT, "UTF-8")), 'social-networks-auto-poster-facebook-twitter-g') ?>" />   
           
@@ -91,7 +90,9 @@ if (!class_exists("nxs_snapClassIG")) { class nxs_snapClassIG extends nxs_snapCl
   //#### Save Meta Tags to the Post
   function adjMetaOpt($optMt, $pMeta){ $optMt = $this->adjMetaOptG($optMt, $pMeta); if (isset($pMeta['loc'])) $optMt['loc'] = $pMeta['loc'];  return $optMt; }  
   function adjPublishWP(&$options, &$message, $postID){  }   
-  function adjAfterPost(&$options, &$ret){ if (!empty($ret['isPosted']) && $ret['isPosted']=='1') nxs_save_glbNtwrks('ig', $options['ii'], '', 'session'); }   
+  function adjAfterPost(&$options, &$ret){ 
+    //  if (!empty($ret['isPosted']) && $ret['isPosted']=='1') nxs_save_glbNtwrks('ig', $options['ii'], '', 'session'); 
+  }   
   function nxsCptCheck(){ $api = new nxs_class_SNAP_IG();  $api->nxsCptCheck(); }  
 }}
 

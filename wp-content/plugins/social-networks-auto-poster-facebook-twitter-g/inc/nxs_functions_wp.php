@@ -89,24 +89,24 @@ if (!function_exists('nxs_checkAddLogTable')){ function nxs_checkAddLogTable(){ 
 }}
 
 if (!function_exists('nxs_checkAddQueryTable')){ function nxs_checkAddQueryTable() { global $wpdb; $charset_collate = ''; $table_name = $wpdb->prefix.'nxs_query'; 
-    $installed_ver = get_option( "nxs_query_db_table_version" ); if ($installed_ver=='1.2') return true;    
+    $installed_ver = get_option( "nxs_query_db_table_version" ); if ($installed_ver=='1.3') return true;    
     if ( ! empty( $wpdb->charset ) ) { $charset_collate = "DEFAULT CHARACTER SET {$wpdb->charset}"; }
     if ( ! empty( $wpdb->collate ) ) { $charset_collate .= " COLLATE {$wpdb->collate}"; }
     $sql = "CREATE TABLE $table_name (
         id bigint(20) NOT NULL AUTO_INCREMENT,
         datecreated datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
         type VARCHAR(55) DEFAULT '' NOT NULL,
-        postid mediumint(9) NULL,
+        postid bigint(20) NULL,
         uid bigint(20) DEFAULT 0 NOT NULL,
         nttype VARCHAR(55) NULL,
         timetorun datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-        refid mediumint(9) NULL,
+        refid bigint(20) NULL,
         descr VARCHAR(255) NULL,
         extInfo text NULL,    
         UNIQUE KEY id (id)
     ) $charset_collate;";
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' ); dbDelta( $sql );
-    delete_option("nxs_query_db_table_version"); add_option("nxs_query_db_table_version", '1.2');
+    delete_option("nxs_query_db_table_version"); add_option("nxs_query_db_table_version", '1.3');
 }}
 
 

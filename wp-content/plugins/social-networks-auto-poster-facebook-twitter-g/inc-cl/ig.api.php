@@ -30,7 +30,7 @@ if (!class_exists("nxs_class_SNAP_IG")) { class nxs_class_SNAP_IG {
       
       $nt = new nxsAPI_IG(); $nt->opNm = $opNm;  if(!empty($options['ck'])) $nt->ck = $options['ck']; if (!empty($message['session']) || !empty($options['session'])) { $nt->sid = !empty($message['session'])?$message['session']:$options['session']; }
       if (!empty($options['proxy'])&&!empty($options['proxyOn'])){ $nt->proxy['proxy'] = $options['proxy']['proxy']; if (!empty($options['proxy']['up'])) $nt->proxy['up'] = $options['proxy']['up']; };
-      $loginErr = $nt->connect($options['uName'], $pass); if (!is_numeric($options['loc'])) $options['loc'] = '';
+      $loginErr = $nt->connect($options['uName'], $pass); if (!is_numeric($options['loc'])) $options['loc'] = ''; //$msg = str_replace('.com','_com',$msg);
       if (!$loginErr) $ret = $nt->post($msg, $imgURL, $options['imgAct'],$options['loc']); else { 
           if ($loginErr=='cpt'){
             if (!empty($_POST)&&!empty($_POST['nxsact'])){  echo '<br/><b>Security Checkpoint</b><br/>';

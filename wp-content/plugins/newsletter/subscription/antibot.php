@@ -61,9 +61,9 @@ if ($controls->is_action()) {
             <?php $controls->init(); ?>
 
 
-            <p>
+            <div class="tnp-buttons">
                 <?php $controls->button_save() ?>
-            </p>
+            </div>
 
             <div id="tabs">
                 <ul>

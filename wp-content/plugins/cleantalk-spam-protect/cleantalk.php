@@ -3,7 +3,7 @@
   Plugin Name: Anti-Spam by CleanTalk
   Plugin URI: http://cleantalk.org
   Description: Max power, all-in-one, no Captcha, premium anti-spam plugin. No comment spam, no registration spam, no contact spam, protects any WordPress forms.
-  Version: 5.118.3
+  Version: 5.118.4
   Author: СleanTalk <welcome@cleantalk.org>
   Author URI: http://cleantalk.org
 */
@@ -131,8 +131,8 @@ if(!defined('CLEANTALK_PLUGIN_DIR')){
 	if (!is_admin() && !apbct_is_ajax() && !defined('DOING_CRON') && !headers_sent()
 		&& empty($_POST['ct_checkjs_register_form']) // Buddy press registration fix
 	){
-		add_action('wp','apbct_cookie', 2);
-		add_action('wp','apbct_store__urls', 2);
+		add_action('template_redirect','apbct_cookie', 2);
+		add_action('template_redirect','apbct_store__urls', 2);
 		if (empty($_POST) && empty($_GET['action'])){
 			apbct_cookie();
 			apbct_store__urls();
@@ -318,9 +318,10 @@ if(!defined('CLEANTALK_PLUGIN_DIR')){
 		add_filter('wp_die_handler', 'apbct_comment__sanitize_data__before_wp_die', 1); // Check comments after validation
 
 		// Registrations
+		if(!isset($_POST['wp-submit']))
+			add_action('login_form_register', 'apbct_cookie');
+			add_action('login_form_register', 'apbct_store__urls');
 		add_action('login_enqueue_scripts', 'apbct_login__scripts');
-		add_action('login_form_register', 'apbct_cookie');
-		add_action('login_form_register', 'apbct_store__urls');
 		add_action('register_form',       'ct_register_form');
 		add_filter('registration_errors', 'ct_registration_errors', 1, 3);
 		add_filter('registration_errors', 'ct_check_registration_erros', 999999, 3);
@@ -501,7 +502,7 @@ function apbct_sfw__check()
 			$sfw->logs__update($sfw->blocked_ip, 'blocked');
 			$apbct->data['sfw_counter']['blocked']++;
 			$apbct->saveData();
-			$sfw->sfw_die($apbct->api_key);
+			$sfw->sfw_die($apbct->api_key, '', parse_url(get_option('siteurl'),PHP_URL_HOST));
 		}else{
 			if(!empty($apbct->settings['set_cookies']) && !headers_sent())
 				setcookie ('ct_sfw_pass_key', md5($sfw->passed_ip.$apbct->api_key), time()+86400*30, '/', parse_url(get_option('siteurl'),PHP_URL_HOST) ,false, true);
@@ -874,8 +875,8 @@ function apbct_alt_session__id__get(){
 	$id = CleantalkHelper::ip__get(array('real'))
 		.filter_input(INPUT_SERVER, 'HTTP_USER_AGENT')
 		//.filter_input(INPUT_SERVER, 'HTTP_ACCEPT') // Could be different. Broke session id
-		.filter_input(INPUT_SERVER, 'HTTP_ACCEPT_LANGUAGE')
-		.filter_input(INPUT_SERVER, 'HTTP_ACCEPT_ENCODING');
+		.filter_input(INPUT_SERVER, 'HTTP_ACCEPT_LANGUAGE');
+		//.filter_input(INPUT_SERVER, 'HTTP_ACCEPT_ENCODING'); // Could be different. Broke session id
 	return hash('sha256', $id);
 }
 

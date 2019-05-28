@@ -119,7 +119,7 @@ $controls->data['search_page'] ++;
     <div id="tnp-heading">
 
         <h2><?php _e('Subscribers', 'newsletter') ?>
-            <a class="tnp-btn-h1" href="?page=newsletter_users_new">Add a subscriber</a>
+            <a class="tnp-btn-h1" href="?page=newsletter_users_new"><?php _e('Add a subscriber', 'newsletter') ?></a>
         </h2>
 
     </div>
@@ -196,18 +196,7 @@ $controls->data['search_page'] ++;
 
                         <td>
                             <small>
-                                <?php
-                                switch ($s->status) {
-                                    case 'S': _e('NOT CONFIRMED', 'newsletter');
-                                        break;
-                                    case 'C': _e('CONFIRMED', 'newsletter');
-                                        break;
-                                    case 'U': _e('UNSUBSCRIBED', 'newsletter');
-                                        break;
-                                    case 'B': _e('BOUNCED', 'newsletter');
-                                        break;
-                                }
-                                ?>
+                                <?php echo $module->get_user_status_label($s) ?>
                             </small>
                         </td>
 

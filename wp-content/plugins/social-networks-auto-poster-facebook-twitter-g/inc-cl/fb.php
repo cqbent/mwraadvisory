@@ -152,7 +152,7 @@ if (!class_exists("nxs_snapClassFB")) { class nxs_snapClassFB extends nxs_snapCl
        if ($options['apiToUse'] =='nxv2') $pgs .= '<option class="nxsTeal" '.($options['pgID']==$accInfo['id'] ? 'selected="selected"':'').' value="'.$accInfo['id'].'">Profile: '.$accInfo['name'].' ('.$accInfo['id'].')</option>'; 
        $nxPgL = array( array('id'=>(!empty($accInfo)&&!empty($accInfo['id']))?$accInfo['id']:$options['authUser'], 't'=>'u', 'nm'=>'Profile - '.(!empty($accInfo)&&!empty($accInfo['name']))?$accInfo['name']:$options['authUserName']) );
        //## List of pages       
-       $resP = nxs_remote_get('https://graph.facebook.com/'.$options['authUser'].'/accounts?'.http_build_query($aacct, null, '&'), $advSet);// prr($resP, 'PAGES'); 
+       $resP = nxs_remote_get('https://graph.facebook.com/'.$options['authUser'].'/accounts?fields=about,description,name&'.http_build_query($aacct, null, '&'), $advSet); // prr($resP, 'PAGES'); echo 'https://graph.facebook.com/'.$options['authUser'].'/accounts?'.http_build_query($aacct, null, '&');
        if (is_nxs_error($resP) || empty($resP['body'])) { $outMsg= 'Auth Error #1: '.print_r($resP, true);  if (!empty($_POST['isOut'])) echo $outMsg; return $outMsg; }
        $pages = json_decode($resP['body'], true); if ((is_array($pages) && !empty($pages['error']))) { $outMsg = 'Auth Error #2: '.print_r($pages['error'], true); if (!empty($_POST['isOut'])) echo $outMsg; return $outMsg; }       
        if (!empty($pages['data'])) { $pages = $pages['data']; if (empty($opVal)) $opVal = array();

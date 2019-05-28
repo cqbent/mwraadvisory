@@ -277,11 +277,12 @@ class TNP {
     public static function newsletters($params) {
 
         global $wpdb;
+	    $newsletter = Newsletter::instance();
 
         $list = $wpdb->get_results("SELECT id, subject, created, status, total, sent, send_on FROM " . NEWSLETTER_EMAILS_TABLE . " ORDER BY id DESC LIMIT 10", OBJECT);
 
         if ($wpdb->last_error) {
-            $this->logger->error($wpdb->last_error);
+            $newsletter->logger->error($wpdb->last_error);
             return false;
         }
 

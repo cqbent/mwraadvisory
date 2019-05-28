@@ -121,9 +121,6 @@ $cleantalk_hooked_actions[]='tmpl_ajax_check_user_email';
 $cleantalk_hooked_actions[]='tevolution_submit_from_preview';
 $cleantalk_hooked_actions[]='submit_form_recaptcha_validation';
 
-/**hooks for cm answers pro */
-add_action( 'wp', 'ct_ajax_hook',1 );
-
 /* hooks for contact forms by web settler ajax*/
 add_action( 'wp_ajax_nopriv_smuzform-storage', 'ct_ajax_hook',1  );
 $cleantalk_hooked_actions[]='smuzform_form_submit';
@@ -287,6 +284,9 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 		'upload-attachment', // Skip ulpload attachments
 		'iwj_update_profile', //Skip profile page checker
 		'st_partner_create_service', //Skip add hotel via admin
+		'vp_ajax_vpt_option_save', // https://themeforest.net/item/motor-vehicles-parts-equipments-accessories-wordpress-woocommerce-theme/16829946
+		'mailster_send_test', //Mailster send test admin
+		'acf/validate_save_post', //ACF validate post admin
     );
 	
 	//General post_info for all ajax calls
@@ -298,8 +298,8 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 	}
 	
 	$checkjs = apbct_js_test('ct_checkjs', $_COOKIE, true);
-    if ($checkjs && // Spammers usually fail the JS test
-        (isset($_POST['action']) && in_array($_POST['action'], $skip_post))
+    if(	   (isset($_POST['action']) && in_array($_POST['action'], $skip_post))
+        || (isset($_GET['action'])  && in_array($_GET['action'], $skip_post))
 	) {
         return false;
     }

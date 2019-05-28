@@ -3,7 +3,7 @@ Contributors: safronik
 Tags: spam, antispam, protection, comments, firewall 
 Requires at least: 3.0
 Tested up to: 5.2
-Stable tag: 5.118.3
+Stable tag: 5.118.4
 License: GPLv2
 
 Spam protection, antispam, all-in-one, premium plugin. No spam comments & users, no spam contact form & WooCommerce anti-spam.
@@ -558,6 +558,13 @@ If your website has forms that send data to external sources, you can enable opt
 10. Website's options.
 
 == Changelog ==
+= 5.118.4 May 13 2019 =
+  * Fix: SFW cookie. Set correct domain for subdomains.
+  * Fix: SFW update.
+  * Fix: IP detection.
+  * Fix: Triggering AJAX check in backend.
+  * Fix: Zero submit time on few forms.
+
 = 5.118.3 April 29 2019 =
   * Fix: Spam statistics in dashboard widget.
   * Fix: IP detection.
@@ -1871,6 +1878,13 @@ If your website has forms that send data to external sources, you can enable opt
   * First version
   
 == Upgrade Notice ==
+= 5.118.4 May 13 2019 =
+  * Fix: SFW cookie. Set correct domain for subdomains.
+  * Fix: SFW update.
+  * Fix: IP detection.
+  * Fix: Triggering AJAX check in backend.
+  * Fix: Zero submit time on few forms.
+
 = 5.118.3 April 29 2019 =
   * Fix: Spam statistics in dashboard widget.
   * Fix: IP detection.

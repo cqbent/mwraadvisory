@@ -183,6 +183,7 @@ if (!function_exists("nsFormatMessage")) { function nsFormatMessage($msg, $postI
   if (stripos($msg, '%STITLE%')!==false) { $title = nxs_doQTrans($post->post_title, $lng);   $title = substr($title, 0, 115); $msg = str_ireplace("%STITLE%", $title, $msg); }                    
   if (stripos($msg, '%AUTHORNAME%')!==false) { $aun = $post->post_author;  $aun = get_the_author_meta('display_name', $aun );  $msg = str_ireplace("%AUTHORNAME%", $aun, $msg);}                    
   if (stripos($msg, '%AUTHORTWNAME%')!==false) { $aun = $post->post_author;  $aun = get_the_author_meta('twitter', $aun );  $msg = str_ireplace("%AUTHORTWNAME%", $aun, $msg);}                    
+  if (stripos($msg, '%AUTHORTWHANDLE%')!==false) { $aun = $post->post_author;  $aun = get_the_author_meta('twitter', $aun ); if(!empty($aun)){ $aun = "@".$aun; } $msg = str_ireplace("%AUTHORTWHANDLE%", $aun, $msg);} 
   if (stripos($msg, '%ANNOUNCE%')!==false) { $postContent = nxs_doQTrans($post->post_content, $lng);     
     $postContent = strip_tags(strip_shortcodes(str_ireplace('<!--more-->', '#####!--more--!#####', str_ireplace("&lt;!--more--&gt;", '<!--more-->', $postContent))));
     if (stripos($postContent, '#####!--more--!#####')!==false) { $postContentEx = explode('#####!--more--!#####',$postContent); $postContent = $postContentEx[0]; }    
@@ -257,6 +258,7 @@ if (!function_exists("nsFormatMessage")) { function nsFormatMessage($msg, $postI
   if (stripos($msg, '%POSTDATE%')!==false) { $txt = get_the_date( '', $postID ); $msg = str_ireplace("%POSTDATE%", $txt, $msg);}      
   if (stripos($msg, '%POSTTIME%')!==false) { $txt = get_the_time( '', $postID ); $msg = str_ireplace("%POSTTIME%", $txt, $msg);}      
   if (isset($ShownAds)) $ShownAds = $ShownAdsL; // FIX for the quick-adsense plugin
+  $msg = apply_filters('nxs_msg_format',$msg);
   return trim($msg);
 }}
 //## Save Global Settings

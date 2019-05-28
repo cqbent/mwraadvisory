@@ -56,8 +56,8 @@ class CleantalkSFW extends CleantalkSFW_Base
 		$sfw_die_page = str_replace('{COOKIE_PREFIX}',  $cookie_prefix,                  $sfw_die_page);
 		$sfw_die_page = str_replace('{COOKIE_DOMAIN}',  $cookie_domain,                  $sfw_die_page);
 		$sfw_die_page = str_replace('{SFW_COOKIE}',     md5($this->blocked_ip.$api_key), $sfw_die_page);
-		$sfw_die_page = str_replace( "{SERVICE_ID}",    $apbct->data['service_id'],      $sfw_die_page );
-		$sfw_die_page = str_replace( "{HOST}",          $_SERVER['HTTP_HOST'],           $sfw_die_page );
+		$sfw_die_page = str_replace('{SERVICE_ID}',     $apbct->data['service_id'],      $sfw_die_page);
+		$sfw_die_page = str_replace('{HOST}',           $_SERVER['HTTP_HOST'],           $sfw_die_page);
 				
 		if($this->debug){
 			$debug = '<h1>Networks</h1>'

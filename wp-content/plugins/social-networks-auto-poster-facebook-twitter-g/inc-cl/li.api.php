@@ -1,6 +1,6 @@
 <?php    
 //########################################
-//##    LI API V1/V2 Combined Edition
+//##    LI API V2 Combined Edition
 //########################################
 $nxs_snapAPINts[] = array('code'=>'LI', 'lcode'=>'li', 'name'=>'LinkedIn');
 
@@ -9,12 +9,17 @@ if (!class_exists("nxs_class_SNAP_LI")) { class nxs_class_SNAP_LI {
     var $ntCode = 'LI';
     var $ntLCode = 'li';     
                                                                                       
-    function postShare($tkn, $msg, $pgID='', $title='', $url='', $imgURL='', $dsc='') { $nURL = 'https://api.linkedin.com/v1/'.(empty($pgID)?'people/~':'companies/'.$pgID).'/shares?format=json&oauth2_access_token='.$tkn;  
+    function postShare($tkn, $usr, $msg, $pgID='', $title='', $url='', $imgURL='', $dsc='') { 
       $dsc =  nxs_decodeEntitiesFull(strip_tags($dsc));  $msg = strip_tags(nxs_decodeEntitiesFull($msg));  $title =  nxs_decodeEntitiesFull(strip_tags($title)); 
-      $toPost = array('comment'=>htmlspecialchars($msg, ENT_NOQUOTES, "UTF-8"), 'visibility'=>array('code'=>'anyone'));
-      if (!empty($url)) $toPost['content'] = array('submitted-url'=>$url, 'title'=>htmlspecialchars($title, ENT_NOQUOTES, "UTF-8"), 'description'=>htmlspecialchars($dsc, ENT_NOQUOTES, "UTF-8"));
-      if (!empty($imgURL)) $toPost['content']['submitted-image-url'] = $imgURL; $hdrsArr['Content-Type']='application/json'; $hdrsArr['x-li-format']='json';  $toPost = json_encode($toPost); 
-      $advSet = nxs_mkRemOptsArr($hdrsArr, '', $toPost); $response  = nxs_remote_post($nURL, $advSet); if (is_nxs_error($response) || empty($response['body'])) return "ERROR: ".print_r($response, true);      
+      $toPost = array('lifecycleState'=>'PUBLISHED', 'specificContent'=>array('com.linkedin.ugc.ShareContent'=> array('shareCommentary'=> array('text'=> htmlspecialchars($msg, ENT_NOQUOTES, "UTF-8")), "shareMediaCategory"=> "NONE")), 
+        'visibility'=>array('com.linkedin.ugc.MemberNetworkVisibility'=>'PUBLIC') 
+      ); $toPost['author'] = !empty($pgID)?'urn:li:organization:'.$pgID:'urn:li:person:'.$usr;
+      if (!empty($url)) { $toPost['specificContent']['com.linkedin.ugc.ShareContent']['media'] = array(array('status'=>'READY', 'originalUrl'=>$url, 'txitle'=>array('text'=>htmlspecialchars($title, ENT_NOQUOTES, "UTF-8")), 'description'=>array('text'=> htmlspecialchars($dsc, ENT_NOQUOTES, "UTF-8"))));
+           $toPost['specificContent']['com.linkedin.ugc.ShareContent']['shareMediaCategory'] = 'ARTICLE';
+      }
+      //if (!empty($imgURL)) $toPost['content']['submitted-image-url'] = $imgURL;    //   prr($toPost);
+      $nURL = 'https://api.linkedin.com/v2/ugcPosts';  $hdrsArr=nxs_getNXSHeaders(); $hdrsArr['Authorization'] = 'Bearer '.$tkn; $hdrsArr['X-RestLi-Protocol-Version']='2.0.0';  $hdrsArr['Content-Type']='application/json'; $hdrsArr['x-li-format']='json'; $toPost = json_encode($toPost);       
+      $advSet = nxs_mkRemOptsArr($hdrsArr, '', $toPost); $response  = nxs_remote_post($nURL, $advSet); if (is_nxs_error($response) || empty($response['body'])) return "ERROR: ".print_r($response, true); //     prr($response);
       $post = json_decode($response['body'], true); return $post; 
     }
     
@@ -74,18 +79,13 @@ if (!class_exists("nxs_class_SNAP_LI")) { class nxs_class_SNAP_LI {
         if ($options['postType'] == 'T'){ $lnk['postType'] = 'T'; } // prr($msg); prr($lnk); prr($to);
         if ($options['whToPost']=='P') $ret = $nt->postToPulse($msg, $title, $html, $imgURL); else $ret = $nt->post($msg, $lnk, $to); if (is_array($ret) && !empty($ret['isPosted'])) return $ret; $liPostID = $to;
       } else { 
-        if (!empty($options['apiToUse']) && $options['apiToUse']=='liv2') { if (empty($options['pgID'])||$options['pgID']=='p') $options['pgID'] = ''; //## V2          
-          if($options['postType'] == 'A') $ret = $this->postShare($options['accessToken'], $msg, $options['pgID'], nsTrnc($msgAT, 200), $urlToGo, $imgURL, $msgA); else $ret = $this->postShare($options['accessToken'], $msg, $options['pgID']);            
-        } else {  //## V1
-          require_once ('apis/liOAuth.php'); $linkedin = new nsx_LinkedIn(nxs_gak($options['appKey']), nxs_gas($options['appSec']));  $linkedin->oauth_verifier = $options['oAuthVerifier'];
-          $linkedin->request_token = new nsx_trOAuthConsumer($options['oAuthToken'], $options['oAuthTokenSecret'], 1);     
-          $linkedin->access_token = new nsx_trOAuthConsumer($options['accessToken'], $options['accessTokenSec'], 1);  
-          $msg = nsTrnc($msg, 700); //prr($urlToGo);  $urlToGo = urlencode($urlToGo);   prr($urlToGo); die();
-          try{ if($options['postType'] == 'A') $ret = $linkedin->postShare($msg, nsTrnc($msgAT, 200), str_replace('&', '&amp;', $urlToGo), $imgURL, $msgA); else $ret = $linkedin->postShare($msg); } catch (Exception $o){ $ret="ERROR:".print_r($o, true); }                         
+        if (!empty($options['apiToUse']) && ($options['apiToUse']=='liv2' || $options['apiToUse']=='liv1')) { if (empty($options['pgID'])||$options['pgID']=='p') $options['pgID'] = ''; //## V2          
+          if($options['postType'] == 'A') $ret = $this->postShare($options['accessToken'], $options['liUserID'],$msg, $options['pgID'], nsTrnc($msgAT, 200), $urlToGo, $imgURL, $msgA); else $ret = $this->postShare($options['accessToken'], $options['liUserID'],$msg, $options['pgID']);            
         }        
         if ($liPostID=='') $liPostID = $options['liUserInfo'];        
-      } // prr($ret);
-      if (!is_array($ret) && stripos($ret, '<update-url>')!==false) { $rurl = CutFromTo($ret,'<update-url>','</update-url>'); $ret = array('updateUrl'=>$rurl); }
+      }  //prr($ret);
+      if (!is_array($ret) && stripos($ret, '<update-url>')!==false) { $rurl = CutFromTo($ret,'<update-url>','</update-url>'); $ret = array('updateUrl'=>$rurl); }      
+      if (is_array($ret) && !empty($ret['id'])) return array('isPosted'=>'1', 'postID'=>$ret['id'], 'postURL'=>'https://www.linkedin.com/feed/update/'.$ret['id'], 'pDate'=>date('Y-m-d H:i:s'));    
       if (is_array($ret) && !empty($ret['updateUrl'])) { if (stripos($ret['updateUrl'], 'topic=')!==false) $liPostID = CutFromTo($ret['updateUrl'], 'topic=','&'); else $liPostID = ''; 
         return array('isPosted'=>'1', 'postID'=>$liPostID, 'postURL'=>$ret['updateUrl'], 'pDate'=>date('Y-m-d H:i:s'));  
       } else  { $badOut['Error'] .= print_r($ret, true); }

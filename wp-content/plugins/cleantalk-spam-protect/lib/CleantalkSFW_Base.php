@@ -88,7 +88,7 @@ class CleantalkSFW_Base
 			if($this->db->result['cnt']){
 				$this->result = true;
 				$this->blocked_ip = $current_ip;
-				$this->debug_networks[] = $this->db->result['network'].'/'.$this->db->result['mask'];
+				$this->debug_networks[] = long2ip($this->db->result['network']).'/'.$this->db->result['mask'];
 			}else{
 				$this->passed_ip = $current_ip;
 			}
@@ -206,39 +206,44 @@ class CleantalkSFW_Base
 				
 				if($gf){
 					
-					$this->db->query("DELETE FROM ".$this->data_table.";", true);
-					
-					for($count_result = 0; !gzeof($gf); ){
+					if(!gzeof($gf)){
 						
+						$this->db->query("DELETE FROM ".$this->data_table.";", true);
 						
-						$query = "INSERT INTO ".$this->data_table." VALUES %s";
-						
-						for($i=0, $values = array(); APBCT_WRITE_LIMIT !== $i && !gzeof($gf); $i++, $count_result++){
+						for($count_result = 0; !gzeof($gf); ){
+
+							$query = "INSERT INTO ".$this->data_table." VALUES %s";
+
+							for($i=0, $values = array(); APBCT_WRITE_LIMIT !== $i && !gzeof($gf); $i++, $count_result++){
+
+								$entry = trim(gzgets($gf, 1024));
+
+								if(empty($entry)) continue;
+
+								$entry = explode(',', $entry);
+
+								// Cast result to int
+								$ip   = preg_replace('/[^\d]*/', '', $entry[0]);
+								$mask = preg_replace('/[^\d]*/', '', $entry[1]);
+
+								if(!$ip || !$mask) continue;
+
+								$values[] = '('. $ip .','. $mask .')';
+
+							}
 							
-							$entry = trim(gzgets($gf, 1024));
-							
-							if(empty($entry)) continue;
-							
-							$entry = explode(',', $entry);
-							
-							// Cast result to int
-							$ip   = preg_replace('/[^\d]*/', '', $entry[0]);
-							$mask = preg_replace('/[^\d]*/', '', $entry[1]);
-							
-							if(!$ip || !$mask) continue;
-							
-							$values[] = '('. $ip .','. $mask .')';
+							if(!empty($values)){
+								$query = sprintf($query, implode(',', $values).';');
+								$this->db->query($query, true);
+							}
 							
 						}
 						
-						$query = sprintf($query, implode(',', $values).';');
-						$this->db->query($query, true);
-												
-					}
-					
-					gzclose($gf);
-					return $count_result;
-					
+						gzclose($gf);
+						return $count_result;
+						
+					}else
+						return array('error' => true, 'error_string' => 'ERROR_GZ_EMPTY');
 				}else
 					return array('error' => true, 'error_string' => 'ERROR_OPEN_GZ_FILE');
 			}else

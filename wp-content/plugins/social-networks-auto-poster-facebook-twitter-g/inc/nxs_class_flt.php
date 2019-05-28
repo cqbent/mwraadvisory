@@ -921,10 +921,9 @@ if (!function_exists("nxsAnalyzePostFilters")) { function nxsAnalyzePostFilters(
       if (!empty($post)) { 
           //## PolyLang 
           if (function_exists("pll_get_post_language")) $pLang = pll_get_post_language($post->ID);
-          //## WPML
-          if (function_exists("wpml_get_language_information")) { $pLang = wpml_get_language_information($post->ID); $pLang = $pLang['locale']; }
-          
-          
+          //## WPML                  
+          if (function_exists("wpml_post_language_details")) { $pLang = apply_filters('wpml_post_language_details', NULL, $post->ID); if (is_array($pLang)) $pLang = $pLang['locale']; }          
+            elseif (function_exists("wpml_get_language_information")) { $pLang = wpml_get_language_information($post->ID); if (is_array($pLang)) $pLang = $pLang['locale']; }
           //$author = get_user_by('id', $post->post_author); $author = $author->user_login."(".$author->user_nicename.")"; 
       }
       foreach ($filter['nxs_langs'] as $cctts) { $fltT .= $cctts.' | '; }

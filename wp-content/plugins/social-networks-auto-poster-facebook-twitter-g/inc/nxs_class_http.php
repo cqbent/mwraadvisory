@@ -291,8 +291,8 @@ if (!function_exists("nxs_parse_args")){ function nxs_parse_args( $args, $defaul
 
 if (!function_exists("nxs_staticHttpObj")) { function nxs_staticHttpObj() { static $nxs_http; if ( is_null($nxs_http) ) $nxs_http = new nxs_Http(); return $nxs_http; }}
 if (!function_exists("nxs_remote_request")) { function nxs_remote_request($url, $args = array()) { $nxs_http = nxs_staticHttpObj(); return $nxs_http->request($url, $args); }}
-if (!function_exists("nxs_remote_get")) { function nxs_remote_get($url, $args = array()) { $nxs_http = nxs_staticHttpObj(); return $nxs_http->sendReq($url, 'GET', $args); }}
-if (!function_exists("nxs_remote_post")) { function nxs_remote_post($url, $args = array()) { $nxs_http = nxs_staticHttpObj(); return $nxs_http->sendReq($url,'POST', $args); }}
+if (!function_exists("nxs_remote_get")) { function nxs_remote_get($url, $args = array()) { /*echo "<br/>".(!empty($args['proxy'])?print_r($args['proxy'], true):'****************** NO PROXY')."<br/>"; */ $nxs_http = nxs_staticHttpObj(); return $nxs_http->sendReq($url, 'GET', $args); }}
+if (!function_exists("nxs_remote_post")) { function nxs_remote_post($url, $args = array()) { /*echo "<br/>".(!empty($args['proxy'])?print_r($args['proxy'], true):'****************** NO PROXY')."<br/>"; */ $nxs_http = nxs_staticHttpObj(); return $nxs_http->sendReq($url,'POST', $args); }}
 if (!function_exists("nxs_remote_head")) { function nxs_remote_head($url, $args = array()) { $nxs_http = nxs_staticHttpObj(); return $nxs_http->sendReq($url,'HEAD', $args); }}
 if (!class_exists('WP_Http_Cookie')) { class_alias('nxs_Http_Cookie', 'WP_Http_Cookie'); }
 

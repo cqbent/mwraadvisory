@@ -72,11 +72,12 @@ class CleantalkHelper
 		
 		// Cloud Flare
 		if(isset($ips['cloud_flare'])){
-			if(isset($headers['Cf-Connecting-Ip'], $headers['Cf-Ipcountry'], $headers['Cf-Ray'])){
-				$ip_type = self::ip__validate($_SERVER['REMOTE_ADDR']);
+			if(isset($headers['CF-Connecting-IP'], $headers['CF-IPСountry'], $headers['CF-RAY']) || isset($headers['Cf-Connecting-Ip'], $headers['Cf-Ipcountry'], $headers['Cf-Ray'])){
+				$tmp = isset($headers['CF-Connecting-IP']) ? $headers['CF-Connecting-IP'] : $headers['Cf-Connecting-Ip'];
+				$tmp = strpos($tmp, ',') !== false ? explode(',', $tmp) : (array)$tmp;
+				$ip_type = self::ip__validate(trim($tmp[0]));
 				if($ip_type){
-//					if(self::ip__mask_match($ips['remote_addr'], self::$cdn_pool['cloud_flare']['ipv4'])){
-						$ips['cloud_flare'] = $headers['Cf-Connecting-Ip'];
+						$ips['real'] = $ip_type == 'v6' ? self::ip__v6_normalize(trim($tmp[0])) : trim($tmp[0]);
 				}
 			}
 		}
@@ -90,10 +91,12 @@ class CleantalkHelper
 				$ips['real'] = $ip_type == 'v6' ? self::ip__v6_normalize($_SERVER['REMOTE_ADDR']) : $_SERVER['REMOTE_ADDR'];
 			
 			// Cloud Flare
-			if(isset($headers['Cf-Connecting-Ip'], $headers['Cf-Ipcountry'], $headers['Cf-Ray'])){
-				$ip_type = self::ip__validate($headers['Cf-Connecting-Ip']);
+			if(isset($headers['CF-Connecting-IP'], $headers['CF-IPCountry'], $headers['CF-RAY']) || isset($headers['Cf-Connecting-Ip'], $headers['Cf-Ipcountry'], $headers['Cf-Ray'])){
+				$tmp = isset($headers['CF-Connecting-IP']) ? $headers['CF-Connecting-IP'] : $headers['Cf-Connecting-Ip'];
+				$tmp = strpos($tmp, ',') !== false ? explode(',', $tmp) : (array)$tmp;
+				$ip_type = self::ip__validate(trim($tmp[0]));
 				if($ip_type)
-					$ips['real'] = $ip_type == 'v6' ? self::ip__v6_normalize($headers['Cf-Connecting-Ip']) : $headers['Cf-Connecting-Ip'];
+					$ips['real'] = $ip_type == 'v6' ? self::ip__v6_normalize(trim($tmp[0])) : trim($tmp[0]);
 				
 			// Sucury
 			}elseif(isset($headers['X-Sucuri-Clientip'], $headers['X-Sucuri-Country'])){
@@ -119,7 +122,7 @@ class CleantalkHelper
 				
 				// X-Forwarded-For
 				if(isset($headers['X-Forwarded-For'])){
-					$tmp = explode(",", trim($headers['X-Forwarded-For']));
+					$tmp = explode(',', trim($headers['X-Forwarded-For']));
 					$tmp = trim($tmp[0]);
 					$ip_type = self::ip__validate($tmp);
 					if($ip_type)
@@ -127,7 +130,7 @@ class CleantalkHelper
 				
 				// X-Real-Ip
 				}elseif(isset($headers['X-Real-Ip'])){
-					$tmp = explode(",", trim($headers['X-Real-Ip']));
+					$tmp = explode(',', trim($headers['X-Real-Ip']));
 					$tmp = trim($tmp[0]);
 					$ip_type = self::ip__validate($tmp);
 					if($ip_type)

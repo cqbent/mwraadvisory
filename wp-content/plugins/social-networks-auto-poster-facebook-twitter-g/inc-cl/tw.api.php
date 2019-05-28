@@ -34,6 +34,7 @@ if (!class_exists("nxs_class_SNAP_TW")) { class nxs_class_SNAP_TW {
       if (!empty($message['pText'])) $msg = $message['pText']; else $msg = nxs_doFormatMsg($options['msgFormat'], $message);
       if ($options['attchImg']!=false) { if (isset($message['imageURL'])) $imgURL = trim(nxs_getImgfrOpt($message['imageURL'], $options['imgSize'])); else $imgURL = ''; }
       if (empty($imgURL) && $img=='') $options['attchImg'] = false; 
+      //$ret = $this->twReq('https://api.twitter.com/1.1/account/settings.json', '', $options); prr($ret); die();
       //## Make Post
       //$options['attchImg']='1'; $imgURL = 'http://ecx.images-amazon.com/images/I/41caE5Uc5ML._AA160_.jpg';
       $hdrsArr['User-Agent']='Mozilla/5.0 (Windows NT 6.1; WOW64; rv:32.0) Gecko/20100101 Firefox/32.0'; $advSet=array('headers'=>$hdrsArr,'httpversion'=>'1.1','timeout'=>45,'sslverify'=>false);

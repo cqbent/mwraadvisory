@@ -2,7 +2,7 @@
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing,automation,automated,mailing list
 Requires at least: 3.4.0
 Tested up to: 5.2
-Stable tag: 5.9.4
+Stable tag: 6.0.0
 Contributors: satollo,webagile,michael-travan
 
 Add a real newsletter system to your blog. For free. With unlimited newsletters and subscribers.
@@ -121,6 +121,15 @@ Thank you, The Newsletter Team
 3. The Reports extension
 
 == Changelog ==
+
+= 6.0.0 =
+
+* The Newsletter Plugin Composer - A new revamped drag & drop composer
+* Several improvements and fixes
+
+= 5.9.5 =
+
+* Changed edit and delete icons on composer to avoid conflict with FontAwesome JS
 
 = 5.9.4 =
 

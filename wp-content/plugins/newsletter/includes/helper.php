@@ -49,6 +49,8 @@ function tnp_post_excerpt($post, $length = 30) {
     } else {
         $excerpt = wp_trim_words($post->post_excerpt, $length);
     }
+    
+    $excerpt = preg_replace("/\[vc_row.*?\]/", "", $excerpt);
     return $excerpt;
 }
 

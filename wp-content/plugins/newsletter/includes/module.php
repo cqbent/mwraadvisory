@@ -474,7 +474,7 @@ class NewsletterModule {
      */
     static function m2t($s) {
 
-        // TODO: use the wordpress function I don't remeber the name
+        // TODO: use the wordpress function I don't remember the name
         $s = explode(' ', $s);
         $d = explode('-', $s[0]);
         $t = explode(':', $s[1]);
@@ -823,15 +823,22 @@ class NewsletterModule {
         return $this->store->get_field(NEWSLETTER_EMAILS_TABLE, $id, $field_name);
     }
 
-    function get_email_status_label($email) {
-        switch ($email->status) {
-            case 'sending':
-                if ($email->send_on > time()) {
-                    return __('Scheduled', 'newsletter');
-                } else {
-                    return __('Sending', 'newsletter');
-                }
+    function get_email_status_slug($email) {
+	    $email = (object)$email;
+        if ($email->status == 'sending' && $email->send_on > time()) {
+            return 'scheduled';
+        }
+        return $email->status;
+    }
 
+    function get_email_status_label($email) {
+	    $email = (object)$email;
+        $status = $this->get_email_status_slug($email);
+        switch ($status) {
+            case 'sending':
+                return __('Sending', 'newsletter');
+            case 'scheduled':
+                return __('Scheduled', 'newsletter');
             case 'sent':
                 return __('Sent', 'newsletter');
             case 'paused':
@@ -843,9 +850,44 @@ class NewsletterModule {
         }
     }
 
+    function show_email_status_label($email) {
+        echo '<span class="tnp-email-status-', $this->get_email_status_slug($email), '">', esc_html($this->get_email_status_label($email)), '</span>';
+    }
+
+    function get_email_progress($email, $format = 'percent') {
+        return $email->total > 0 ? intval($email->sent / $email->total * 100) : 0;
+    }
+
+    function show_email_progress_bar($email, $attrs = array()) {
+
+    	$email = (object)$email;
+
+    	$attrs = array_merge(array('format' => 'percent', 'numbers' => false, 'scheduled' => false), $attrs);
+
+        if ($email->status == 'sending' && $email->send_on > time()) {
+            if ($attrs['scheduled']) {
+                echo '<span class="tnp-progress-date">', $this->format_date($email->send_on), '</span>';
+            }
+        } else if ($email->status == 'new') {
+            echo '';
+        } else {
+            $percent = $this->get_email_progress($email);
+            $label = $percent;
+            if ($attrs['format'] == 'numbers') {
+                $label = $email->sent . ' ' . __('of', 'newsletter') . ' ' . $email->total;
+            }
+            echo '<div class="tnp-progress ', $email->status, '">';
+            echo '<div class="tnp-progress-bar" role="progressbar" style="width: ', $percent, '%;">&nbsp;', $percent, '%&nbsp;</div>';
+            echo '</div>';
+            if ($attrs['numbers']) {
+                echo '<div class="tnp-progress-numbers">', $email->sent, ' ', __('of', 'newsletter'), ' ', $email->total, '</div>';
+            }
+        }
+    }
+
     function get_email_type_label($type) {
 
-        // Is an email?
+// Is an email?
         if (is_object($type))
             $type = $type->type;
 
@@ -940,7 +982,7 @@ class NewsletterModule {
         if (empty($id_or_email))
             return null;
 
-        // To simplify the reaload of a user passing the user it self.
+// To simplify the reaload of a user passing the user it self.
         if (is_object($id_or_email)) {
             $id_or_email = $id_or_email->id;
         } else if (is_array($id_or_email)) {
@@ -972,6 +1014,20 @@ class NewsletterModule {
             return $user->id . '-' . md5($user->token);
         }
         return $user->id . '-' . $user->token;
+    }
+
+    function get_user_status_label($user) {
+        switch ($user->status) {
+            case 'S': return __('NOT CONFIRMED', 'newsletter');
+                break;
+            case 'C': return __('CONFIRMED', 'newsletter');
+                break;
+            case 'U': return __('UNSUBSCRIBED', 'newsletter');
+                break;
+            case 'B': return __('BOUNCED', 'newsletter');
+                break;
+        }
+        return '';
     }
 
     /**
@@ -1178,7 +1234,7 @@ class NewsletterModule {
                 $user['token'] = NewsletterModule::get_token();
             }
         }
-        // Due to the unique index on email field, this can fail.
+// Due to the unique index on email field, this can fail.
         return $this->store->save(NEWSLETTER_USERS_TABLE, $user, $return_format);
     }
 
@@ -1195,7 +1251,7 @@ class NewsletterModule {
 
     function update_user_ip($user, $ip) {
         global $wpdb;
-        // Only if changed
+// Only if changed
         $r = $this->query($wpdb->prepare("update " . NEWSLETTER_USERS_TABLE . " set ip=%s, geo=0 where ip<>%s and id=%d limit 1", $ip, $ip, $user->id));
     }
 
@@ -1208,15 +1264,15 @@ class NewsletterModule {
      * @return string
      */
     function inline_css($content, $strip_style_blocks = false) {
-        // CSS
+// CSS
         $matches = array();
-        // "s" skips line breaks
+// "s" skips line breaks
         $styles = preg_match('|<style>(.*?)</style>|s', $content, $matches);
         if (isset($matches[1])) {
             $style = str_replace(array("\n", "\r"), '', $matches[1]);
             $rules = array();
             preg_match_all('|\s*\.(.*?)\{(.*?)\}\s*|s', $style, $rules);
-            //print_r($rules);
+//print_r($rules);
             for ($i = 0; $i < count($rules[1]); $i++) {
                 $class = trim($rules[1][$i]);
                 $value = trim($rules[2][$i]);
@@ -1346,7 +1402,7 @@ class NewsletterModule {
     }
 
     function clean_user_logs_table() {
-        //global $wpdb;
+//global $wpdb;
     }
 
     function clean_tables() {
@@ -1391,7 +1447,7 @@ class NewsletterModule {
             $user->$field = '';
         }
 
-        // [TODO] Status?
+// [TODO] Status?
         $user->status = TNP_User::STATUS_UNSUBSCRIBED;
         $user->email = $user->id . '@anonymi.zed';
 
@@ -1519,7 +1575,7 @@ class NewsletterModule {
             $home_url = home_url('/');
         }
 
-        //$this->logger->debug('Replace start');
+//$this->logger->debug('Replace start');
         if ($user !== null && !is_object($user)) {
             if (is_array($user)) {
                 $user = (object) $user; //$this->get_user($user['id']);
@@ -1615,7 +1671,7 @@ class NewsletterModule {
             $text = $this->replace_url($text, 'SUBSCRIPTION_CONFIRM_URL', $this->build_action_url('c', $user));
             $text = $this->replace_url($text, 'ACTIVATION_URL', $this->build_action_url('v', $user));
 
-            // Obsolete.
+// Obsolete.
             $text = $this->replace_url($text, 'FOLLOWUP_SUBSCRIPTION_URL', self::add_qs($base, 'nm=fs' . $id_token));
             $text = $this->replace_url($text, 'FOLLOWUP_UNSUBSCRIPTION_URL', self::add_qs($base, 'nm=fu' . $id_token));
 
@@ -1638,21 +1694,21 @@ class NewsletterModule {
             }
         }
 
-        // Company info
-        // TODO: Move to another module
+// Company info
+// TODO: Move to another module
         $options = Newsletter::instance()->options;
         $text = str_replace('{company_address}', $options['footer_contact'], $text);
         $text = str_replace('{company_name}', $options['footer_title'], $text);
 
 
-        //$this->logger->debug('Replace end');
+//$this->logger->debug('Replace end');
         return $text;
     }
 
     function replace_date($text) {
         $text = str_replace('{date}', date_i18n(get_option('date_format')), $text);
 
-        // Date processing
+// Date processing
         $x = 0;
         while (($x = strpos($text, '{date_', $x)) !== false) {
             $y = strpos($text, '}', $x);
@@ -1681,7 +1737,7 @@ class NewsletterModule {
         $text = str_replace('%7B' . $tag_lower . '_encoded%7D', $url_encoded, $text);
         $text = str_replace('{' . $tag_lower . '_encoded}', $url_encoded, $text);
 
-        // for compatibility
+// for compatibility
         $text = str_replace($home . $tag, $url, $text);
 
         return $text;
@@ -1849,7 +1905,7 @@ class NewsletterModule {
      */
     function get_current_language($user = null) {
         global $TRP_LANGUAGE, $current_user;
-        // TODO: Check if the blog is multilanguage?
+// TODO: Check if the blog is multilanguage?
 
         if ($user && $user->language) {
             return $user->language;
@@ -1877,7 +1933,7 @@ class NewsletterModule {
         } else if (function_exists('pll_default_language')) {
             return pll_default_language();
         } else if (class_exists('TRP_Translate_Press')) {
-            // TODO: Find the default language
+// TODO: Find the default language
         }
         return '';
     }
@@ -1937,7 +1993,7 @@ class NewsletterModule {
     function get_posts($filters = array(), $language = '') {
         $current_language = $this->get_current_language();
 
-        // Language switch for WPML
+// Language switch for WPML
         if ($language) {
             if (class_exists('SitePress')) {
                 $this->switch_language($language);

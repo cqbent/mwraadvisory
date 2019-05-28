@@ -67,6 +67,11 @@ function apbct_init() {
 		ct_ajax_hook();
 	}
 	
+	/**hooks for cm answers pro */
+	if(defined('CMA_PLUGIN_FILE')){
+		add_action( 'wp', 'ct_ajax_hook',1 );
+	}
+	
 	//hook for Anonymous Post
     if($apbct->settings['general_postdata_test'] == 1 && empty($_POST['ct_checkjs_cf7']))
     	add_action('wp','ct_contact_form_validate_postdata',1);
@@ -2585,7 +2590,8 @@ function ct_contact_form_validate() {
 		(strpos($_SERVER['REQUEST_URI'],'researcher-log-in')!==false ) || // Skip login form
 		(strpos($_SERVER['REQUEST_URI'],'admin_aspcms/_system/AspCms_SiteSetting.asp?action=saves')!==false ) || // Skip admin save callback
 		(strpos($_SERVER['REQUEST_URI'],'?profile_tab=postjobs')!==false ) || // Skip post vacancies
-		(isset($_POST['btn_insert_post_type_hotel']) && $_POST['btn_insert_post_type_hotel'] == 'SUBMIT HOTEL') // Skip adding hotel
+		(isset($_POST['btn_insert_post_type_hotel']) && $_POST['btn_insert_post_type_hotel'] == 'SUBMIT HOTEL') || // Skip adding hotel
+		(isset($_POST['action']) && $_POST['action'] == 'updraft_savesettings') // Updraft save settings
 		) {
         return null;
     }
