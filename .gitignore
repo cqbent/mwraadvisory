@@ -1,6 +1,5 @@
 # WordPress #
 ############
-wp-config.php
 wp-config-local.php
 wp-cli.local.yml
 wp-content/uploads
@@ -15,9 +14,6 @@ wp-content/wp-cache-config.php
 sitemap.xml
 sitemap.xml.gz
 *.log
-php_errorlog
-core.54987
-.htaccess
 
 # @TODO writable paths
 wp-content/cache/
@@ -61,5 +57,3 @@ Thumbs.db
 # SASS #
 ##########
 .sass-cache
-
-wp-content/plugins/backupwordpress/
