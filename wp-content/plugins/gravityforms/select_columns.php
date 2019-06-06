@@ -20,26 +20,34 @@ if ( ! class_exists( 'RGForms' ) ) {
  * Class GFSelectColumns
  *
  * Handles the changing of what columns are shown on the Entry page
+ *
+ * @since Unknown
  */
 class GFSelectColumns {
 
 	/**
-	 * Renders the column selection page
+	 * Renders the column selection page.
 	 *
+	 * @since  Unknown
 	 * @access public
-	 * @static
+	 *
+	 * @uses GFFormsModel::get_form_meta()
+	 * @uses GFFormsModel::get_grid_columns()
+	 * @uses GFSelectColumns::get_selectable_entry_meta()
+	 * @uses GFFormsModel::convert_field_objects()
+	 * @uses GFFormsModel::get_input_type()
+	 * @uses GF_Field::get_entry_inputs()
+	 * @uses GFCommon::get_label()
+	 *
+	 * @return void
 	 */
 	public static function select_columns_page() {
 
-		$form_id = $_GET['id'];
+		$form_id = absint( $_GET['id'] );
 		if ( empty( $form_id ) ) {
 			echo __( 'Oops! We could not locate your form. Please try again.', 'gravityforms' );
 			exit;
 		}
-
-		// Reading form metadata
-		$form = RGFormsModel::get_form_meta( $form_id );
-
 		?>
 		<html>
 		<head>
@@ -217,6 +225,21 @@ class GFSelectColumns {
 
 					$inputs = $field->get_entry_inputs();
 
+					$input_type = GFFormsModel::get_input_type( $field );
+
+					$display = ! in_array( $input_type, array( 'list', 'repeater' ) );
+
+					/**
+					 * Allows fields to be added or removed from the select columns UI on the entry list.
+					 *
+					 * @since 2.4
+					 *
+					 * @param bool     $display Whether the field will be available for selection.
+					 * @param GF_Field $field
+					 * @param array    $form
+					 */
+					$display = gf_apply_filters( array( 'gform_display_field_select_columns_entry_list', $form_id, $field->id ), $display, $field, $form );
+
 					if ( is_array( $inputs ) ) {
 						foreach ( $inputs as $input ) {
 							if ( rgar( $input, 'isHidden' ) ) {
@@ -229,7 +252,7 @@ class GFSelectColumns {
 							<?php
 							}
 						}
-					} else if ( ! $field->displayOnly && ! in_array( $field->id, $field_ids ) && RGFormsModel::get_input_type( $field ) != 'list' ) {
+					} else if ( ! $field->displayOnly && ! in_array( $field->id, $field_ids ) && $display ) {
 						?>
 						<li id="<?php echo $field->id ?>"><?php echo esc_html( GFCommon::get_label( $field ) ); ?></li>
 					<?php
@@ -252,15 +275,16 @@ class GFSelectColumns {
 	}
 
 	/**
-	 * Adds the entry meta to the Form object
+	 * Adds the entry meta to the Form object.
 	 *
+	 * @since  Unknown
 	 * @access public
-	 * @static
-	 * @see GFFormsModel::get_entry_meta
 	 *
-	 * @param array $form The Form object
+	 * @uses GFFormsModel::get_entry_meta()
 	 *
-	 * @return array $form The Form object
+	 * @param array $form The Form object.
+	 *
+	 * @return array $form The Form object.
 	 */
 	public static function get_selectable_entry_meta( $form ) {
 		$entry_meta = GFFormsModel::get_entry_meta( $form['id'] );
@@ -271,8 +295,6 @@ class GFSelectColumns {
 
 		return $form;
 	}
-
-
 }
 
 GFSelectColumns::select_columns_page();

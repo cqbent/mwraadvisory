@@ -1,9 +1,0 @@
-drwxr-xr-x   2 mwra     mwra         4096 Nov 16  2016 .
-drwxr-xr-x   5 mwra     mwra         4096 Nov 16  2016 ..
--rw-r--r--   1 mwra     mwra           27 Nov 16  2016 index.php
--rw-r--r--   1 mwra     mwra         1956 Nov 16  2016 locking-list.js
--rw-r--r--   1 mwra     mwra          950 Nov 16  2016 locking-list.min.js
--rw-r--r--   1 mwra     mwra         1370 Nov 16  2016 locking-view.js
--rw-r--r--   1 mwra     mwra          671 Nov 16  2016 locking-view.min.js
--rw-r--r--   1 mwra     mwra         7344 Nov 16  2016 locking.js
--rw-r--r--   1 mwra     mwra         3163 Nov 16  2016 locking.min.js

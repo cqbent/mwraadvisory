@@ -50,7 +50,6 @@ class GF_Field_Text extends GF_Field {
 			$html_input_type = 'password';
 		}
 
-		$logic_event = ! $is_form_editor && ! $is_entry_detail ? $this->get_conditional_logic_event( 'keyup' ) : '';
 		$id          = (int) $this->id;
 		$field_id    = $is_entry_detail || $is_form_editor || $form_id == 0 ? "input_$id" : 'input_' . $form_id . "_$id";
 
@@ -66,8 +65,10 @@ class GF_Field_Text extends GF_Field {
 		$placeholder_attribute = $this->get_field_placeholder_attribute();
 		$required_attribute    = $this->isRequired ? 'aria-required="true"' : '';
 		$invalid_attribute     = $this->failed_validation ? 'aria-invalid="true"' : 'aria-invalid="false"';
+		$aria_describedby      = $this->get_aria_describedby();
 
-		$input = "<input name='input_{$id}' id='{$field_id}' type='{$html_input_type}' value='{$value}' class='{$class}' {$max_length} {$tabindex} {$logic_event} {$placeholder_attribute} {$required_attribute} {$invalid_attribute} {$disabled_text}/>";
+
+		$input = "<input name='input_{$id}' id='{$field_id}' type='{$html_input_type}' value='{$value}' class='{$class}' {$max_length} {$aria_describedby} {$tabindex} {$placeholder_attribute} {$required_attribute} {$invalid_attribute} {$disabled_text}/>";
 
 		return sprintf( "<div class='ginput_container ginput_container_text'>%s</div>", $input );
 	}
@@ -76,6 +77,27 @@ class GF_Field_Text extends GF_Field {
 		return in_array( $this->type, array( 'post_custom_field', 'post_tags' ) ) ? true : false;
 	}
 
+	/**
+	 * Gets merge tag values.
+	 *
+	 * @since  Unknown
+	 * @access public
+	 *
+	 * @uses GF_Field::get_allowable_tags()
+	 *
+	 * @param array|string $value      The value of the input.
+	 * @param string       $input_id   The input ID to use.
+	 * @param array        $entry      The Entry Object.
+	 * @param array        $form       The Form Object
+	 * @param string       $modifier   The modifier passed.
+	 * @param array|string $raw_value  The raw value of the input.
+	 * @param bool         $url_encode If the result should be URL encoded.
+	 * @param bool         $esc_html   If the HTML should be escaped.
+	 * @param string       $format     The format that the value should be.
+	 * @param bool         $nl2br      If the nl2br function should be used.
+	 *
+	 * @return string The processed merge tag.
+	 */
 	public function get_value_merge_tag( $value, $input_id, $entry, $form, $modifier, $raw_value, $url_encode, $esc_html, $format, $nl2br ) {
 
 		if ( $format === 'html' ) {
@@ -104,11 +126,16 @@ class GF_Field_Text extends GF_Field {
 	/**
 	 * Format the entry value safe for displaying on the entry list page.
 	 *
-	 * @param string $value The field value.
-	 * @param array $entry The Entry Object currently being processed.
+	 * @since  Unknown
+	 * @access public
+	 *
+	 * @uses GF_Field::get_allowable_tags()
+	 *
+	 * @param string $value    The field value.
+	 * @param array  $entry    The Entry Object currently being processed.
 	 * @param string $field_id The field or input ID currently being processed.
-	 * @param array $columns The properties for the columns being displayed on the entry list page.
-	 * @param array $form The Form Object currently being processed.
+	 * @param array  $columns  The properties for the columns being displayed on the entry list page.
+	 * @param array  $form     The Form Object currently being processed.
 	 *
 	 * @return string
 	 */
@@ -167,6 +194,23 @@ class GF_Field_Text extends GF_Field {
 
 		return $return;
 	}
+
+	// # FIELD FILTER UI HELPERS ---------------------------------------------------------------------------------------
+
+	/**
+	 * Returns the filter operators for the current field.
+	 *
+	 * @since 2.4
+	 *
+	 * @return array
+	 */
+	public function get_filter_operators() {
+		$operators   = parent::get_filter_operators();
+		$operators[] = 'contains';
+
+		return $operators;
+	}
+
 }
 
 GF_Fields::register( new GF_Field_Text() );

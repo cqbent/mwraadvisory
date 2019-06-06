@@ -57,13 +57,13 @@ class GF_Field_Post_Excerpt extends GF_Field {
 
 		$tabindex = $this->get_tabindex();
 
-		$logic_event           = $this->get_conditional_logic_event( 'keyup' );
 		$placeholder_attribute = $this->get_field_placeholder_attribute();
 		$required_attribute    = $this->isRequired ? 'aria-required="true"' : '';
 		$invalid_attribute     = $this->failed_validation ? 'aria-invalid="true"' : 'aria-invalid="false"';
+		$aria_describedby      = $this->get_aria_describedby();
 
 		return "<div class='ginput_container ginput_container_post_excerpt'>
-					<textarea name='input_{$id}' id='{$field_id}' class='textarea {$class}' {$tabindex} {$logic_event} {$placeholder_attribute} {$required_attribute} {$invalid_attribute} {$disabled_text} rows='10' cols='50'>{$value}</textarea>
+					<textarea name='input_{$id}' id='{$field_id}' class='textarea {$class}' {$tabindex} {$placeholder_attribute} {$required_attribute} {$invalid_attribute} {$aria_describedby} {$disabled_text} rows='10' cols='50'>{$value}</textarea>
 				</div>";
 	}
 
@@ -73,18 +73,24 @@ class GF_Field_Post_Excerpt extends GF_Field {
 
 	/**
 	 * Format the entry value for when the field/input merge tag is processed. Not called for the {all_fields} merge tag.
+	 *
 	 * Return a value that is safe for the context specified by $format.
 	 *
-	 * @param string|array $value The field value. Depending on the location the merge tag is being used the following functions may have already been applied to the value: esc_html, nl2br, and urlencode.
-	 * @param string $input_id The field or input ID from the merge tag currently being processed.
-	 * @param array $entry The Entry Object currently being processed.
-	 * @param array $form The Form Object currently being processed.
-	 * @param string $modifier The merge tag modifier. e.g. value
-	 * @param string|array $raw_value The raw field value from before any formatting was applied to $value.
-	 * @param bool $url_encode Indicates if the urlencode function may have been applied to the $value.
-	 * @param bool $esc_html Indicates if the esc_html function may have been applied to the $value.
-	 * @param string $format The format requested for the location the merge is being used. Possible values: html, text or url.
-	 * @param bool $nl2br Indicates if the nl2br function may have been applied to the $value.
+	 * @since  Unknown
+	 * @access public
+	 *
+	 * @uses GF_Field::get_allowable_tags()
+	 *
+	 * @param string|array $value      The field value. Depending on the location the merge tag is being used the following functions may have already been applied to the value: esc_html, nl2br, and urlencode.
+	 * @param string       $input_id   The field or input ID from the merge tag currently being processed.
+	 * @param array        $entry      The Entry Object currently being processed.
+	 * @param array        $form       The Form Object currently being processed.
+	 * @param string       $modifier   The merge tag modifier. e.g. value
+	 * @param string|array $raw_value  The raw field value from before any formatting was applied to $value.
+	 * @param bool         $url_encode Indicates if the urlencode function may have been applied to the $value.
+	 * @param bool         $esc_html   Indicates if the esc_html function may have been applied to the $value.
+	 * @param string       $format     The format requested for the location the merge is being used. Possible values: html, text or url.
+	 * @param bool         $nl2br      Indicates if the nl2br function may have been applied to the $value.
 	 *
 	 * @return string
 	 */
@@ -113,6 +119,23 @@ class GF_Field_Post_Excerpt extends GF_Field {
 
 		return $return;
 	}
+
+	// # FIELD FILTER UI HELPERS ---------------------------------------------------------------------------------------
+
+	/**
+	 * Returns the filter operators for the current field.
+	 *
+	 * @since 2.4
+	 *
+	 * @return array
+	 */
+	public function get_filter_operators() {
+		$operators   = parent::get_filter_operators();
+		$operators[] = 'contains';
+
+		return $operators;
+	}
+
 }
 
 GF_Fields::register( new GF_Field_Post_Excerpt() );
