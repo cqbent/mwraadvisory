@@ -116,12 +116,10 @@ div.pagination span.current {
 		
 		
 		<?php
-     if(isset($_GET[cat_order]) && $_GET['cat_order'] !=""){
-	    $cat_order = $_GET[cat_order];
+	$cat_order = 'ASC';
+     if(isset($_GET['cat_order']) && $_GET['cat_order'] !=""){
+	    $cat_order = $_GET['cat_order'];
 	     
-	 }else{
-	     
-	     $cat_order = 'ASC';
 	 }
     
     ?>
@@ -131,8 +129,8 @@ div.pagination span.current {
                  <!--<p >
     		        Categories Order </br> <select id="cat_order_dc_clone">
     		        <option value=" "> Select Order</option>
-    		        <option value="ASC" <?php if ($cat_order == "ASC") echo "selected='selected'";?>  >Ascending</option>
-    		        <option value="DESC" <?php if ($cat_order == "DESC") echo "selected='selected'";?> >Descending</option>
+    		        <option value="ASC" <?php //if ($cat_order == "ASC") echo "selected='selected'";?>  >Ascending</option>
+    		        <option value="DESC" <?php //if ($cat_order == "DESC") echo "selected='selected'";?> >Descending</option>
     		          </select>
     		      </p>-->
     		
