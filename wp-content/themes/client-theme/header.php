@@ -221,7 +221,7 @@ jQuery(document).ready(function(){
 				</div>
 			</div>
 	 <div class="clear"></div>
-	<?	
+	<?php
 	}elseif(!is_page_template('page-templates/library-template.php') && !is_front_page() && !is_tax('library_tags') && !is_tax('library-cat') && !is_search()){	
 		
 			$image = wp_get_attachment_image_src( get_post_thumbnail_id($pid), 'full'); 
