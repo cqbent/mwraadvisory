@@ -1552,51 +1552,7 @@ add_filter('pre_site_transient_update_themes','remove_core_updates');
 
 
 
-add_action( 'gform_after_submission', 'pre_submission_handler' );
-function pre_submission_handler( $entry, $form ) {
-    /*echo '<pre>';
-    print_r($entry);
-    print_r($_POST);
-    
-    /*
-    echo '<pre>';
-    ///print_r($_POST[input_141]);
-    
-    $increament = 0;
-    
-    $main_array = array();
-    
-    foreach($_POST[input_141] as $value){
-     $increament++; 
-     
-    if($increament == 0){
-        
-         $temp_array = array();
-         
-    }
-     
-     $temp_array[] = $value;
-     
-     
-    
-    if($increament >= 3){
-     
-      $main_array[] = $temp_array;  
-        unset($temp_array);
-     $increament = 0;   
-    }
-    
-    
-    }
-    
-    //echo json_encode($main_array);
-    
-    print_r($main_array);
-    print_r($_POST);
-    
-    */
-    //exit;
-}
+
 
 function hover_box_effect($atts){
     
