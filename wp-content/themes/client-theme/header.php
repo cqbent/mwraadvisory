@@ -192,7 +192,9 @@ jQuery(document).ready(function(){
 			if ( $description || is_customize_preview() ) : ?>
 				<p class="site-description"><?php echo $description; /* WPCS: xss ok. */ ?></p>
 			<?php endif; ?>
-      <?php if ( function_exists( 'jetpack_the_site_logo' ) ) jetpack_the_site_logo(); ?>
+      <a href="/" class="site-logo-link" rel="home" itemprop="url">
+        <img src="<?php print get_stylesheet_directory_uri(); ?>/images/mwra_logo.png" alt="MWRA Adivsory Board" />
+      </a>
 		</div><!-- .site-branding --> 
         <div class="top-header"><?php dynamic_sidebar('top-header'); ?></div><!-- .top-header -->
 
