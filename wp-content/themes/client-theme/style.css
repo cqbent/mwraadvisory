@@ -17892,6 +17892,9 @@ li#field_46_141 {
 }
 
 
+/*
+disable checkbox styling
+
 .ginput_container_checkbox input:not(old):checked + label:after {
   content: "✓";
   display: block;
@@ -17911,6 +17914,9 @@ li#field_46_141 {
 .ginput_container_checkbox input {
   opacity: 0;
 }
+
+
+ */
 
 .ginput_container_checkbox label {
   text-indent: 4px;
@@ -18199,3 +18205,11 @@ li.price_field_align:after {
   }
 }
 
+/*
+Additional gform styling
+ */
+@media (min-width: 780px) {
+  .column-count-1-of-2, column-count-2-of-2 {
+    width: 50%;
+  }
+}
