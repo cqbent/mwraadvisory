@@ -18209,7 +18209,7 @@ li.price_field_align:after {
 Additional gform styling
  */
 @media (min-width: 780px) {
-  .column-count-1-of-2, column-count-2-of-2 {
+  .column-count-1-of-2, .column-count-2-of-2 {
     width: 50%;
   }
 }
