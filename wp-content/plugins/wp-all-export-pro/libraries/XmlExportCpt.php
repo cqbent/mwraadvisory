@@ -1,487 +1,624 @@
 <?php
 
+
+use Wpae\App\Service\VariationOptions\VariationOptionsFactory;
+
 final class XmlExportCpt
 {
-	/**
-	 * Singletone instance
-	 * @var XmlExportCpt
-	 */
-	protected static $instance;
+	private static $userData = array();
 
-	/**
-	 * Return singletone instance
-	 * @return XmlExportCpt
-	 */
-	static public function getInstance() {
-		if (self::$instance == NULL) {
-			self::$instance = new self();
-		}
-		return self::$instance;
-	}	
-
-	private function __construct(){}
-
-	public static function prepare_data( $entry, $xmlWriter = false, &$acfs, &$woo, &$woo_order, $implode_delimiter, $preview, $is_item_data = false, $subID = false )
+	public static function prepare_data( $entry, $exportOptions,
+                                         $xmlWriter = false, &$acfs, &$woo, &$woo_order, $implode_delimiter, $preview, $is_item_data = false, $subID = false )
 	{
-		$article = array();	
+		$variationOptionsFactory = new  VariationOptionsFactory();
+		$variationOptions = $variationOptionsFactory->createVariationOptions(PMXE_EDITION);
+		$entry = $variationOptions->preprocessPost($entry);
+
+		$article = array();
 
 		// associate exported post with import
-		if ( ! $is_item_data and wp_all_export_is_compatible() and XmlExportEngine::$exportOptions['is_generate_import'] and XmlExportEngine::$exportOptions['import_id'])
-		{				
+		if ( ! $is_item_data and wp_all_export_is_compatible() && isset($exportOptions['is_generate_import']) && isset($exportOptions['import_id']))
+		{
 			$postRecord = new PMXI_Post_Record();
 			$postRecord->clear();
 			$postRecord->getBy(array(
 				'post_id' => $entry->ID,
-				'import_id' => XmlExportEngine::$exportOptions['import_id'],
+				'import_id' => $exportOptions['import_id'],
 			));
 
 			if ($postRecord->isEmpty()){
 				$postRecord->set(array(
 					'post_id' => $entry->ID,
-					'import_id' => XmlExportEngine::$exportOptions['import_id'],
+					'import_id' => $exportOptions['import_id'],
 					'unique_key' => $entry->ID,
 					'product_key' => $entry->ID						
-				))->save();				
+				))->save();
 			}
 			unset($postRecord);
 		}
 
-		foreach (XmlExportEngine::$exportOptions['ids'] as $ID => $value) 
-		{		
-			$pType = $entry->post_type;
+		$is_xml_export = false;
 
-			if ( $is_item_data and $subID != $ID ) continue;
+		if ( ! empty($xmlWriter) && $exportOptions['export_to'] == XmlExportEngine::EXPORT_TYPE_XML && !in_array($exportOptions['xml_template_type'], array('custom', 'XmlGoogleMerchants')) ){
+			$is_xml_export = true;
+		}
 
-			// skip shop order items data
-			if ( $pType == "shop_order" and strpos(XmlExportEngine::$exportOptions['cc_label'][$ID], "item_data__") !== false and ! $is_item_data ) continue;
+		if(isset($exportOptions['ids']) && is_array($exportOptions['ids'])) {
+			foreach ($exportOptions['ids'] as $ID => $value) {
+				$pType = $entry->post_type;
 
-			$fieldName    = XmlExportEngine::$exportOptions['cc_name'][$ID];
-			$fieldValue   = str_replace("item_data__", "", XmlExportEngine::$exportOptions['cc_value'][$ID]);
-			$fieldLabel   = str_replace("item_data__", "", XmlExportEngine::$exportOptions['cc_label'][$ID]);
-			$fieldSql     = XmlExportEngine::$exportOptions['cc_sql'][$ID];
-			$fieldPhp     = XmlExportEngine::$exportOptions['cc_php'][$ID];
-			$fieldCode    = XmlExportEngine::$exportOptions['cc_code'][$ID];
-			$fieldType    = XmlExportEngine::$exportOptions['cc_type'][$ID];
-			$fieldOptions = XmlExportEngine::$exportOptions['cc_options'][$ID];
-			$fieldSettings = empty(XmlExportEngine::$exportOptions['cc_settings'][$ID]) ? $fieldOptions : XmlExportEngine::$exportOptions['cc_settings'][$ID];
+				if ($is_item_data and $subID != $ID) continue;
 
-			if ( empty($fieldName) or empty($fieldType) or ! is_numeric($ID) ) continue;
-			
-			$element_name = ( ! empty($fieldName) ) ? $fieldName : 'untitled_' . $ID;
-			$element_name_ns = '';
+				// skip shop order items data
+				if ($pType == "shop_order" and strpos($exportOptions['cc_label'][$ID], "item_data__") !== false and !$is_item_data) continue;
 
-			if (XmlExportEngine::$exportOptions['export_to'] == 'xml')
-			{				
-				$element_name = ( ! empty($fieldName) ) ? preg_replace('/[^a-z0-9_:-]/i', '', $fieldName) : 'untitled_' . $ID;				
+				$fieldName = apply_filters('wp_all_export_field_name', wp_all_export_parse_field_name($exportOptions['cc_name'][$ID]), XmlExportEngine::$exportID);
+				$fieldValue = str_replace("item_data__", "", $exportOptions['cc_value'][$ID]);
+				$fieldLabel = str_replace("item_data__", "", $exportOptions['cc_label'][$ID]);
+				$fieldSql = $exportOptions['cc_sql'][$ID];
+				$fieldPhp = $exportOptions['cc_php'][$ID];
+				$fieldCode = $exportOptions['cc_code'][$ID];
+				$fieldType = $exportOptions['cc_type'][$ID];
+				$fieldOptions = $exportOptions['cc_options'][$ID];
+				$fieldSettings = empty($exportOptions['cc_settings'][$ID]) ? $fieldOptions : $exportOptions['cc_settings'][$ID];
 
-				if (strpos($element_name, ":") !== false)
-				{
-					$element_name_parts = explode(":", $element_name);
-					$element_name_ns = (empty($element_name_parts[0])) ? '' : $element_name_parts[0];
-					$element_name = (empty($element_name_parts[1])) ? 'untitled_' . $ID : preg_replace('/[^a-z0-9_-]/i', '', $element_name_parts[1]);							
+                $fieldSnippet = (!empty($fieldPhp) and !empty($fieldCode)) ? $fieldCode : false;
+
+                if (empty($fieldName) or empty($fieldType) or !is_numeric($ID)) continue;
+
+				$element_name = (!empty($fieldName)) ? $fieldName : 'untitled_' . $ID;
+				$element_name_ns = '';
+
+				if ($is_xml_export) {
+					$element_name = (!empty($fieldName)) ? preg_replace('/[^a-z0-9_:-]/i', '', $fieldName) : 'untitled_' . $ID;
+
+					if (strpos($element_name, ":") !== false) {
+						$element_name_parts = explode(":", $element_name);
+						$element_name_ns = (empty($element_name_parts[0])) ? '' : $element_name_parts[0];
+						$element_name = (empty($element_name_parts[1])) ? 'untitled_' . $ID : preg_replace('/[^a-z0-9_-]/i', '', $element_name_parts[1]);
+					}
 				}
-			} 
 
-			$fieldSnipped = ( ! empty($fieldPhp ) and ! empty($fieldCode)) ? $fieldCode : false;			
-			
-			switch ($fieldType)
-			{
-				case 'id':									
-					if ($element_name == 'ID') $element_name = 'id';
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_post_id', pmxe_filter($entry->ID, $fieldSnipped), $entry->ID) );
-					break;
-				case 'permalink':
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_post_guid', pmxe_filter(get_permalink(), $fieldSnipped), $entry->ID) );					
-					break;
-				case 'post_type':							
-					if ($entry->post_type == 'product_variation') $pType = 'product';					
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_post_type', pmxe_filter($pType, $fieldSnipped), $entry->ID) );
-					break;					
-				case 'title':								
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_post_title', pmxe_filter($entry->post_title, $fieldSnipped), $entry->ID) );					
-					break;						
-				case 'content':
-					$val = apply_filters('pmxe_post_content', pmxe_filter($entry->post_content, $fieldSnipped), $entry->ID);					
-					wp_all_export_write_article( $article, $element_name, ($preview) ? trim(preg_replace('~[\r\n]+~', ' ', htmlspecialchars($val))) : $val );
-					break;
+				// Use this in simple xml feed
+				if (XmlExportEngine::$exportOptions['export_to'] == XmlExportEngine::EXPORT_TYPE_XML && isset($exportOptions['cc_combine_multiple_fields'][$ID]) && $exportOptions['cc_combine_multiple_fields'][$ID]) {
 
-				// Media Attachments		
-				case 'attachments':
-				case 'attachment_id':
-				case 'attachment_url':
-				case 'attachment_filename':
-				case 'attachment_path':
-				case 'attachment_title':
-				case 'attachment_caption':
-				case 'attachment_description':
-				case 'attachment_alt':
+				    $combineMultipleFieldsValue = $exportOptions['cc_combine_multiple_fields_value'][$ID];
 
-					XmlExportMediaGallery::getInstance($entry->ID);
+                    $combineMultipleFieldsValue = stripslashes($combineMultipleFieldsValue);
+                    $snippetParser = new \Wpae\App\Service\SnippetParser();
+                    $snippets = $snippetParser->parseSnippets($combineMultipleFieldsValue);
+                    $engine = new XmlExportEngine(XmlExportEngine::$exportOptions);
+                    $engine->init_available_data();
+                    $engine->init_additional_data();
+                    $snippets = $engine->get_fields_options($snippets);
 
-					$attachment_data = XmlExportMediaGallery::get_attachments($fieldType);								
+                    $snippets['order_item_per_row'] = isset($exportOptions['order_items_per_row']) ? $exportOptions['order_items_per_row'] : 1;
+                    $snippets['xml_template_type'] = $exportOptions['xml_template_type'];
+					$articleData = self::prepare_data($entry, $snippets, $acfs, $woo, $woo_order, $implode_delimiter, false, false);
 
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_' . $fieldType, pmxe_filter( implode($implode_delimiter, $attachment_data), $fieldSnipped), $entry->ID) );
+					$wpaeString = new WpaeString();
 
-					break;
+                    foreach ($articleData as $snippetName => $articleValue) {
 
-				// Media Images	
-				case 'media':
-				case 'image_id':
-				case 'image_url':				
-				case 'image_filename':
-				case 'image_path':
-				case 'image_title':
-				case 'image_caption':
-				case 'image_description':
-				case 'image_alt':			
+                        if($wpaeString->isBetween($combineMultipleFieldsValue, "{".$snippetName."}", '[',']')) {
+                            // Replace snippets in functions
+                            $combineMultipleFieldsValue = str_replace("{" . $snippetName . "}", '$articleData**OPENARR**"'.$snippetName.'"**CLOSEARR**', $combineMultipleFieldsValue);
+                        } else {
+                            // Replace snippets not in functions
+                            $combineMultipleFieldsValue = str_replace("{" . $snippetName . "}", $articleValue, $combineMultipleFieldsValue);
+                        }
+                    }
 
-					$field_options = json_decode($fieldOptions, true);
+                    $functions = $snippetParser->parseFunctions($combineMultipleFieldsValue);
 
-					XmlExportMediaGallery::getInstance($entry->ID);
+                    $combineMultipleFieldsValue = \Wpae\App\Service\CombineFields::prepareMultipleFieldsValue($functions, $combineMultipleFieldsValue, $articleData);
 
-					$images_data = XmlExportMediaGallery::get_images($fieldType, $field_options);			
+                    if($preview) {
+                        $combineMultipleFieldsValue = trim(preg_replace('~[\r\n]+~', ' ', htmlspecialchars($combineMultipleFieldsValue)));
+                    }
 
-					$images_separator = empty($field_options['image_separator']) ? $implode_delimiter : $field_options['image_separator'];			
-					
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_' . $fieldType, pmxe_filter( implode($images_separator, $images_data), $fieldSnipped), $entry->ID) );
+                    wp_all_export_write_article($article, $element_name, pmxe_filter($combineMultipleFieldsValue, $fieldSnippet));
+				} else {
 
-					break;		
+					switch ($fieldType) {
+						case 'id':
+							// For ID columns make first element in lowercase for Excel export
+							if ($element_name == 'ID' && !$ID && isset($exportOptions['export_to']) && $exportOptions['export_to'] == 'csv' && isset($exportOptions['export_to_sheet']) && $exportOptions['export_to_sheet'] != 'csv') {
+								$element_name = 'id';
+							}
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_id', pmxe_filter($entry->ID, $fieldSnippet), $entry->ID));
+							break;
+						case 'permalink':
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_guid', pmxe_filter(get_permalink(), $fieldSnippet), $entry->ID));
+							break;
+						case 'post_type':
+							if ($entry->post_type == 'product_variation') $pType = 'product';
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_type', pmxe_filter($pType, $fieldSnippet), $entry->ID));
+							break;
+						case 'title':
+							$val = apply_filters('pmxe_post_title', pmxe_filter($entry->post_title, $fieldSnippet));
+							wp_all_export_write_article($article, $element_name, ($preview) ? trim(preg_replace('~[\r\n]+~', ' ', htmlspecialchars($val))) : $val, $entry->ID);
+							break;
+						case 'content':
+							$postContent = $entry->post_content;
 
-				case 'date':
-					
-					if ( ! empty($fieldSettings))
-					{
-						switch ($fieldSettings) 
-						{
-							case 'unix':
-								$post_date = get_post_time('U', true, $entry->ID);
-								break;									
-							default:
-								$post_date = date($fieldSettings, get_post_time('U', true, $entry->ID));
-								break;
-						}														
-					}
-					else
-					{
-						$post_date = date("Ymd", get_post_time('U', true, $entry->ID));
-					}
-					
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_post_date', pmxe_filter($post_date, $fieldSnipped), $entry->ID) );
-					break;		
+                            $field_settings = ( ! empty($fieldSettings) ) ? json_decode($fieldSettings, true) : false;
+                            if ( empty($field_settings) or $field_settings['export_images_from_gallery'] )
+                            {
+                                // search for images in galleries
+                                $galleries = array();
+                                if (preg_match_all('%\[gallery[^\]]*ids="([^\s\]]*)"[^\]]*\]%is', $postContent, $matches, PREG_PATTERN_ORDER)) {
+                                    $galleries = array_unique(array_filter($matches[1]));
+                                }
+                                if ( ! empty($galleries) ){
+                                    foreach ($galleries as $key => $gallery) {
+                                        $gallery_images = array();
+                                        $imgs = array_unique(array_filter(explode(",", $gallery)));
+                                        if (!empty($imgs)){
+                                            foreach ($imgs as $img) {
+                                                if ( is_numeric($img) ){
+                                                    $attachment = get_post($img);
+                                                    $gallery_images[] = base64_encode(json_encode(array(
+                                                        'url' => wp_get_attachment_url($img),
+                                                        'title' => $attachment->post_title,
+                                                        'caption' => wp_get_attachment_caption($img),
+                                                        'alt' => get_post_meta($img, '_wp_attachment_image_alt', true),
+                                                        'description' => $attachment->post_content
+                                                    )));
+                                                }
+                                            }
+                                        }
+                                        $postContent = str_replace("ids=\"". implode(",", $imgs) ."\"", "ids=\"". implode(",", $gallery_images) ."\"", $postContent);
+                                    }
+                                }
+                            }
 
-				case 'parent':
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_post_parent', pmxe_filter($entry->post_parent, $fieldSnipped), $entry->ID) );
-					break;
-				case 'comment_status':					
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_comment_status', pmxe_filter($entry->comment_status, $fieldSnipped), $entry->ID) );
-					break;
-				case 'ping_status':					
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_ping_status', pmxe_filter($entry->ping_status, $fieldSnipped), $entry->ID) );
-					break;
-				case 'template':					
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_post_template', pmxe_filter(get_post_meta($entry->ID, '_wp_page_template', true), $fieldSnipped), $entry->ID) );
-					break;
-				case 'order':					
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_menu_order', pmxe_filter($entry->menu_order, $fieldSnipped), $entry->ID) );
-					break;
-				case 'status':					
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_post_status', pmxe_filter($entry->post_status, $fieldSnipped), $entry->ID) );
-					break;
-				case 'format':				
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_post_format', pmxe_filter(get_post_format($entry->ID), $fieldSnipped), $entry->ID) );
-					break;
-				case 'author':					
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_post_author', pmxe_filter($entry->post_author, $fieldSnipped), $entry->ID) );
-					break;
-				case 'slug':					
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_post_slug', pmxe_filter($entry->post_name, $fieldSnipped), $entry->ID) );
-					break;
-				case 'excerpt':
-					$val = apply_filters('pmxe_post_excerpt', pmxe_filter($entry->post_excerpt, $fieldSnipped), $entry->ID);					
-					wp_all_export_write_article( $article, $element_name, ($preview) ? trim(preg_replace('~[\r\n]+~', ' ', htmlspecialchars($val))) : $val );
-					break;
-				case 'cf':
-					if ( ! empty($fieldValue) )
-					{																		
-						$val = "";
+							if (isset($exportOptions['export_to']) && $exportOptions['export_to'] == XmlExportEngine::EXPORT_TYPE_XML && $exportOptions['xml_template_type'] == 'custom') {
+								$postContent = str_replace('[', '**OPENSHORTCODE**', $postContent);
+								$postContent = str_replace(']', '**CLOSESHORTCODE**', $postContent);
+							}
 
-						$cur_meta_values = get_post_meta($entry->ID, $fieldValue);	
+							$val = apply_filters('pmxe_post_content', pmxe_filter($postContent, $fieldSnippet), $entry->ID);
+							wp_all_export_write_article($article, $element_name, ($preview) ? trim(preg_replace('~[\r\n]+~', ' ', htmlspecialchars($val))) : $val);
+							break;
 
-						if ( ! empty($cur_meta_values) and is_array($cur_meta_values))
-						{
-							foreach ($cur_meta_values as $key => $cur_meta_value) 
-							{
-								if (empty($val))
-								{
-									$val = apply_filters('pmxe_custom_field', pmxe_filter(maybe_serialize($cur_meta_value), $fieldSnipped), $fieldValue, $entry->ID);																	
+						// Media Attachments
+						case 'attachments':
+						case 'attachment_id':
+						case 'attachment_url':
+						case 'attachment_filename':
+						case 'attachment_path':
+						case 'attachment_title':
+						case 'attachment_caption':
+						case 'attachment_description':
+						case 'attachment_alt':
+
+							XmlExportMediaGallery::getInstance($entry->ID);
+
+							$attachment_data = XmlExportMediaGallery::get_attachments($fieldType);
+
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_' . $fieldType, pmxe_filter(implode($implode_delimiter, $attachment_data), $fieldSnippet), $entry->ID));
+
+							break;
+
+						// Media Images
+						case 'media':
+						case 'image_id':
+						case 'image_url':
+						case 'image_filename':
+						case 'image_path':
+						case 'image_title':
+						case 'image_caption':
+						case 'image_description':
+						case 'image_alt':
+                        case 'image_featured':
+
+							$field_options = json_decode($fieldOptions, true);
+
+							XmlExportMediaGallery::getInstance($entry->ID);
+
+							$images_data = XmlExportMediaGallery::get_images($fieldType, $field_options);
+
+							$images_separator = empty($field_options['image_separator']) ? $implode_delimiter : $field_options['image_separator'];
+
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_' . $fieldType, pmxe_filter(implode($images_separator, $images_data), $fieldSnippet), $entry->ID));
+
+							break;
+
+						case 'date':
+							$post_date = prepare_date_field_value($fieldSettings, get_post_time('U', true, $entry->ID), "Ymd");
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_date', pmxe_filter($post_date, $fieldSnippet), $entry->ID));
+							break;
+						case 'post_modified':
+							$post_date = prepare_date_field_value($fieldSettings, get_post_modified_time('U', true, $entry->ID), "Ymd");
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_modified_date', pmxe_filter($post_date, $fieldSnippet), $entry->ID));
+							break;
+						case 'parent':
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_parent', pmxe_filter($entry->post_parent, $fieldSnippet), $entry->ID));
+							break;
+						case 'parent_slug':
+							$val = '';
+							if ($entry->post_parent != 0) {
+								$pages = get_post_ancestors($entry->ID);
+								$slugs = array();
+								if (!empty($pages)) {
+									foreach ($pages as $page) {
+										$the_post = get_post($page);
+										$slugs[] = $the_post->post_name;
+									}
+									$val = implode("/", array_reverse($slugs));
+								} else {
+									$the_post = get_post($entry->ID);
+									$val = $the_post->post_name;
 								}
-								else
-								{
-									$val = apply_filters('pmxe_custom_field', pmxe_filter($val . $implode_delimiter . maybe_serialize($cur_meta_value), $fieldSnipped), $fieldValue, $entry->ID);
-								}
+							} else {
+								$val = $entry->post_parent;
 							}
-							wp_all_export_write_article( $article, $element_name, $val );
-						}		
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_parent_slug', pmxe_filter($val, $fieldSnippet), $entry->ID));
+							break;
+						case 'comment_status':
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_comment_status', pmxe_filter($entry->comment_status, $fieldSnippet), $entry->ID));
+							break;
+						case 'ping_status':
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_ping_status', pmxe_filter($entry->ping_status, $fieldSnippet), $entry->ID));
+							break;
+						case 'template':
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_template', pmxe_filter(get_post_meta($entry->ID, '_wp_page_template', true), $fieldSnippet), $entry->ID));
+							break;
+						case 'order':
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_menu_order', pmxe_filter($entry->menu_order, $fieldSnippet), $entry->ID));
+							break;
+						case 'status':
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_status', pmxe_filter($entry->post_status, $fieldSnippet), $entry->ID));
+							break;
+						case 'format':
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_format', pmxe_filter(get_post_format($entry->ID), $fieldSnippet), $entry->ID));
+							break;
+						case 'author':
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_author', pmxe_filter($entry->post_author, $fieldSnippet), $entry->ID));
+							break;
+						case 'author_username':
+							$userData = self::getUserdata($entry->post_author);
+							if(is_object($userData)) {
+                                $userDataValue = $userData->user_login;
+                            } else {
+							    $userDataValue = '';
+                            }
 
-						if ( empty($cur_meta_values))
-						{
-							if ( empty($article[$element_name]))
-							{								
-								wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_custom_field', pmxe_filter('', $fieldSnipped), $fieldValue, $entry->ID) );
-							}					
-						}																																																																
-					}	
-					break;
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_author', pmxe_filter($userDataValue, $fieldSnippet), $entry->ID));
+							break;
+						case 'author_email':
+							$userData = self::getUserdata($entry->post_author);
+							if(is_object($userData)) {
+                                $userDataValue = $userData->user_email;
+                            } else {
+							    $userDataValue = '';
+                            }
 
-				case 'acf':							
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_author', pmxe_filter($userDataValue, $fieldSnippet), $entry->ID));
+							break;
+						case 'author_first_name':
+							$userData = self::getUserdata($entry->post_author);
+							if(is_object($userData)) {
+                                $userDataValue = $userData->first_name;
+                            } else {
+							    $userDataValue = '';
+                            }
 
-					if ( ! empty($fieldLabel) and class_exists( 'acf' ) ){		
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_author', pmxe_filter($userDataValue, $fieldSnippet), $entry->ID));
+							break;
+						case 'author_last_name':
+                            $userData = self::getUserdata($entry->post_author);
+                            if(is_object($userData)) {
+                                $userDataValue = $userData->last_name;
+                            } else {
+                                $userDataValue = '';
+                            }
 
-						global $acf;
+                            wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_author', pmxe_filter($userDataValue, $fieldSnippet), $entry->ID));
+							break;
+						case 'slug':
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_slug', pmxe_filter($entry->post_name, $fieldSnippet), $entry->ID));
+							break;
+						case 'excerpt':
+							$val = apply_filters('pmxe_post_excerpt', pmxe_filter($entry->post_excerpt, $fieldSnippet), $entry->ID);
+							wp_all_export_write_article($article, $element_name, ($preview) ? trim(preg_replace('~[\r\n]+~', ' ', htmlspecialchars($val))) : $val);
+							break;
+						case 'cf':
+							if (!empty($fieldValue)) {
 
-						$field_options = unserialize($fieldOptions);
+								$val = "";
+								$cur_meta_values = get_post_meta($entry->ID, $fieldValue);
 
-						if (XmlExportEngine::$exportOptions['export_to'] == 'csv')
-						{
-							switch ($field_options['type']) {
-								case 'textarea':
-								case 'oembed':
-								case 'wysiwyg':
-								case 'wp_wysiwyg':
-								case 'date_time_picker':
-								case 'date_picker':
-									
-									$field_value = get_field($fieldLabel, $entry->ID, false);
-
-									break;
-								
-								default:
-									
-									$field_value = get_field($fieldLabel, $entry->ID);								
-
-									break;
-							}
-						}		
-						else
-						{
-							$field_value = get_field($fieldLabel, $entry->ID);	
-						}				
-						
-						XmlExportACF::export_acf_field(
-							$field_value, 
-							XmlExportEngine::$exportOptions, 
-							$ID, 
-							$entry->ID, 
-							$article, 
-							$xmlWriter, 
-							$acfs, 
-							$element_name, 
-							$element_name_ns, 
-							$fieldSnipped, 
-							$field_options['group_id'], 
-							$preview
-						);
-																																																																					
-					}				
-								
-				break;
-
-				case 'woo':
-
-					if ( $xmlWriter and XmlExportEngine::$exportOptions['export_to'] == 'xml')
-					{
-						XmlExportEngine::$woo_export->export_xml($xmlWriter, $entry, XmlExportEngine::$exportOptions, $ID); 
-					}
-					else
-					{
-						XmlExportEngine::$woo_export->export_csv($article, $woo, $entry, XmlExportEngine::$exportOptions, $ID); 	
-					}										
-													
-					break;
-				
-				case 'woo_order':								
-
-					if ( $xmlWriter and XmlExportEngine::$exportOptions['export_to'] == 'xml')
-					{
-						XmlExportEngine::$woo_order_export->export_xml($xmlWriter, $entry, XmlExportEngine::$exportOptions, $ID, $preview); 						
-					}
-					else
-					{
-						XmlExportEngine::$woo_order_export->export_csv($article, $woo_order, $entry, XmlExportEngine::$exportOptions, $ID, $preview); 			
-					}									
-
-					break;
-
-				case 'attr':
-					
-					if ( ! empty($fieldValue))
-					{
-						if ( $entry->post_parent == 0 )
-						{
-							$txes_list = get_the_terms($entry->ID, $fieldValue);
-							if ( ! is_wp_error($txes_list) and ! empty($txes_list)) 
-							{
-								$attr_new = array();										
-								foreach ($txes_list as $t) 
-								{
-									$attr_new[] = $t->name;
-								}																		
-								wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_woo_attribute', pmxe_filter(implode($implode_delimiter, $attr_new), $fieldSnipped), $entry->ID, $fieldValue) );
-							}																		
-						}
-						else
-						{
-							$attribute_pa = apply_filters('pmxe_woo_attribute', get_post_meta($entry->ID, 'attribute_' . $fieldValue, true), $entry->ID, $fieldValue);
-							
-							wp_all_export_write_article( $article, $element_name, $attribute_pa );
-							
-						}								
-
-						// if ( ! in_array($element_name, $attributes)) $attributes[] = $element_name;						
-					}							
-					break;
-				
-				case 'cats':
-
-					if ( ! empty($fieldValue) )
-					{	
-						// $article[$element_name] = null;										
-						$txes_list = get_the_terms($entry->ID, $fieldValue);
-						if ( ! is_wp_error($txes_list) and ! empty($txes_list) ) 
-						{															
-							$txes_ids = array();										
-							$hierarchy_groups = array();
-																
-							foreach ($txes_list as $t) {																						
-								$txes_ids[] = $t->term_id;
-							}
-
-							foreach ($txes_list as $t) {
-								if ( wp_all_export_check_children_assign($t->term_id, $fieldValue, $txes_ids) ){
-									$ancestors = get_ancestors( $t->term_id, $fieldValue );
-									if (count($ancestors) > 0){
-										$hierarchy_group = array();
-										for ( $i = count($ancestors) - 1; $i >= 0; $i-- ) { 															
-											$term = get_term_by('id', $ancestors[$i], $fieldValue);
-											if ($term){
-												$hierarchy_group[] = $term->name;
-											}
+								if (!empty($cur_meta_values) and is_array($cur_meta_values)) {
+									foreach ($cur_meta_values as $key => $cur_meta_value) {
+										if (empty($val)) {
+											$val = maybe_serialize($cur_meta_value);
+										} else {
+											$val = $val . $implode_delimiter . maybe_serialize($cur_meta_value);
 										}
-										$hierarchy_group[]  = $t->name;
-										$hierarchy_groups[] = implode('>', $hierarchy_group);
 									}
-									else{
-										$hierarchy_groups[] = $t->name;
+									$val = pmxe_filter($val, $fieldSnippet);
+									wp_all_export_write_article($article, $element_name, ($preview) ? trim(preg_replace('~[\r\n]+~', ' ', htmlspecialchars($val))) : $val);
+								}
+
+								if (empty($cur_meta_values)) {
+									if (empty($article[$element_name])) {
+										wp_all_export_write_article($article, $element_name, apply_filters('pmxe_custom_field', pmxe_filter('', $fieldSnippet), $fieldValue, $entry->ID));
 									}
 								}
-							}	
 
-							if ( ! empty($hierarchy_groups) )
-							{
-								wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_post_taxonomy', pmxe_filter(implode($implode_delimiter, $hierarchy_groups), $fieldSnipped), $entry->ID) );
-							}																	
-							
-						}
-						
-						// if ( ! in_array($element_name, $taxes)) $taxes[] = $element_name;
-
-						if ($fieldLabel == 'product_type'){ 
-							
-							if ( $entry->post_type == 'product_variation' ) $article[$element_name] = 'variable';																			
-
-							$article['parent_id']  = $entry->post_parent;	
-
-							if ($xmlWriter and XmlExportEngine::$exportOptions['export_to'] == 'xml')
-							{
-								$xmlWriter->beginElement($element_name_ns, 'parent_id', null);
-									$xmlWriter->writeData($article['parent_id'], 'parent_id');
-								$xmlWriter->endElement();
+								/** TODO: Refactor logic */
+								/** EDGE CASE BUT CAN HAPPEN IN SOME CASES */
+								if(!is_array($cur_meta_values) && !empty($cur_meta_values)) {
+                                    wp_all_export_write_article($article, $element_name, apply_filters('pmxe_custom_field', pmxe_filter($cur_meta_values, $fieldSnippet), $fieldValue, $entry->ID));
+                                }
 							}
-						}							
-					}							
+							break;
 
-					break;
-					
-				case 'sql':						
+						case 'acf':
 
-					if ( ! empty($fieldSql) ) 
-					{
-						global $wpdb;
-						$val = $wpdb->get_var( $wpdb->prepare( stripcslashes(str_replace("%%ID%%", "%d", $fieldSql)), $entry->ID ));
-						if ( ! empty($fieldPhp) and !empty($fieldCode) )
-						{
-							// if shortcode defined
-							if (strpos($fieldCode, '[') === 0)
-							{
-								$val = do_shortcode(str_replace("%%VALUE%%", $val, $fieldCode));
-							}	
-							else
-							{
-								$val = eval('return ' . stripcslashes(str_replace("%%VALUE%%", $val, $fieldCode)) . ';');
-							}										
-						}						
-						wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_sql_field', $val, $element_name, $entry->ID) );
+							if (!empty($fieldLabel) and class_exists('acf')) {
+
+								global $acf;
+
+								$field_options = unserialize($fieldOptions);
+
+								if (!$is_xml_export) {
+									switch ($field_options['type']) {
+										case 'textarea':
+										case 'oembed':
+										case 'wysiwyg':
+										case 'wp_wysiwyg':
+										case 'date_time_picker':
+										case 'date_picker':
+
+											$field_value = get_field($fieldLabel, $entry->ID, false);
+
+											break;
+
+										default:
+
+											$field_value = get_field($fieldLabel, $entry->ID);
+
+											break;
+									}
+								} else {
+									$field_value = get_field($fieldLabel, $entry->ID);
+								}
+
+								XmlExportACF::export_acf_field(
+									$field_value,
+									$exportOptions,
+									$ID,
+									$entry->ID,
+									$article,
+									$xmlWriter,
+									$acfs,
+									$element_name,
+									$element_name_ns,
+									$fieldSnippet,
+									$field_options['group_id'],
+									$preview
+								);
+							}
+
+							break;
+
+						case 'woo':
+
+						if ($is_xml_export) {
+							XmlExportEngine::$woo_export->export_xml($xmlWriter, $entry, $exportOptions, $ID);
+						} else {
+							XmlExportEngine::$woo_export->export_csv($article, $woo, $entry, $exportOptions, $ID);
+						}
+
+							break;
+
+						case 'woo_order':
+
+							if ($is_xml_export) {
+								XmlExportEngine::$woo_order_export->export_xml($xmlWriter, $entry, $exportOptions, $ID, $preview);
+							} else {
+								XmlExportEngine::$woo_order_export->export_csv($article, $woo_order, $entry, $exportOptions, $ID, $preview);
+							}
+
+							break;
+
+						case 'attr':
+
+							if (!empty($fieldValue)) {
+								if ($entry->post_type != 'product_variation') {
+									$txes_list = get_the_terms($entry->ID, $fieldValue);
+									if (!is_wp_error($txes_list) and !empty($txes_list)) {
+										$attr_new = array();
+										foreach ($txes_list as $t) {
+											$attr_new[] = $t->name;
+										}
+										wp_all_export_write_article($article, $element_name, apply_filters('pmxe_woo_attribute', pmxe_filter(implode($implode_delimiter, $attr_new), $fieldSnippet), $entry->ID, $fieldValue));
+									} else {
+										// Write empty value (so the functions are still applied)
+										wp_all_export_write_article($article, $element_name, pmxe_filter('', $fieldSnippet));
+									}
+								} else {
+									$attribute_pa = apply_filters('pmxe_woo_attribute', get_post_meta($entry->ID, 'attribute_' . strtolower(urlencode($fieldValue)), true), $entry->ID, $fieldValue);
+									$term = get_term_by('slug', $attribute_pa, $fieldValue);
+									if ($term and !is_wp_error($term)) {
+										$attribute_pa = pmxe_filter($term->name, $fieldSnippet);
+									} else {
+										// Write empty value (so the functions are still applied)
+										$attribute_pa = pmxe_filter('', $fieldSnippet);
+									}
+
+									wp_all_export_write_article($article, $element_name, $attribute_pa);
+								}
+
+								// if ( ! in_array($element_name, $attributes)) $attributes[] = $element_name;
+							}
+							break;
+
+						case 'cats':
+
+						    if($fieldLabel == 'product_visibility') {
+                                $product = wc_get_product( $entry->ID );
+                                $value = $product->get_catalog_visibility();
+                                $value = apply_filters('pmxe_woo_field', $value, $element_name, $entry->ID);
+                                wp_all_export_write_article($article, $element_name,$value);
+                            } else {
+                                if (!empty($fieldValue)) {
+
+                                    // get categories from parent product in case when variation exported
+                                    if ($fieldLabel != 'product_shipping_class') {
+                                        // get categories from parent product in case when variation exported
+                                        $entry_id = ($entry->post_type == 'product_variation') ? $entry->post_parent : $entry->ID;
+                                    } else {
+                                        $entry_id = $entry->ID;
+                                    }
+
+                                    // switch to post language if WPML installed
+                                    if (class_exists('SitePress')) {
+                                        $post_type = get_post_type($entry_id);
+                                        $post_type = apply_filters('wpml_element_type', $post_type);
+                                        $post_language_details = apply_filters('wpml_element_language_details',
+                                            null,
+                                            array(
+                                                'element_id' => $entry_id,
+                                                'element_type' => $post_type
+                                            )
+                                        );
+                                        $language_code = empty($post_language_details->language_code) ? '' : $post_language_details->language_code;
+                                        $current_language = apply_filters('wpml_current_language', null);
+                                        do_action('wpml_switch_language', $language_code);
+                                    }
+
+                                    $txes_list = get_the_terms($entry_id, $fieldValue);
+
+                                    $hierarchy_groups = array();
+
+                                    if (!is_wp_error($txes_list) and !empty($txes_list)) {
+                                        $txes_ids = array();
+
+                                        foreach ($txes_list as $t) {
+                                            $txes_ids[] = $t->term_id;
+                                        }
+
+                                        foreach ($txes_list as $t) {
+                                            if (wp_all_export_check_children_assign($t->term_id, $fieldValue, $txes_ids)) {
+                                                $ancestors = get_ancestors($t->term_id, $fieldValue);
+                                                if (count($ancestors) > 0) {
+                                                    $hierarchy_group = array();
+                                                    for ($i = count($ancestors) - 1; $i >= 0; $i--) {
+                                                        $term = get_term_by('id', $ancestors[$i], $fieldValue);
+                                                        if ($term) {
+                                                            $hierarchy_group[] = $term->name;
+                                                        }
+                                                    }
+                                                    $hierarchy_group[] = $t->name;
+                                                    $hierarchy_groups[] = implode('>', $hierarchy_group);
+                                                } else {
+                                                    $hierarchy_groups[] = $t->name;
+                                                }
+                                            }
+                                        }
+
+                                        // if ( empty($hierarchy_groups) ) $hierarchy_groups = '';
+
+                                    }
+
+                                    wp_all_export_write_article($article, $element_name, apply_filters('pmxe_post_taxonomy', pmxe_filter(implode($implode_delimiter, $hierarchy_groups), $fieldSnippet), $entry->ID));
+
+                                    // if ( ! in_array($element_name, $taxes)) $taxes[] = $element_name;
+
+                                    if ($fieldLabel == 'product_type') {
+
+                                        if ($entry->post_type == 'product_variation') $article[$element_name] = 'variable';
+
+                                    }
+
+                                    // swith to current language if WPML installed
+                                    if (class_exists('SitePress')) {
+                                        do_action('wpml_switch_language', $current_language);
+                                    }
+                                }
+                            }
+							break;
+
+						case 'sql':
+
+							if (!empty($fieldSql)) {
+								global $wpdb;
+								$val = $wpdb->get_var($wpdb->prepare(stripcslashes(str_replace("%%ID%%", "%d", $fieldSql)), $entry->ID));
+								if (!empty($fieldPhp) and !empty($fieldCode)) {
+									// if shortcode defined
+									if (strpos($fieldCode, '[') === 0) {
+										$val = do_shortcode(str_replace("%%VALUE%%", $val, $fieldCode));
+									} else {
+										$val = eval('return ' . stripcslashes(str_replace("%%VALUE%%", $val, $fieldCode)) . ';');
+									}
+								}
+								wp_all_export_write_article($article, $element_name, apply_filters('pmxe_sql_field', $val, $element_name, $entry->ID));
+							}
+							break;
+
+						case 'wpml_trid':
+
+							$post_type = get_post_type($entry->ID);
+
+							$post_type = apply_filters('wpml_element_type', $post_type);
+
+							$post_language_details = apply_filters('wpml_element_language_details',
+								null,
+								array(
+									'element_id' => $entry->ID,
+									'element_type' => $post_type
+								)
+							);
+
+							$trid = empty($post_language_details->trid) ? '' : $post_language_details->trid;
+
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_trid_field', $trid, $element_name, $entry->ID));
+
+							break;
+
+						case 'wpml_lang':
+
+							$post_type = get_post_type($entry->ID);
+
+							$post_type = apply_filters('wpml_element_type', $post_type);
+
+							$post_language_details = apply_filters('wpml_element_language_details',
+								null,
+								array(
+									'element_id' => $entry->ID,
+									'element_type' => $post_type
+								)
+							);
+
+							$language_code = empty($post_language_details->language_code) ? '' : $post_language_details->language_code;
+
+							wp_all_export_write_article($article, $element_name, apply_filters('pmxe_trid_field', $language_code, $element_name, $entry->ID));
+
+							break;
+
+						default:
+							# code...
+							break;
 					}
-					break;
+				}
+				if ($is_xml_export and isset($article[$element_name])) {
+					$element_name_in_file = XmlCsvExport::_get_valid_header_name($element_name);
 
-				case 'wpml_trid':
+					$xmlWriter = apply_filters('wp_all_export_add_before_element', $xmlWriter, $element_name_in_file, XmlExportEngine::$exportID, $entry->ID);
 
-					$post_type = get_post_type($entry->ID);
-
-					$post_type = apply_filters( 'wpml_element_type', $post_type );
-
-					$post_language_details = apply_filters('wpml_element_language_details',
-						null, 
-						array(
-							'element_id'   => $entry->ID,
-							'element_type' => $post_type
-						)
-					);
-
-					$trid = empty($post_language_details->trid) ? '' : $post_language_details->trid;
-
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_trid_field', $trid, $element_name, $entry->ID) );
-
-					break;
-				
-				case 'wpml_lang':
-
-					$post_type = get_post_type($entry->ID);
-
-					$post_type = apply_filters( 'wpml_element_type', $post_type );
-
-					$post_language_details = apply_filters('wpml_element_language_details',
-						null, 
-						array(
-							'element_id'   => $entry->ID,
-							'element_type' => $post_type
-						)
-					);
-
-					$language_code = empty($post_language_details->language_code) ? '' : $post_language_details->language_code;
-
-					wp_all_export_write_article( $article, $element_name, apply_filters('pmxe_trid_field', $language_code, $element_name, $entry->ID) );
-
-					break;
-					
-				default:
-					# code...
-					break;
-			}
-			
-			if ( $xmlWriter and XmlExportEngine::$exportOptions['export_to'] == 'xml' and isset($article[$element_name]) )
-			{								
-				$element_name_in_file = XmlCsvExport::_get_valid_header_name( $element_name );
-				
-				$xmlWriter = apply_filters('wp_all_export_add_before_element', $xmlWriter, $element_name_in_file, XmlExportEngine::$exportID, $entry->ID);
-
-				$xmlWriter->beginElement($element_name_ns, $element_name_in_file, null);
+					$xmlWriter->beginElement($element_name_ns, $element_name_in_file, null);
 					$xmlWriter->writeData($article[$element_name], $element_name_in_file);
-				$xmlWriter->endElement();	
+					$xmlWriter->closeElement();
 
-				$xmlWriter = apply_filters('wp_all_export_add_after_element', $xmlWriter, $element_name_in_file, XmlExportEngine::$exportID, $entry->ID);
+					$xmlWriter = apply_filters('wp_all_export_add_after_element', $xmlWriter, $element_name_in_file, XmlExportEngine::$exportID, $entry->ID);
+				}
 			}
 		}
+
 		return $article;
 	}	
 
@@ -493,24 +630,41 @@ final class XmlExportCpt
 
 		$is_xml_template = $options['export_to'] == 'xml';
 
-		$implode_delimiter = ($options['delimiter'] == ',') ? '|' : ',';		
+		$implode_delimiter = XmlExportEngine::$implode;
 
 		switch ($element_type) 
 		{
 			case 'id':
-				if ($element_name == 'ID') $element_name = 'id';
+                if ($element_name == 'ID' && !$ID && $exportOptions['export_to'] == 'csv' && $exportOptions['export_to_sheet'] != 'csv'){
+                    $element_name = 'id';
+                }
 				$templateOptions['unique_key'] = '{'. $element_name .'[1]}';										
 				$templateOptions['tmp_unique_key'] = '{'. $element_name .'[1]}';	
 				$templateOptions['single_product_id'] = '{'. $element_name .'[1]}';
 				break;
-			case 'title':	
-			case 'content':
-			case 'author':				
-			case 'parent':				
+			case 'title':
+                $templateOptions[$element_type] = '{'. $element_name .'[1]}';
+                $templateOptions['is_update_' . $options['cc_type'][$ID]] = 1;
+                $templateOptions['single_product_id_first_is_variation'] = '{'. $element_name .'[1]}';
+                break;
+            case 'content':
+			case 'author':
+                $templateOptions[$element_type] = '{'. $element_name .'[1]}';
+                $templateOptions['is_update_' . $options['cc_type'][$ID]] = 1;
+			    break;
 			case 'slug':
-				$templateOptions[$element_type] = '{'. $element_name .'[1]}';										
+				$templateOptions['post_slug'] = '{'. $element_name .'[1]}';
 				$templateOptions['is_update_' . $options['cc_type'][$ID]] = 1;
-				break;	
+				break;
+            case 'parent_slug':
+                $templateOptions['is_multiple_page_parent'] = 'no';
+                $templateOptions['single_page_parent'] = '{' . $element_name . '[1]}';
+                $templateOptions['is_update_parent'] = 1;
+                break;
+			case 'parent':
+                $templateOptions['single_product_parent_id'] = '{' . $element_name . '[1]}';
+                $templateOptions['single_product_id_first_is_parent_id'] = '{' . $element_name . '[1]}';
+				break;
 			case 'excerpt':
 				$templateOptions['post_excerpt'] = '{'. $element_name .'[1]}';										
 				$templateOptions['is_update_' . $options['cc_type'][$ID]] = 1;
@@ -518,11 +672,16 @@ final class XmlExportCpt
 			case 'status':
 				$templateOptions['status_xpath'] = '{'. $element_name .'[1]}';
 				$templateOptions['is_update_status'] = 1;
-				break;								
+				break;
 			case 'date':
 				$templateOptions[$element_type] = '{'. $element_name .'[1]}';										
 				$templateOptions['is_update_dates'] = 1;
-				break;																						
+				break;
+            case 'order':
+                $templateOptions[$element_type] = '{'. $element_name .'[1]}';
+                $templateOptions['is_update_menu_order'] = 1;
+                $templateOptions['single_product_menu_order'] = '{'. $element_name .'[1]}';
+                break;
 			case 'post_type':
 
 				if ( empty($options['cpt']) )
@@ -611,30 +770,15 @@ final class XmlExportCpt
 						break;
 					}
 				}
-				break;			
-			
+				break;
 		}		
 	}
 
-	/**
-     * __get function.
-     *
-     * @access public
-     * @param mixed $key
-     * @return mixed
-     */
-    public function __get( $key ) {
-        return $this->get( $key );
-    }	
-
-    /**
-     * Get a session variable
-     *
-     * @param string $key
-     * @param  mixed $default used if the session variable isn't set
-     * @return mixed value of session variable
-     */
-    public function get( $key, $default = null ) {        
-        return isset( $this->{$key} ) ? $this->{$key} : $default;
-    }
+	static function getUserdata($userId)
+	{
+		if(!isset(self::$userData[$userId])) {
+			self::$userData[$userId] = get_userdata($userId);
+		}
+		return self::$userData[$userId];
+	}
 }

@@ -6,7 +6,12 @@ function wp_all_import_sanitize_filename($filename) {
 	if ( ! empty($filename_parts) and count($filename_parts) > 1){
 		$ext = end($filename_parts);
 		// Replace all weird characters
-		$sanitized = sanitize_file_name(substr($filename, 0, -(strlen($ext)+1)));
+        $sanitized = substr($filename, 0, -(strlen($ext)+1));
+        $sanitized = str_replace(".", "willbedots", $sanitized);
+        $sanitized = str_replace("_", "willbetrimmed", $sanitized);
+		$sanitized = sanitize_file_name($sanitized);
+        $sanitized = str_replace("willbetrimmed", "_", $sanitized);
+        $sanitized = str_replace("willbedots", ".", $sanitized);
 		// Replace dots inside filename
 		//$sanitized = str_replace('.','-', $sanitized);
 		return $sanitized . '.' . $ext;

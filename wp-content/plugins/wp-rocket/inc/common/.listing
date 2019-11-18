@@ -1,7 +1,0 @@
-drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 .
-drwxr-xr-x   9 mwra     mwra         4096 Jul 23  2016 ..
--rw-r--r--   1 mwra     mwra         7659 Dec 17  2015 admin-bar.php
--rw-r--r--   1 mwra     mwra         2564 Dec 17  2015 cloudflare.php
--rw-r--r--   1 mwra     mwra         1614 Dec 17  2015 cron.php
--rw-r--r--   1 mwra     mwra        15259 Dec 17  2015 purge.php
--rw-r--r--   1 mwra     mwra         2861 Dec 17  2015 updater.php

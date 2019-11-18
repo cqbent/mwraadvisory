@@ -91,7 +91,7 @@
 										<span class="rule_element"><?php echo $rule->title; ?></span> 
 										<span class="rule_as_is"><?php echo $condition_label; ?></span> 
 										<span class="rule_condition_value"><?php echo $rule->value; ?></span>	    										
-										<span class="condition <?php if ($rulenumber == count($filter_rules_hierarhy)):?>last_condition<?php endif; ?>"> 
+										<span class="condition <?php if ($rulenumber == count($filter_rules_hierarhy)) :?>last_condition<?php endif; ?>">
 											<label for="rule_and_<?php echo $rulenumber; ?>">AND</label>
 											<input id="rule_and_<?php echo $rulenumber; ?>" type="radio" value="and" name="rule[<?php echo $rulenumber; ?>]" <?php if ($rule->clause == 'AND'): ?>checked="checked"<?php endif; ?> class="rule_condition"/>
 											<label for="rule_or_<?php echo $rulenumber; ?>">OR</label>
@@ -107,23 +107,7 @@
 					endif;
 				?>
 			</ol>	
-			<div class="clear"></div>				
-			
+			<div class="clear"></div>
 		</fieldset>
-
-		<?php if ( @in_array("product", $post["cpt"]) and class_exists('WooCommerce')) : ?>
-
-		<div class="input wp_all_export_product_matching_mode">
-			<?php $product_matching_mode = $post['product_matching_mode']; ?>
-			<label><?php _e("Variable product matching rules: ", "wp_all_export_plugin"); ?></label>
-			<select name="product_matching_mode" style="width: 100px; border-radius:0; height: auto;">
-				<option value="strict" <?php echo ( $product_matching_mode == 'strict' ) ? 'selected="selected"' : ''; ?>><?php _e("Strict", "wp_all_export_plugin"); ?></option>
-				<option value="permissive" <?php echo ( $product_matching_mode == 'permissive' ) ? 'selected="selected"' : ''; ?>><?php _e("Permissive", "wp_all_export_plugin"); ?></option>												
-			</select>
-			<a href="#help" class="wpallexport-help" style="position: relative; top: 0px;" title="<?php _e('Strict matching requires all variations to pass in order for the product to be exported. Permissive matching allows the product to be exported if any of the variations pass.', 'wp_all_export_plugin'); ?>">?</a>							
-		</div>
-
-		<?php endif; ?>
-
 	</div>	
 </div>

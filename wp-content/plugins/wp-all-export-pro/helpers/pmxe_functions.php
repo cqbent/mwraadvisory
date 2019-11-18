@@ -60,7 +60,7 @@
 
 			global $wpdb;
 			$table_prefix = $wpdb->prefix;
-			$meta_keys = $wpdb->get_results("SELECT DISTINCT {$table_prefix}postmeta.meta_key FROM {$table_prefix}postmeta, {$table_prefix}posts WHERE {$table_prefix}postmeta.post_id = {$table_prefix}posts.ID AND {$table_prefix}posts.post_type IN ('" . implode('\',\'', $post_type) . "') AND {$table_prefix}postmeta.meta_key NOT LIKE '_edit%' LIMIT 500");			
+			$meta_keys = $wpdb->get_results("SELECT DISTINCT {$table_prefix}postmeta.meta_key FROM {$table_prefix}postmeta, {$table_prefix}posts WHERE {$table_prefix}postmeta.post_id = {$table_prefix}posts.ID AND {$table_prefix}posts.post_type IN ('" . implode('\',\'', $post_type) . "') AND {$table_prefix}postmeta.meta_key NOT LIKE '_edit%' LIMIT 1000");
 
 			$_existing_meta_keys = array();
 			if ( ! empty($meta_keys)){
@@ -86,7 +86,7 @@
 				foreach ($post_taxonomies as $tx) {
 					if (strpos($tx->name, "pa_") !== 0)		
 						$_existing_taxonomies[] = array(
-							'name' => $tx->label,
+							'name' => empty($tx->label) ? $tx->name : $tx->label,
 							'label' => $tx->name,
 							'type' => 'cats'
 						);
@@ -95,4 +95,70 @@
 			return $_existing_taxonomies;
 		}	
 	}
-	
+
+    if ( ! function_exists('wp_all_export_get_taxonomies')) {
+        function wp_all_export_get_taxonomies() {
+            // get all taxonomies
+            $taxonomies = get_taxonomies(FALSE, 'objects');
+            $ignore = array('nav_menu', 'link_category');
+            $r = array();
+            // populate $r
+            foreach ($taxonomies as $taxonomy) {
+                if (in_array($taxonomy->name, $ignore)) {
+                    continue;
+                }
+                if ( ! empty($taxonomy->labels->name) && strpos($taxonomy->labels->name, "_") === false){
+                    $r[$taxonomy->name] = $taxonomy->labels->name;
+                }
+                else{
+                    $r[$taxonomy->name] = empty($taxonomy->labels->singular_name) ? $taxonomy->name : $taxonomy->labels->singular_name;
+                }
+            }
+            asort($r, SORT_FLAG_CASE | SORT_STRING);
+            // return
+            return $r;
+
+        }
+    }
+
+    if ( ! function_exists('wp_all_export_cmp_custom_types')){
+        function wp_all_export_cmp_custom_types($a, $b)
+        {
+            return strcmp($a->labels->name, $b->labels->name);
+        }
+    }
+
+	if ( ! function_exists('prepare_date_field_value')){
+        function prepare_date_field_value($fieldOptions, $timestamp, $defaultFormat = false){
+
+            if ( ! empty($fieldOptions))
+            {
+                switch ($fieldOptions)
+                {
+                    case 'unix':
+                        $post_date = $timestamp;
+                        break;
+                    default:
+                        $post_date = date($fieldOptions, $timestamp);
+                        break;
+                }
+            }
+            else
+            {
+                // Check if export was created before v1.4.2-beta-2.0
+                if ( PMXE_Plugin::isExistingExport("1.4.2-beta-2.0") ){
+                    // Do not change date fields for exports created before v1.4.2-beta-2.0
+                    $post_date = $defaultFormat ? date($defaultFormat, $timestamp) : $timestamp;
+                }
+                else
+                {
+                    if ( in_array(XmlExportEngine::$exportOptions['xml_template_type'], array('custom', 'XmlGoogleMerchants')) ){
+                        $post_date = date("Y-m-d H:i:s", $timestamp);
+                    } else {
+                        $post_date = date("Y-m-d", $timestamp);
+                    }
+                }
+            }
+            return $post_date;
+        }
+    }

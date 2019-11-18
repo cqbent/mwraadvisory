@@ -20,8 +20,15 @@ if ( ! function_exists('wp_all_import_template_notifications') )
 
 			if ( $post['custom_type'] == 'import_users' && ! class_exists('PMUI_Plugin') )
 			{
-				$notifications[] = __('The import template you are using requires the User Import Add-On. If you continue without it your data may import incorrectly.<br/><br/><a href="http://www.wpallimport.com/add-ons/user-import/?utm_source=wordpress.org&utm_medium=wpai-import-template&utm_campaign=free+wp+all+export+plugin" target="_blank">Purchase the User Import Add-On</a>.', 'wp_all_import_plugin');						
+				$notifications[] = __('The import template you are using requires the User Add-On. If you continue without it your data may import incorrectly.<br/><br/><a href="http://www.wpallimport.com/add-ons/user-import/?utm_source=wordpress.org&utm_medium=wpai-import-template&utm_campaign=free+wp+all+export+plugin" target="_blank">Purchase the User Add-On</a>.', 'wp_all_import_plugin');						
 			}
+
+			if ( $post['custom_type'] == 'shop_customer' && ! class_exists('PMUI_Plugin') )
+			{
+				$notifications[] = __('The import template you are using requires the User Add-On. If you continue without having this add-on active, your data may import incorrectly.<br/><br/><a href="http://www.wpallimport.com/add-ons/user-import/?utm_source=wordpress.org&utm_medium=wpai-import-template&utm_campaign=free+wp+all+export+plugin" target="_blank">Purchase the User Add-On</a>.', 'wp_all_import_plugin');
+			}
+
+
 			elseif ( $post['custom_type'] == 'product' && ! class_exists('PMWI_Plugin') && class_exists( 'Woocommerce' ))
 			{
 				$notifications[] = __('The import template you are using requires the WooCommerce Import Add-On. If you continue without it your data may import incorrectly.<br/><br/><a href="http://www.wpallimport.com/woocommerce-product-import/" target="_blank">Purchase the WooCommerce Import Add-On</a>.', 'wp_all_import_plugin');				
@@ -74,6 +81,12 @@ if ( ! function_exists('wp_all_import_template_notifications') )
 					and ! is_plugin_active('yoast-seo-settings-xml-csv-import/yoast-addon.php') )
 			{
 				$notifications[] = __('The import template you are using requires the Yoast SEO Add-On. If you continue without it your data may import incorrectly.<br/><br/><a href="https://wordpress.org/plugins/yoast-seo-settings-xml-csv-import/" target="_blank">Download the Yoast SEO Add-On</a>.', 'wp_all_import_plugin');
+			}
+			// Listable SEO Add-On
+			elseif ( ! empty($post['listable_addon'])
+				and ! is_plugin_active('import-xml-csv-listings-to-listable-theme/listable-add-on.php') )
+			{
+				$notifications[] = __('The import template you are using requires the Listable Add-On. If you continue without it your data may import incorrectly.<br/><br/><a href="https://wordpress.org/plugins/import-xml-csv-listings-to-listable-theme/" target="_blank">Download the Listable Add-On</a>.', 'wp_all_import_plugin');
 			}
 			// 3rd party Add-On
 			elseif( ! empty($post['rapid_addon']) and ! is_plugin_active($post['rapid_addon']) )

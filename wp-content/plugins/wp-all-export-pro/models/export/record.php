@@ -13,39 +13,60 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 	
 	/**
 	 * Import all files matched by path
-	 * @param callback[optional] $logger Method where progress messages are submmitted
+	 * @param callable[optional] $logger Method where progress messages are submmitted
 	 * @return PMXI_Import_Record
 	 * @chainable
 	 */
 	public function execute($logger = NULL, $cron = false) {
-		
+
 		$this->fix_template_options();
 
-		$this->set('registered_on', date('Y-m-d H:i:s'))->save(); // update registered_on to indicated that job has been exectured even if no files are going to be imported by the rest of the method
-		
 		$wp_uploads = wp_upload_dir();	
 
 		$this->set(array('processing' => 1))->update(); // lock cron requests			
 
 		wp_reset_postdata();
 
-		XmlExportEngine::$exportOptions  	= $this->options;
-		XmlExportEngine::$is_user_export 	= $this->options['is_user_export'];
-		XmlExportEngine::$is_comment_export = $this->options['is_comment_export'];
-		XmlExportEngine::$exportID 		 	= $this->id;		
-		XmlExportEngine::$exportRecord 		= $this;				
+		$functions = $wp_uploads['basedir'] . DIRECTORY_SEPARATOR . WP_ALL_EXPORT_UPLOADS_BASE_DIRECTORY . DIRECTORY_SEPARATOR . 'functions.php';
+
+		if (@file_exists($functions)) {
+			require_once $functions;
+		}
+
+		XmlExportEngine::$exportOptions  	 = $this->options;
+		XmlExportEngine::$is_user_export 	 = $this->options['is_user_export'];
+		XmlExportEngine::$is_comment_export  = $this->options['is_comment_export'];
+        XmlExportEngine::$is_taxonomy_export = empty($this->options['is_taxonomy_export']) ? false : $this->options['is_taxonomy_export'];
+		XmlExportEngine::$exportID 		 	 = $this->id;
+		XmlExportEngine::$exportRecord 		 = $this;
+        XmlExportEngine::$post_types         = $this->options['cpt'];
+
+        if ( class_exists('SitePress') && ! empty(XmlExportEngine::$exportOptions['wpml_lang'])){
+          do_action( 'wpml_switch_language', XmlExportEngine::$exportOptions['wpml_lang'] );
+        }
+
+        if (empty(XmlExportEngine::$exportOptions['export_variations'])){
+            XmlExportEngine::$exportOptions['export_variations'] = XmlExportEngine::VARIABLE_PRODUCTS_EXPORT_PARENT_AND_VARIATION;
+        }
+        if (empty(XmlExportEngine::$exportOptions['export_variations_title'])){
+            XmlExportEngine::$exportOptions['export_variations_title'] = XmlExportEngine::VARIATION_USE_PARENT_TITLE;
+        }
+
+		if (empty(XmlExportEngine::$exportOptions['xml_template_type'])) XmlExportEngine::$exportOptions['xml_template_type'] = 'simple';
 
 		$filter_args = array(
 			'filter_rules_hierarhy' => $this->options['filter_rules_hierarhy'],
-			'product_matching_mode' => $this->options['product_matching_mode']
+			'product_matching_mode' => $this->options['product_matching_mode'],
+            'taxonomy_to_export' => empty($this->options['taxonomy_to_export']) ? '' : $this->options['taxonomy_to_export']
 		);
 
-		$filters = new XmlExportFiltering($filter_args);
+        $filters = \Wpae\Pro\Filtering\FilteringFactory::getFilterEngine();
+        $filters->init($filter_args);
 
 		if ('advanced' == $this->options['export_type']) 
 		{
 			// [ Update where clause]
-			$filters->parseQuery();
+			$filters->parse();
 
 			XmlExportEngine::$exportOptions['whereclause'] = $filters->get('queryWhere');
 			XmlExportEngine::$exportOptions['joinclause']  = $filters->get('queryJoin');
@@ -55,6 +76,12 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 			
 			if (XmlExportEngine::$is_user_export)
 			{
+			    $addons = new \Wpae\App\Service\Addons\AddonService();
+
+			    if(!$addons->isUserAddonActive()) {
+                    throw new \Wpae\App\Service\Addons\AddonNotFoundException('The User Export Add-On Pro is required to run this export. You can download the add-on here: <a href="http://www.wpallimport.com/portal/" target="_blank">http://www.wpallimport.com/portal</a>');
+                }
+
 				add_action('pre_user_query', 'wp_all_export_pre_user_query', 10, 1);
 				$exportQuery = eval('return new WP_User_Query(array(' . $this->options['wp_query'] . ', \'offset\' => ' . $this->exported . ', \'number\' => ' . $this->options['records_per_iteration'] . '));');			
 				remove_action('pre_user_query', 'wp_all_export_pre_user_query');
@@ -80,10 +107,8 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 		}
 		else
 		{
-			XmlExportEngine::$post_types = $this->options['cpt'];
-
 			// [ Update where clause]
-			$filters->parseQuery();
+			$filters->parse();
 
 			XmlExportEngine::$exportOptions['whereclause'] = $filters->get('queryWhere');
 			XmlExportEngine::$exportOptions['joinclause']  = $filters->get('queryJoin');
@@ -112,6 +137,13 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 				}
 				remove_action('comments_clauses', 'wp_all_export_comments_clauses');
 			}
+            elseif ( in_array('taxonomies', $this->options['cpt']))
+            {
+                add_filter('terms_clauses', 'wp_all_export_terms_clauses', 10, 3);
+                $exportQuery = new WP_Term_Query( array( 'taxonomy' => $this->options['taxonomy_to_export'], 'orderby' => 'term_id', 'order' => 'ASC', 'number' => $this->options['records_per_iteration'], 'offset' => $this->exported, 'hide_empty' => false));
+                $postCount  = count($exportQuery->get_terms());
+                remove_filter('terms_clauses', 'wp_all_export_terms_clauses');
+            }
 			else
 			{				
 				remove_all_actions('parse_query');
@@ -126,7 +158,7 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 				remove_filter('posts_join', 'wp_all_export_posts_join');			
 				remove_filter('posts_where', 'wp_all_export_posts_where');				
 			}
-		}		
+		}
 
 		XmlExportEngine::$exportQuery = $exportQuery;
 		$errors = new WP_Error();
@@ -139,7 +171,7 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 		if ( $this->exported == 0 )
 		{
 			// create an import for this export			
-			PMXE_Wpallimport::create_an_import( $this );						
+			if ( $this->options['export_to'] == 'csv' || ! empty($this->options['xml_template_type']) && ! in_array($this->options['xml_template_type'], array('custom', 'XmlGoogleMerchants')) ) PMXE_Wpallimport::create_an_import( $this );
 
 			// unlink previously generated files
 			$attachment_list = $this->options['attachment_list'];
@@ -157,12 +189,12 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 			$this->set(array(				
 				'options' => $exportOptions
 			))->save();				 
-			
+
 			// generate export file name
 			$file_path = wp_all_export_generate_export_file( $this->id ); 						
 
 			if (  ! $is_secure_import )
-			{			
+			{
 				$wp_filetype = wp_check_filetype(basename($file_path), null );
 				$attachment_data = array(
 				    'guid' => $wp_uploads['baseurl'] . '/' . _wp_relative_upload_path( $file_path ), 
@@ -172,12 +204,11 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 				    'post_status' => 'inherit'
 				);		
 
-				if ( empty($export->attch_id) )
+				if ( empty($this->attch_id) )
 				{
 					$attach_id = wp_insert_attachment( $attachment_data, $file_path );			
 				}					
-				elseif($this->options['creata_a_new_export_file'])
-				{
+				elseif($this->options['creata_a_new_export_file']) {
 					$attach_id = wp_insert_attachment( $attachment_data, $file_path );			
 				}
 				else
@@ -198,7 +229,7 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 				$exportOptions = $this->options;
 				if ( ! in_array($attach_id, $exportOptions['attachment_list'])){
 					$exportOptions['attachment_list'][] = $attach_id;	
-				} 
+				}
 				
 				$this->set(array(
 					'attch_id' => $attach_id,
@@ -207,13 +238,13 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 
 			}	
 			else 
-			{								
+			{
 				$exportOptions = $this->options;
 				$exportOptions['filepath'] = $file_path;
 				$this->set(array(
 					'options' => $exportOptions
 				))->save();
-			}		
+			}
 
 			do_action('pmxe_before_export', $this->id);
 			
@@ -251,60 +282,63 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 				remove_action('comments_clauses', 'wp_all_export_comments_clauses');	
 			}
 		}
+		elseif(XmlExportEngine::$is_taxonomy_export){
+            add_filter('terms_clauses', 'wp_all_export_terms_clauses', 10, 3);
+            $result = new WP_Term_Query( array( 'taxonomy' => $this->options['taxonomy_to_export'], 'orderby' => 'term_id', 'order' => 'ASC', 'count' => true, 'hide_empty' => false));
+            $foundPosts = count($result->get_terms());
+            remove_filter('terms_clauses', 'wp_all_export_terms_clauses');
+        }
 		else
 		{
 			$foundPosts = ( ! XmlExportEngine::$is_user_export ) ? $exportQuery->found_posts : $exportQuery->get_total();
 			$postCount  = ( ! XmlExportEngine::$is_user_export ) ? $exportQuery->post_count : count($exportQuery->get_results());
 		}
-		// [ \get total founded records ]
-
-		$functions = $wp_uploads['basedir'] . DIRECTORY_SEPARATOR . WP_ALL_EXPORT_UPLOADS_BASE_DIRECTORY . DIRECTORY_SEPARATOR . 'functions.php';
-		if ( @file_exists($functions) )
-			require_once $functions;
+		// [ \get total found records ]
 
 		XmlExportEngine::$exportOptions  = $this->options;
 		
-		// if posts still exists then export them
-		if ( $postCount )
-		{						
 
-			switch ( $this->options['export_to'] ) {
+        switch ( $this->options['export_to'] ) {
 
-				case 'xml':							
+            case XmlExportEngine::EXPORT_TYPE_XML:
 
-					$exported_to_file = XmlCsvExport::export_xml( false, $cron, $file_path, $this->exported );
+                if($this->options['xml_template_type'] == XmlExportEngine::EXPORT_TYPE_GOOLE_MERCHANTS) {
+                    $googleMerchantsServiceFactory = new \Wpae\App\Service\ExportGoogleMerchantsFactory();
+                    $googleMerchantsService = $googleMerchantsServiceFactory->createService();
+                    $googleMerchantsService->export($cron, $file_path, $this->exported);
+                } else {
+                    XmlCsvExport::export_xml( false, $cron, $file_path, $this->exported );
+                }
 
-					break;
+                break;
 
-				case 'csv':									
+            case XmlExportEngine::EXPORT_TYPE_CSV:
 
-					$exported_to_file = XmlCsvExport::export_csv( false, $cron, $file_path, $this->exported );
+                XmlCsvExport::export_csv( false, $cron, $file_path, $this->exported );
+                break;
 
-					break;								
+            default:
+                # code...
+                break;
+        }
 
-				default:
-					# code...
-					break;
-			}	
+        $this->set(array(
+            'exported' => $this->exported + $postCount,
+            'last_activity' => date('Y-m-d H:i:s'),
+            'processing' => 0
+        ))->save();
 
-			$this->set(array(
-				'exported' => $this->exported + $postCount,
-				'last_activity' => date('Y-m-d H:i:s'),
-				'processing' => 0
-			))->save();	
 
-		}	
 
 		if ( empty($foundPosts) )
 		{
 			$this->set(array(
 				'processing' => 0,
 				'triggered' => 0,
-				'canceled' => 0,				
-				'registered_on' => date('Y-m-d H:i:s'),			
-				'iteration' => ++$this->iteration				
+				'canceled' => 0,
+				'registered_on' => date('Y-m-d H:i:s'),
+				'iteration' => ++$this->iteration
 			))->update();	
-
 			do_action('pmxe_after_export', $this->id, $this);
 		}
 		elseif ( ! $postCount or $foundPosts == $this->exported )
@@ -313,15 +347,25 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 			{							
 				if ( $this->options['export_to'] == 'xml' ) 
 				{
-					$main_xml_tag = apply_filters('wp_all_export_main_xml_tag', $this->options['main_xml_tag'], $this->id);
+                    switch( XmlExportEngine::$exportOptions['xml_template_type'] ){
+                        case 'XmlGoogleMerchants':
+                        case 'custom':
+                            require_once PMXE_ROOT_DIR . '/classes/XMLWriter.php';
+                            file_put_contents($file_path, PMXE_XMLWriter::preprocess_xml("\n".XmlExportEngine::$exportOptions['custom_xml_template_footer']), FILE_APPEND);
+                        break;
+                    }
+
+				    if ( ! in_array(XmlExportEngine::$exportOptions['xml_template_type'], array('custom', 'XmlGoogleMerchants')) )
+					{
+						$main_xml_tag = apply_filters('wp_all_export_main_xml_tag', $this->options['main_xml_tag'], $this->id);
 					
-					file_put_contents($file_path, '</'.$main_xml_tag.'>', FILE_APPEND);	
+						file_put_contents($file_path, '</'.$main_xml_tag.'>', FILE_APPEND);
 
-					$xml_footer = apply_filters('wp_all_export_xml_footer', '', $this->id);	
+						$xml_footer = apply_filters('wp_all_export_xml_footer', '', $this->id);
 
-					if ( ! empty($xml_footer) ) file_put_contents($file_path, $xml_footer, FILE_APPEND);
-
-				}				
+						if ( ! empty($xml_footer) ) file_put_contents($file_path, $xml_footer, FILE_APPEND);
+					}
+				}
 
 				PMXE_Wpallimport::generateImportTemplate( $this, $file_path, $foundPosts );								    
 
@@ -349,7 +393,11 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 			))->update();	
 
 			do_action('pmxe_after_export', $this->id, $this);
-		}							
+		} else {
+		    do_action('pmxe_after_iteration', $this->id, $this);
+        }
+
+		$this->set('registered_on', date('Y-m-d H:i:s'))->save(); // update registered_on to indicated that job has been exectured even if no files are going to be imported by the rest of the method
 		
 		return $this;
 	}
@@ -362,7 +410,7 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 	{
 		// do not generate export bundle if not supported
 		if ( ! self::is_bundle_supported($this->options) ) return;
-
+		
 		$uploads  = wp_upload_dir();
 
 		//generate temporary folder
@@ -526,8 +574,14 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 					'cc_options' => empty($options['cc_options'][$ID]) ? '' : $options['cc_options'][$ID],
 					'cc_value' => empty($options['cc_value'][$ID]) ? '' : $options['cc_value'][$ID],
 					'cc_name' => empty($options['cc_name'][$ID]) ? '' : $options['cc_name'][$ID],
-					'cc_settings' => empty($options['cc_settings'][$ID]) ? '' : $options['cc_settings'][$ID]
+					'cc_settings' => empty($options['cc_settings'][$ID]) ? '' : $options['cc_settings'][$ID],
 				);
+
+				if(isset($options['cc_combine_multiple_fields']) && isset($options['cc_combine_multiple_fields_value'])) {
+
+					$field['cc_combine_multiple_fields'] = empty($options['cc_combine_multiple_fields'][$ID]) ? '' : $options['cc_combine_multiple_fields'][$ID];
+					$field['cc_combine_multiple_fields_value'] = empty($options['cc_combine_multiple_fields_value'][$ID]) ? '' : $options['cc_combine_multiple_fields_value'][$ID];
+				}
 
 				switch ($field['cc_type']) 
 				{
@@ -607,6 +661,8 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 			$options['cc_value'] = array();
 			$options['cc_name'] = array();
 			$options['cc_settings'] = array();
+			$options['cc_combine_multiple_fields'] = array();
+			$options['cc_combine_multiple_fields_value'] = array();
 
 			// apply new field settings
 			foreach ($fields as $ID => $field) {
@@ -620,7 +676,12 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 				$options['cc_value'][] = $field['cc_value'];
 				$options['cc_name'][] = $field['cc_name'];
 				$options['cc_settings'][] = $field['cc_settings'];
-			}			
+				if(isset($field['cc_combine_multiple_fields']) && isset($field['cc_combine_multiple_fields_value'])) {
+					$options['cc_combine_multiple_fields'][] = $field['cc_combine_multiple_fields'];
+					$options['cc_combine_multiple_fields_value'][] = $field['cc_combine_multiple_fields_value'];
+				}
+
+			}
 
 			$this->set(array('options' => $options))->save();
 		}		
@@ -630,6 +691,14 @@ class PMXE_Export_Record extends PMXE_Model_Record {
 
     public static function is_bundle_supported( $options )
     {	
+    	// custom XML template do not support import bundle
+    	if ( $options['export_to'] == 'xml' && ! empty($options['xml_template_type']) && in_array($options['xml_template_type'], array('custom', 'XmlGoogleMerchants')) ) return false;
+
+        // Export only parent product do not support import bundle
+        if ( ! empty($options['cpt']) and in_array($options['cpt'][0], array('product', 'product_variation')) and class_exists('WooCommerce') and $options['export_variations'] != XmlExportEngine::VARIABLE_PRODUCTS_EXPORT_PARENT_AND_VARIATION){
+            return false;
+        }
+
     	$unsupported_post_types = array('comments');
     	return ( empty($options['cpt']) and ! in_array($options['wp_query_selector'], array('wp_comment_query')) or ! empty($options['cpt']) and ! in_array($options['cpt'][0], $unsupported_post_types) ) ? true : false;
     }

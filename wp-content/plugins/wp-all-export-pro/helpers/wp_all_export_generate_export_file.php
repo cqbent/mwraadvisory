@@ -14,14 +14,21 @@ if ( ! function_exists('wp_all_export_generate_export_file') )
 		$export->getById( $export_id );
 		
 		if ( ! $export->isEmpty())
-		{			
+		{
+			if($export->options['export_to'] == XmlExportEngine::EXPORT_TYPE_XML &&
+			$export->options['xml_template_type'] == XmlExportEngine::EXPORT_TYPE_GOOLE_MERCHANTS) {
+				$extension = \Wpae\App\Service\ExportGoogleMerchants::GOOGLE_MERCHANTS_EXTENSION;
+			} else {
+				$extension = $export->options['export_to'];
+			}
+
 			if ( $export->options['creata_a_new_export_file'] )
 			{
-				$export_file_name =  sanitize_file_name($export->friendly_name) . '-' . ($export->iteration + 1) . '.' . $export->options['export_to'];
+				$export_file_name =  sanitize_file_name($export->friendly_name) . '-' . ($export->iteration + 1) . '.' . $extension;
 			}
 			else
 			{
-				$export_file_name = sanitize_file_name($export->friendly_name) . '.' . $export->options['export_to'];				
+				$export_file_name = sanitize_file_name($export->friendly_name) . '.' . $extension;
 			}					
 		}		
 

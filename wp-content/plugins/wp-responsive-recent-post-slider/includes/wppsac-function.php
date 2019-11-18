@@ -74,6 +74,19 @@ function wppsac_slider_designs() {
 	return apply_filters('wppsac_slider_designs', $design_arr );
 }
 
+/**
+ * Function to get carousel shortcode designs
+ * 
+ * @package WP Responsive Recent Post Slider
+ * @since 2.2
+ */
+function wppsac_carousel_designs() {
+    $design_arr = array(
+        'design-1'  	=> __('Design 1', 'wp-responsive-recent-post-slider'),                  
+	);
+	return apply_filters('wppsac_carousel_designs', $design_arr );
+}
+
 
 /**
  * Function to add array after specific key

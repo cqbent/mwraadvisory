@@ -1,9 +1,0 @@
-drwxr-xr-x   2 mwra     mwra         4096 Dec 15  2016 .
-drwxr-xr-x   5 mwra     mwra         4096 Dec 15  2016 ..
--rw-r--r--   1 mwra     mwra         7720 Dec 15  2016 BIFFwriter.php
--rw-r--r--   1 mwra     mwra        13541 Dec 15  2016 Escher.php
--rw-r--r--   1 mwra     mwra         4012 Dec 15  2016 Font.php
--rw-r--r--   1 mwra     mwra        57075 Dec 15  2016 Parser.php
--rw-r--r--   1 mwra     mwra        46633 Dec 15  2016 Workbook.php
--rw-r--r--   1 mwra     mwra       124022 Dec 15  2016 Worksheet.php
--rw-r--r--   1 mwra     mwra        17011 Dec 15  2016 Xf.php

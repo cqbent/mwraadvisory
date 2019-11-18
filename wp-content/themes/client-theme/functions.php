@@ -1525,7 +1525,7 @@ function disable_plugin_updates( $value ) {
    unset( $value->response['gravityforms/gravityforms.php'] );
    return $value;
 }
-add_filter( 'site_transient_update_plugins', 'disable_plugin_updates' );
+//add_filter( 'site_transient_update_plugins', 'disable_plugin_updates' );
 
 
 
@@ -1547,8 +1547,8 @@ function remove_core_updates(){
     global $wp_version;return(object) array('last_checked'=> time(),'version_checked'=> $wp_version,);
 }
 add_filter('pre_site_transient_update_core','remove_core_updates');
-add_filter('pre_site_transient_update_plugins','remove_core_updates');
-add_filter('pre_site_transient_update_themes','remove_core_updates');
+//add_filter('pre_site_transient_update_plugins','remove_core_updates');
+//add_filter('pre_site_transient_update_themes','remove_core_updates');
 
 
 

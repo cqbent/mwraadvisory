@@ -1,9 +1,0 @@
-drwxr-xr-x   2 mwra     mwra         4096 Dec 15  2016 .
-drwxr-xr-x   7 mwra     mwra         4096 Dec 15  2016 ..
--rw-r--r--   1 mwra     mwra        10791 Dec 15  2016 bestFitClass.php
--rw-r--r--   1 mwra     mwra         4247 Dec 15  2016 exponentialBestFitClass.php
--rw-r--r--   1 mwra     mwra         3366 Dec 15  2016 linearBestFitClass.php
--rw-r--r--   1 mwra     mwra         3608 Dec 15  2016 logarithmicBestFitClass.php
--rw-r--r--   1 mwra     mwra         6239 Dec 15  2016 polynomialBestFitClass.php
--rw-r--r--   1 mwra     mwra         4080 Dec 15  2016 powerBestFitClass.php
--rw-r--r--   1 mwra     mwra         5638 Dec 15  2016 trendClass.php

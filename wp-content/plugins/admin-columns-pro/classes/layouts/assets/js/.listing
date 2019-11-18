@@ -1,7 +1,0 @@
-drwxr-xr-x   2 mwra     mwra         4096 Oct  5  2016 .
-drwxr-xr-x   6 mwra     mwra         4096 Oct  5  2016 ..
--rw-r--r--   1 mwra     mwra          361 Oct  5  2016 layouts-listings-screen.js
--rw-r--r--   1 mwra     mwra         5342 Oct  5  2016 layouts.js
--rw-r--r--   1 mwra     mwra       157748 Oct  5  2016 select2.js
--rw-r--r--   1 mwra     mwra        73252 Oct  5  2016 select2.min.js
--rw-r--r--   1 mwra     mwra          108 Oct  5  2016 select2_conflict_fix.js

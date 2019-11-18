@@ -100,6 +100,7 @@ $cleantalk_hooked_actions[]='vfb_submit';
 add_action( 'wp_ajax_nopriv_woocommerce_checkout', 'ct_ajax_hook',1 );
 add_action( 'wp_ajax_woocommerce_checkout', 'ct_ajax_hook',1 );
 $cleantalk_hooked_actions[]='woocommerce_checkout';
+$cleantalk_hooked_actions[]='wcfm_ajax_controller';
 
 /*hooks for frm_action*/
 add_action( 'wp_ajax_nopriv_frm_entries_create', 'ct_ajax_hook',1 );
@@ -136,9 +137,13 @@ $cleantalk_hooked_actions[]='ninja_forms_ajax_submit';
 $cleantalk_hooked_actions[]='nf_ajax_submit';
 $cleantalk_hooked_actions[]='ninja_forms_process'; // Depricated ?
 
+/* Follow-Up Emails */
+$cleantalk_hooked_actions[] = 'fue_wc_set_cart_email';  // Don't check email via this plugin
+
+/* Follow-Up Emails */
+$cleantalk_hooked_actions[] = 'fue_wc_set_cart_email';  // Don't check email via this plugin
+
 function ct_validate_email_ajaxlogin($email=null, $is_ajax=true){
-	
-	require_once(CLEANTALK_PLUGIN_DIR . 'cleantalk-public.php');
 	
 	$email = is_null( $email ) ? $email : $_POST['email'];
 	$email = sanitize_email($email);
@@ -146,10 +151,10 @@ function ct_validate_email_ajaxlogin($email=null, $is_ajax=true){
 	
 	if(class_exists('AjaxLogin')&&isset($_POST['action'])&&$_POST['action']=='validate_email'){
 		
-		$checkjs = apbct_js_test('ct_checkjs', $_POST, true);
+		$checkjs = apbct_js_test('ct_checkjs', $_POST);
 	    $sender_info['post_checkjs_passed'] = $checkjs;
 		if ($checkjs === null){
-			$checkjs = apbct_js_test('ct_checkjs', $_COOKIE, true);
+			$checkjs = apbct_js_test('ct_checkjs', $_COOKIE);
 			$sender_info['cookie_checkjs_passed'] = $checkjs;
 		}
 		
@@ -192,15 +197,13 @@ function ct_validate_email_ajaxlogin($email=null, $is_ajax=true){
 
 function ct_user_register_ajaxlogin($user_id)
 {
-	require_once(CLEANTALK_PLUGIN_DIR . 'inc/cleantalk-public.php');
-	
 	if(class_exists('AjaxLogin')&&isset($_POST['action'])&&$_POST['action']=='register_submit')
 	{
 	    
-		$checkjs = apbct_js_test('ct_checkjs', $_POST, true);
+		$checkjs = apbct_js_test('ct_checkjs', $_POST);
 	    $sender_info['post_checkjs_passed'] = $checkjs;
 		if ($checkjs === null){
-			$checkjs = apbct_js_test('ct_checkjs', $_COOKIE, true);
+			$checkjs = apbct_js_test('ct_checkjs', $_COOKIE);
 			$sender_info['cookie_checkjs_passed'] = $checkjs;
 		}
 		
@@ -244,37 +247,21 @@ function ct_mc4wp_ajax_hook( array $errors )
 }
 
 function ct_ajax_hook($message_obj = false, $additional = false)
-{	
-	require_once(CLEANTALK_PLUGIN_DIR . 'inc/cleantalk-public.php');
-	global $apbct;
+{
+	global $apbct, $current_user;
 	
 	$message_obj = (array)$message_obj;
 	
-    //
-    // Skip test if Custom contact forms is disabled.
-    //
-    if (!$apbct->settings['general_contact_forms_test']) {
-        return false;
-    }
-
-    //
-    // Go out because we call it on backend.
-    //
-    if(	ct_is_user_enable() === false || (function_exists('get_current_user_id') && get_current_user_id() != 0)){
-		if(strval(current_action()) != 'et_pre_insert_answer' && (isset($message_obj['author']) && intval($message_obj['author']) == 0) || (isset($message_obj['post_author']) && intval($message_obj['post_author']) == 0)) //QAEngine Theme fix
-		{
-			return false;
-		}
-	}
+	// Get current_user and set it globaly
+	apbct_wp_set_current_user($current_user instanceof WP_User ? $current_user	: apbct_wp_get_current_user() );
 	
-    //
-    // Go out because of not spam data 
-    //
+    // Go out because of not spam data
     $skip_post = array(
+        'apbct_js_keys__get',  // Our service code
         'gmaps_display_info_window',  // Geo My WP pop-up windows.
         'gmw_ps_display_info_window',  // Geo My WP pop-up windows.
         'the_champ_user_auth',  // Super Socializer
-        'simbatfa-init-otp', //Two-Factor Auth 
+        'simbatfa-init-otp', //Two-Factor Auth
         'wppb_msf_check_required_fields', //ProfileBuilder skip step checking
         'boss_we_login', //Login form
         'sidebar_login_process', // Login CF7
@@ -287,23 +274,45 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 		'vp_ajax_vpt_option_save', // https://themeforest.net/item/motor-vehicles-parts-equipments-accessories-wordpress-woocommerce-theme/16829946
 		'mailster_send_test', //Mailster send test admin
 		'acf/validate_save_post', //ACF validate post admin
+		'admin:saveThemeOptions', //Ait-theme admin checking
+		'save_tourmaster_option', //Tourmaster admin save
+	    'validate_register_email', // Service id #313320
+	    'elementor_pro_forms_send_form', //Elementor Pro
+	    'phone-orders-for-woocommerce', //Phone orders for woocommerce backend
+	    'ihc_check_reg_field_ajax', //Ajax check required fields
+	    'OSTC_lostPassword', //Lost password ajax form
+		'check_retina_image_availability', //There are too many ajax requests from mobile
+	    'uap_check_reg_field_ajax', // Ultimate Affiliate Pro. Form validation.
+	    'edit-comment', // Edit comments by admin ??? that shouldn't happen
+	    'formcraft3_save_form_progress', // FormCraft – Contact Form Builder for WordPress. Save progress.
+	    'wpdmpp_save_settings', // PayPal save settings.
     );
-	
-	//General post_info for all ajax calls
-	$post_info = array('comment_type' => 'feedback_ajax');
-		
-	// Use exclusions
-	if(check_url_exclusions()){
-		return false;
-	}
-	
-	$checkjs = apbct_js_test('ct_checkjs', $_COOKIE, true);
-    if(	   (isset($_POST['action']) && in_array($_POST['action'], $skip_post))
-        || (isset($_GET['action'])  && in_array($_GET['action'], $skip_post))
-	) {
+    
+    // Skip test if
+    if( !$apbct->settings['general_contact_forms_test'] || // Test disabled
+        !apbct_is_user_enable($apbct->user) || // User is admin, editor, author
+	    // (function_exists('get_current_user_id') && get_current_user_id() != 0) || // Check with default wp_* function if it's admin
+	    (!$apbct->settings['protect_logged_in'] && ($apbct->user instanceof WP_User) && $apbct->user->ID !== 0 ) || // Logged in user
+        apbct_exclusions_check__url() || // url exclusions
+        (isset($_POST['action']) && in_array($_POST['action'], $skip_post)) || // Special params
+	    (isset($_GET['action'])  && in_array($_GET['action'], $skip_post)) ||  // Special params
+		isset($_POST['quform_submit']) || //QForms multi-paged form skip
+        // QAEngine Theme fix
+        ( strval(current_action()) != 'et_pre_insert_answer' &&
+	        (
+		        (isset($message_obj['author']) && intval($message_obj['author']) == 0) ||
+		        (isset($message_obj['post_author']) && intval($message_obj['post_author']) == 0)
+	        )
+        )
+    )
+    {
         return false;
     }
-	
+ 
+	//General post_info for all ajax calls
+	$post_info = array('comment_type' => 'feedback_ajax');
+	$checkjs = apbct_js_test('ct_checkjs', $_COOKIE);
+		
     if(isset($_POST['user_login']))
 		$sender_nickname = $_POST['user_login'];
 	else
@@ -348,6 +357,22 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 	if(isset($_POST['action']) && $_POST['action']=='woocommerce_checkout'){
 		$post_info['comment_type'] = 'order';
 	}
+	//Easy Forms for Mailchimp
+	if( isset($_POST['action']) && $_POST['action']=='process_form_submission' ){
+		$post_info['comment_type'] = 'contact_enquire_wordpress_easy_forms_for_mailchimp';
+		if( isset($_POST['form_data']) ) {
+			$form_data = explode( '&', $_POST['form_data'] );
+			$form_data_arr = array();
+			foreach ( $form_data as $val ) {
+				$form_data_element = explode( '=', $val );
+				$form_data_arr[$form_data_element[0]] = @$form_data_element[1];
+			}
+			if( isset( $form_data_arr['EMAIL'] ) ) {
+				$ct_post_temp['email'] = $form_data_arr['EMAIL'];
+			}
+		}
+	}
+	
 	$ct_temp_msg_data = isset($ct_post_temp)
 		? ct_get_fields_any($ct_post_temp)
 		: ct_get_fields_any($_POST);
@@ -388,7 +413,7 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 	foreach($_POST as $param => $value){
 		if(strpos($param, 'et_pb_contactform_submit') === 0){
 			$contact_form = 'contact_form_divi_theme';
-			$contact_form_additional = str_replace('et_pb_contactform_submit', '', $param);
+			$contact_form_additional = str_replace($param, '', $param);
 		}
 		if(strpos($param, 'avia_generated_form') === 0){
 			$contact_form = 'contact_form_enfold_theme';
@@ -569,11 +594,11 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 		{
 			$result = Array(
 				'error' => 'unexpected-error',
-			);			
+			);
 			print json_encode($result);
 			die();
-		}		
-		//Convertplug. Strpos because action value dynamically changes and depends on mailing service 
+		}
+		//Convertplug. Strpos because action value dynamically changes and depends on mailing service
 		elseif (isset($_POST['action']) && strpos($_POST['action'], '_add_subscriber') !== false){
 			$result = Array(
 				'action' => "message",
@@ -609,10 +634,10 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 		//cFormsII
 		elseif(isset($_POST['action']) && $_POST['action'] == 'submitcform')
 		{
-			header('Content-Type: application/json');	
+			header('Content-Type: application/json');
 			$result = Array(
-				'no' => "",	
-				'result' => "failure",				
+				'no' => "",
+				'result' => "failure",
 				'html' =>$ct_result->comment,
 				'hide' => false,
 				'redirection' => null
@@ -661,6 +686,30 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 			);
 			print json_encode($result);
 			die();
+		}
+		//Easy Forms for Mailchimp
+		elseif( isset($_POST['action']) && $_POST['action']=='process_form_submission' ) {
+			wp_send_json_error(
+				array(
+					'error'    => 1,
+					'response' => $ct_result->comment
+				)
+			);
+		}
+		//Optin wheel
+		elseif( isset($_POST['action']) && ($_POST['action'] == 'wof-lite-email-optin' || $_POST['action'] == 'wof-email-optin')) {
+			wp_send_json_error(__($ct_result->comment, 'wp-optin-wheel'));
+		}
+		// Forminator
+		elseif( isset($_POST['action']) && strpos($_POST['action'], 'forminator_submit') !== false ){
+			wp_send_json_error(
+				array(
+					'message' => $ct_result->comment,
+					'success' => false,
+					'errors'  => array(),
+					'behav'   => 'behaviour-thankyou',
+				)
+			);
 		}
 		else
 		{

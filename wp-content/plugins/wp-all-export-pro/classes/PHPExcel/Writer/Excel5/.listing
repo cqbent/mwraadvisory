@@ -1,9 +1,0 @@
-drwxr-xr-x   2 mwra     mwra         4096 Aug  2  2018 .
-drwxr-xr-x   6 mwra     mwra         4096 Aug  2  2018 ..
--rw-r--r--   1 mwra     mwra         8349 Aug  2  2018 BIFFwriter.php
--rw-r--r--   1 mwra     mwra        18715 Aug  2  2018 Escher.php
--rw-r--r--   1 mwra     mwra         4456 Aug  2  2018 Font.php
--rw-r--r--   1 mwra     mwra        65992 Aug  2  2018 Parser.php
--rw-r--r--   1 mwra     mwra        53237 Aug  2  2018 Workbook.php
--rw-r--r--   1 mwra     mwra       160405 Aug  2  2018 Worksheet.php
--rw-r--r--   1 mwra     mwra        18724 Aug  2  2018 Xf.php

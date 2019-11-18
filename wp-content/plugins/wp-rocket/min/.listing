@@ -1,8 +1,0 @@
-drwxr-xr-x   3 mwra     mwra         4096 Jul 23  2016 .
-drwxr-xr-x   5 mwra     mwra         4096 Jul 23  2016 ..
--rw-r--r--   1 mwra     mwra          367 Dec 17  2015 .htaccess
--rw-r--r--   1 mwra     mwra         6836 Dec 17  2015 config.php
--rw-r--r--   1 mwra     mwra          432 Dec 17  2015 groupsConfig.php
--rw-r--r--   1 mwra     mwra         1512 Dec 17  2015 index.php
-drwxr-xr-x   5 mwra     mwra         4096 Jul 23  2016 lib
--rw-r--r--   1 mwra     mwra         2822 Dec 17  2015 utils.php

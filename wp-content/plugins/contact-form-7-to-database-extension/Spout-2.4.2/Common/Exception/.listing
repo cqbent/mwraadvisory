@@ -1,7 +1,0 @@
-drwxr-xr-x   2 mwra     mwra         4096 Aug 17  2016 .
-drwxr-xr-x   5 mwra     mwra         4096 Aug 17  2016 ..
--rw-r--r--   1 mwra     mwra          202 Aug 17  2016 EncodingConversionException.php
--rw-r--r--   1 mwra     mwra          170 Aug 17  2016 IOException.php
--rw-r--r--   1 mwra     mwra          196 Aug 17  2016 InvalidArgumentException.php
--rw-r--r--   1 mwra     mwra          186 Aug 17  2016 SpoutException.php
--rw-r--r--   1 mwra     mwra          196 Aug 17  2016 UnsupportedTypeException.php

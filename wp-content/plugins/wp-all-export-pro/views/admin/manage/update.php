@@ -1,5 +1,5 @@
-<?php		
-	$l10n = array(
+<?php
+$l10n = array(
 		'confirm_and_run'    => __('Confirm & Run Export', 'wp_all_export_plugin'),
 		'save_configuration' => __('Save Export Configuration', 'wp_all_export_plugin')	
 	);
@@ -42,21 +42,19 @@
 
 				<div class="wpallexport-content-section" style="padding: 0 30px 0 0; overflow: hidden; margin-bottom: 0;">
 
-					<div id="filtering_result" class="wpallexport-ready-to-go <?php if (empty(PMXE_Plugin::$session->found_posts)):?>nothing_to_export<?php endif;?>">																		
-						<?php if (empty(PMXE_Plugin::$session->found_posts)):?>
-						<h3><?php _e('Nothing to export.', 'wp_all_export_plugin'); ?></h3>						
-						<?php else: ?>
-						<h3><?php _e('Your export is ready to run.', 'wp_all_export_plugin'); ?></h3>													
-						<?php endif; ?>				
+					<div id="filtering_result" class="wpallexport-ready-to-go">						
+						<h3> &nbsp; </h3>
 						<div class="wp_all_export_preloader"></div>
 					</div>	
 
 					<form class="confirm <?php echo ! $isWizard ? 'edit' : '' ?>" method="post" style="float:right;">							
 
 						<?php wp_nonce_field('update-export', '_wpnonce_update-export') ?>
-						<input type="hidden" name="is_confirmed" value="1" />	
+						<input type="hidden" name="is_confirmed" value="1" />
+                        <input type="hidden" name="record-count" class="wpae-record-count" value="0" />
 
-						<input type="submit" class="rad10 wp_all_export_confirm_and_run" value="<?php _e('Confirm & Run Export', 'wp_all_export_plugin') ?>" <?php if (empty(PMXE_Plugin::$session->found_posts)):?>style="display:none;"<?php endif;?>/>
+
+                        <input type="submit" class="rad10 wp_all_export_confirm_and_run" value="<?php _e('Confirm & Run Export', 'wp_all_export_plugin') ?>" <?php if (empty(PMXE_Plugin::$session->found_posts)):?>style="display:none;"<?php endif;?>/>
 					</form>	
 
 				</div>					
@@ -67,9 +65,11 @@
 
 					<input type="hidden" class="hierarhy-output" name="filter_rules_hierarhy" value="<?php echo esc_html($post['filter_rules_hierarhy']);?>"/>
 					
-					<?php 
+					<?php
+                    $addons = new \Wpae\App\Service\Addons\AddonService();
+
 					$selected_post_type = '';
-					if (XmlExportUser::$is_active): 
+					if ($addons->isUserAddonActiveAndIsUserExport()):
 						$selected_post_type = empty($post['cpt'][0]) ? 'users' : $post['cpt'][0];
 					endif;
 					if (XmlExportComment::$is_active):
@@ -82,9 +82,13 @@
 					?>
 					
 					<input type="hidden" name="selected_post_type" value="<?php echo $selected_post_type; ?>"/>
-					<input type="hidden" name="export_type" value="<?php echo $post['export_type']; ?>"/>							
+					<input type="hidden" name="export_type" value="<?php echo $post['export_type']; ?>"/>
+					<input type="hidden" name="taxonomy_to_export" value="<?php echo $post['taxonomy_to_export'];?>">
+					<input type="hidden" name="wpml_lang" value="<?php echo $post['wpml_lang'];?>" />
+					<input type="hidden" id="export_variations" name="export_variations" value="<?php echo XmlExportEngine::getProductVariationMode();?>" />
+                    <input type="hidden" name="record-count" class="wpae-record-count" value="0" />
 
-					<?php XmlExportFiltering::render_filtering_block( $engine, $isWizard, $post ); ?>							
+					<?php \Wpae\Pro\Filtering\FilteringFactory::render_filtering_block( $engine, $isWizard, $post ); ?>
 
 					<?php include_once PMXE_ROOT_DIR . '/views/admin/export/options/settings.php'; ?>						
 

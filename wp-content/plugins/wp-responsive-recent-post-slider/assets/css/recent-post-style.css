@@ -2,7 +2,7 @@
 				Box Sizing
 ************************************************************/
 .wpcolumn, .wpcolumns  {-webkit-box-sizing: border-box; -moz-box-sizing: border-box;box-sizing: border-box;}
-.recent-post-slider * {-webkit-box-sizing: border-box; -moz-box-sizing: border-box;box-sizing: border-box;}
+.recent-post-slider *, .recent-post-carousel * {-webkit-box-sizing: border-box; -moz-box-sizing: border-box;box-sizing: border-box;}
 
 /************************************************************
 				Clearfix
@@ -30,16 +30,16 @@
 .recent-post-slider .slick-dots li.slick-active button{background:#444 !important;}
 .recent-post-slider .slick-slide{padding:0px !important}
 .post-overlay{ position:relative;}
-.recent-post-slider .wp-post-content a.readmorebtn {padding: 5px 10px;border: 1px solid #e7e7e7;text-decoration: none;margin: 5px 0; font-size:14px;}
+.recent-post-slider .wp-post-content a.readmorebtn {padding: 5px 10px;border: 1px solid #e7e7e7;text-decoration: none;margin: 5px 0; font-size:14px; -moz-transition:all 0.5s ease-out 0s;-ms-transition:all 0.5s ease-out 0s;-o-transition:all 0.5s ease-out 0s; transition: all 0.5s ease-out 0s; }
 .wp-post-content {padding-bottom: 10px;}
 .wp-sub-content {padding-bottom: 10px;}
-.recent-post-slider h2.wp-post-title{margin:5px 0 !important; line-height:22px;}
-.recent-post-slider h2.wp-post-title a{font-size:22px; line-height:22px;}
+.recent-post-slider h2.wp-post-title{margin:5px 0 !important; line-height:26px;}
+.recent-post-slider h2.wp-post-title a{font-size:22px; line-height:26px;}
 .recent-post-slider .wp-post-date{margin-bottom:10px; position:relative; font-size:13px;}
 .recent-post-slider .wp-post-date::after {  background: #e96656; bottom: -4px;content: "";height: 2px; left: 0; margin: auto ; position: absolute; width: 50px; z-index: 1;}
 .recent-post-slider .recentpost-categories ul.post-categories{margin:0px 0px 10px 0 !important; padding:0px !important; list-style:none !important; font-size: 0;}
 .recent-post-slider .recentpost-categories ul.post-categories li{display:inline-block !important; margin: 2px !important; padding: 0 !important;}
-.recent-post-slider .recentpost-categories ul.post-categories li a{padding:5px 13px; text-transform:uppercase; font-size:11px; text-decoration:none; color: #fff; display: block; line-height: normal;}
+.recent-post-slider .recentpost-categories ul.post-categories li a{padding:4px 10px; text-transform:uppercase; font-size:11px; text-decoration:none; color: #fff; display: block; line-height: normal;}
 .recent-post-slider .recentpost-categories ul.post-categories li:nth-child(4n+1) a{background:#1abc9c;}
 .recent-post-slider .recentpost-categories ul.post-categories li:nth-child(4n+2) a{background:#3498db;}
 .recent-post-slider .recentpost-categories ul.post-categories li:nth-child(4n+3) a{background:#e74c3c;}
@@ -60,6 +60,8 @@
 .recent-post-slider.design-1 .slick-next{right:0px !important;}
 .recent-post-slider.design-1 .slick-prev{right:31px !important; left:auto !important;}
 .recent-post-slider.design-1 .slick-dots{left:15px !important;  bottom:2px !important;}
+.recent-post-slider.design-1 a.readmorebtn{color:#fff;}
+.recent-post-slider.design-1 a.readmorebtn:hover{color:#fff; background:rgba(0,0,0,0.5);}
 
 /***************Design-2**************/
 .recent-post-slider.design-2 .post-content-position{position:relative;}
@@ -73,6 +75,8 @@
 .recent-post-slider.design-2 .slick-prev{right:31px !important; left:auto !important;}
 .recent-post-slider.design-2 .slick-dots{left:15px !important;  bottom:2px !important;}
 .recent-post-slider.design-2 .recentpost-inner-content {width: 100%; max-height: 100%; overflow: hidden;}
+.recent-post-slider.design-2 a.readmorebtn{color:#fff;}
+.recent-post-slider.design-2 a.readmorebtn:hover{color:#fff; background:rgba(0,0,0,0.5);}
 
 /***************Design-3**************/
 .recent-post-slider.design-3 .post-image-bg{background: #f1f1f1;height: 350px;line-height: 0; overflow: hidden; position: relative; width: 100%;}
@@ -89,6 +93,7 @@
 .recent-post-slider.design-3 .slick-next{right:0px !important;}
 .recent-post-slider.design-3 .slick-prev{right:31px !important; left:auto !important;}
 .recent-post-slider.design-3 .slick-dots{left:15px !important; bottom:2px !important;}
+.recent-post-slider.design-3 a.readmorebtn:hover{color:#fff; background:rgba(0,0,0,0.5);}
 
 /***************Design-4**************/
 .recent-post-slider.design-4 .post-list-content, .recent-post-slider.design-4 .post-list{width:100%; float:left; clear:both;}
@@ -103,6 +108,50 @@
 .recent-post-slider.design-4 .slick-prev{left:0px !important;}
 .recent-post-slider.design-4 .slick-dots{left: 0;right: 0;}
 .recent-post-slider.design-4 .wp-post-content a.readmorebtn {color: #444; border-color: #444;}
+.recent-post-slider.design-4 a.readmorebtn:hover{color:#fff; background:rgba(0,0,0,0.5);}
+
+
+
+/************************************************************
+				Slick carousel
+************************************************************/
+.recent-post-carousel{visibility: hidden; opacity:0; transition:opacity 0.5s linear;}
+.recent-post-carousel.slick-initialized { visibility: visible; opacity:1;}
+.wppsac-hide{display:none;}
+.recent-post-carousel .slick-arrow{text-indent:-99999px;}
+.recent-post-carousel button.slick-arrow {background-color: transparent!important; cursor:pointer; width:30px; height:45px; position:absolute; z-index:9; border:0px !important;padding:0 !important; margin:0px !important; border-radius:0px !important;}
+.recent-post-carousel button.slick-next, .recent-post-carousel button.slick-next:hover, .recent-post-carousel button.slick-next:focus{background:rgba(0,0,0,0.5) url(arrow-right.png) center center no-repeat !important; background-size:25px 25px !important; outline:none !important; box-shadow: none;}
+.recent-post-carousel button.slick-prev, .recent-post-carousel button.slick-prev:hover, .recent-post-carousel button.slick-prev:focus{background:rgba(0,0,0,0.5) url(arrow-left.png) center center no-repeat !important; background-size:25px 25px !important;  outline:none !important; box-shadow: none;}
+.recent-post-carousel .slick-dots{padding:0 !important; margin:0 !important; position:absolute;  text-align:center;}
+.recent-post-carousel .slick-dots li button{text-indent:-99999px;}
+.recent-post-carousel .slick-dots li {list-style:none !important; display:inline-block !important; margin:0 2px !important; padding:0px !important;}
+.recent-post-carousel .slick-dots li button{background:#fff !important; margin:0px !important; padding:0px !important; border:1px solid #000; border-radius:50% !important; width:13px !important; height:13px !important;}
+.recent-post-carousel .slick-dots li button:focus{outline:none !important}
+.recent-post-carousel button:active{box-shadow: none;}
+.recent-post-carousel .slick-dots li.slick-active button{background:#444 !important;}
+.recent-post-carousel .wp-post-content a.readmorebtn {padding: 5px 10px;border: 1px solid #e7e7e7;text-decoration: none;margin: 5px 0; font-size:14px; -moz-transition:all 0.5s ease-out 0s;-ms-transition:all 0.5s ease-out 0s;-o-transition:all 0.5s ease-out 0s; transition: all 0.5s ease-out 0s; }
+.recent-post-carousel h2.wp-post-title{margin:5px 0 !important; line-height:26px;}
+.recent-post-carousel h2.wp-post-title a{font-size:22px; line-height:26px;}
+.recent-post-carousel .wp-post-date{margin-bottom:10px; position:relative; font-size:13px;}
+.recent-post-carousel .recentpost-categories ul.post-categories{margin:0px 0px 10px 0 !important; padding:0px !important; list-style:none !important; font-size: 0;}
+.recent-post-carousel .recentpost-categories ul.post-categories li{display:inline-block !important; margin: 2px !important; padding: 0 !important;}
+.recent-post-carousel .recentpost-categories ul.post-categories li a{padding:4px 10px; text-transform:uppercase; font-size:11px; text-decoration:none; color: #fff; display: block; line-height: normal;}
+.recent-post-carousel .recentpost-categories ul.post-categories li:nth-child(4n+1) a{background:#1abc9c;}
+.recent-post-carousel .recentpost-categories ul.post-categories li:nth-child(4n+2) a{background:#3498db;}
+.recent-post-carousel .recentpost-categories ul.post-categories li:nth-child(4n+3) a{background:#e74c3c;}
+.recent-post-carousel .recentpost-categories ul.post-categories li:nth-child(4n+4) a{background:#34495e;}
+
+/***************Design-1**************/
+.recent-post-carousel a{text-decoration:none !important;}
+.recent-post-carousel.design-1 .wp-post-title a{color:#444;}
+.recent-post-carousel.design-1 .post-image-bg{margin-bottom:15px;}
+.recent-post-carousel.design-1 .slick-arrow{top:50% ;transform: translateY(-50%);-webkit-transform: translateY(-50%);-moz-transform: translateY(-50%);}
+.recent-post-carousel.design-1 .post-carousel{padding: 0 10px}
+.recent-post-carousel.design-1 .slick-next{right:0px !important;}
+.recent-post-carousel.design-1 .slick-prev{left:0px !important;}
+.recent-post-carousel.design-1 .slick-dots{left: 0;right: 0;}
+.recent-post-carousel.design-1 a.readmorebtn{color:#555;}
+.recent-post-carousel.design-1 a.readmorebtn:hover{color:#fff; background:rgba(0,0,0,0.5);}
 
 .wpcolumn,
 .wpcolumns {  padding-left: 0.9375em;  padding-right: 0.9375em; width:100%; float: left;  position: relative; }

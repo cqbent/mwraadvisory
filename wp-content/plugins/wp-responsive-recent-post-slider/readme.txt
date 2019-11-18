@@ -1,56 +1,68 @@
-=== WP Responsive Recent Post Slider  ===
+=== WP Responsive Recent Post Slider/Carousel  ===
 Contributors: wponlinesupport, anoopranawat, pratik-jain
 Tags: wponlinesupport, post slider, posts slider, recent post slider, recent posts slider, slider, responsive post slider, responsive posts slider, responsive recent post slider, responsive recent posts slider, wordpress posts slider, post slideshow, posts slideshow, recent posts slideshow, shortcodes
 Requires at least: 4.0
-Tested up to: 5.1
+Tested up to: 5.2.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A quick, easy way to add and display Responsive WordPresss Recent Post Slider on your website with 4 designs using a shortcode. Also work with Gutenberg shortcode block. 
+Add and display Responsive WordPresss Recent Post Slider and Carousel on your website with 4 designs (Slider) and 1 designs (Carousel) using a shortcode. Also work with Gutenberg shortcode block. 
 
 == Description ==
-Responsive Recent WordPresss Post Slider is a WordPress posts content slider plugin with touch for mobile devices and responsive. WordPresss Recent Post Slider displays your recent posts using 4 designs with beautiful slider.
 
-View [DEMO](https://www.wponlinesupport.com/wp-plugin/wp-responsive-recent-post-slider/) | [PRO DEMO and Features](https://www.wponlinesupport.com/wp-plugin/wp-responsive-recent-post-slider/) for additional information.
+Attractive & eye-catching WP Responsive Recent Post Slider and Carousel.
 
-You can also try our FREE plugin [Recent Posts Widget Designer](https://wordpress.org/plugins/recent-posts-widget-designer/) along with "Responsive Recent Post Slider"
+This plugin displays your recent WordPress posts using :
 
-A multipurpose responsive WordPresss posts slider plugin powered with four built-in design template, lots of easy customizable options. Display unlimited number of WordPresss posts slider in a single page or post with different sets of options like category, limit, navigation type. 
+* Posts Slider (4 designs), 
+* Posts Carousel (1 designs)
 
-Also work with Gutenberg shortcode block. 
+Check [FREE DEMO](http://demo.wponlinesupport.com/recent-post-slider-demo/) 
+Check [PRO DEMO and Features](https://demo.wponlinesupport.com/prodemo/post-slider-pro/) for additional information.
 
-= Here is the Recent Post Slider shortcode example =
+When you want to makeover your WordPress website theme with something extraordinary and creative, you must consider WP responsive recent post slider. Help your website to get a slide-wise display to show the recent posts/news. Not just eye appealing, it is also loved by the visitors as they find it quite easy to locate the recent posts. 
 
-**Main shortcode:** 
+You can also try our FREE plugin [Recent Posts Widget Designer](https://wordpress.org/plugins/recent-posts-widget-designer/) along with "Responsive Recent Post Slider/Carousel"
+
+Display unlimited number of WordPresss posts slider and carousel in a single page or post with different sets of options like category, limit, navigation type. 
+
+**Also work with Gutenberg shortcode block.** 
+
+= Here is the plugin shortcode example =
+
+**Post Slider** 
 
 <code>[recent_post_slider]</code>
+
+**Post Carousel** 
+
+<code>[recent_post_carousel]</code>
 
 **To display only latest 4 post:**
 
 <code>[recent_post_slider limit="4"]</code>
-Where limit define the number of posts to display.
+Where limit define the number of posts to display. You can use same parameter with Carousel shortcode.
 
 **If you want to display Recent Post Slider by category then use this short code:** 
 
 <code>[recent_post_slider category="category_ID"]</code>
+You can use same parameter with Carousel shortcode.
 
 **We have given 4 designs. For designs use the following shortcode:** 
 
 <code>[recent_post_slider design="design-1"]</code> 
-Where designs are : design-1, design-2, design-3, design-4  
-
-You can see and select all the designs from Post -> Post Slider Designs. Here you can use the shortcode for design that you like and want to use for your website.
+Where designs are : design-1, design-2, design-3, design-4. You can use same parameter with Carousel shortcode but in Carousel we have given only 1 design ie design-1.
 
 = Here is Template code =
 <code><?php echo do_shortcode('[recent_post_slider]'); ?> </code>
+<code><?php echo do_shortcode('[recent_post_carousel]'); ?> </code>
 
 = Use Following Recent Post Slider parameters with shortcode =
 <code>[recent_post_slider]</code>
 
-* **limit** : [recent_post_slider limit="8"] (Display only 8 latest post. By default it display 8 latest posts with shortcode [recent_post_slider].
- If you want to display all posts then use limit="-1").
-* **design** : [recent_post_slider design="design-1"] (You can select 4 design( design-1, design-2, design-3, design-4 ) for your recent post slider. Post -> Post Slider Designs ).
+* **limit** : [recent_post_slider limit="8"] (Display only 8 latest post. By default it display 8 latest posts with shortcode [recent_post_slider]. If you want to display all posts then use limit="-1").
+* **design** : [recent_post_slider design="design-1"] (You can select 4 design( design-1, design-2, design-3, design-4 ) for your recent post slider. ).
 * **category**: [recent_post_slider category="category_ID"] ( ie Display recent post slider by their category ID ).
 * **show_category_name** : [recent_post_slider show_category_name="true" ] (Display category name OR not. By default value is "True". Options are "ture OR false").
 * **show_date** : [recent_post_slider show_date="false"] (Display post date OR not. By default value is "True". Options are "ture OR false")
@@ -60,14 +72,35 @@ You can see and select all the designs from Post -> Post Slider Designs. Here yo
 * **Autoplay and Autoplay Interval**: [recent_post_slider autoplay="true" autoplay_interval="100"]
 * **Slide Speed**: [recent_post_slider speed="3000"]
 * **content_words_limit** : [recent_post_slider content_words_limit="30" ] (Control post short content Words limit. By default limit is 20 words).
-
-* **Added New Shortcode Parameters**
-
 * **post_type:** [recent_post_slider post_type="post"] (ie added custom post type support where you add custom post. By default value is "post")
 * **taxonomy:** [recent_post_slider taxonomy="category"] (ie added custom taxonomy support where you add custom taxonomy. By default value is "category")
 * **hide_post:** [recent_post_slider hide_post="1,2,3"] (ie exclude some posts with their post-id that you do not want to display)
-* **show_author** [recent_post_slider show_author="false"] (ie Display author name OR not. By default value is "true". Values are "true OR false")
-* **show_read_more** [recent_post_slider show_read_more="true"] (Display read more button. Values are "true OR false")
+* **show_author:** [recent_post_slider show_author="false"] (ie Display author name OR not. By default value is "true". Values are "true OR false")
+* **show_read_more:** [recent_post_slider show_read_more="true"] (Display read more button. Values are "true OR false")
+* **rtl:** [recent_post_slider rtl="true"] (for rtl mode. By default value is “false”. Options are “true OR false”).
+
+= Use Following Recent Post Carousel parameters with shortcode =
+<code>[recent_post_carousel]</code>
+
+* **limit** : [recent_post_carousel limit="8"] (Display only 8 latest post. By default it display 8 latest posts with shortcode [recent_post_carousel]. If you want to display all posts then use limit="-1").
+* **design** : [recent_post_carousel design="design-1"] (You can select 1 design for your recent post carousel. ).
+* **category**: [recent_post_carousel category="category_ID"] ( ie Display recent post carousel by their category ID ).
+* **show_category_name** : [recent_post_carousel show_category_name="true" ] (Display category name OR not. By default value is "True". Options are "ture OR false").
+* **show_date** : [recent_post_carousel show_date="false"] (Display post date OR not. By default value is "True". Options are "ture OR false")
+* **show_content** : [recent_post_carousel show_content="true" ] (Display post Short content OR not. By default value is "True". Options are "ture OR false").
+* **media_size** : [recent_post_carousel  media_size="full"] (where you can use values : thumbnail, medium, medium_large, large and full)
+* **slides_to_show** : [recent_post_carousel slides_to_show="3" ] (Display number of posts at a time. By default value is "3").
+* **slides_to_scroll** : [recent_post_carousel slides_to_scroll="1" ] (Scroll number of posts at a time. By default value is "1").
+* **Pagination and arrows** : [recent_post_carousel dots="false" arrows="false"]
+* **Autoplay and Autoplay Interval**: [recent_post_carousel autoplay="true" autoplay_interval="100"]
+* **Slide Speed**: [recent_post_carousel speed="3000"]
+* **content_words_limit** : [recent_post_carousel content_words_limit="30" ] (Control post short content Words limit. By default limit is 20 words).
+* **post_type:** [recent_post_carousel post_type="post"] (ie added custom post type support where you add custom post. By default value is "post")
+* **taxonomy:** [recent_post_carousel taxonomy="category"] (ie added custom taxonomy support where you add custom taxonomy. By default value is "category")
+* **hide_post:** [recent_post_carousel hide_post="1,2,3"] (ie exclude some posts with their post-id that you do not want to display)
+* **show_author:** [recent_post_carousel show_author="false"] (ie Display author name OR not. By default value is "true". Values are "true OR false")
+* **show_read_more:** [recent_post_carousel show_read_more="true"] (Display read more button. Values are "true OR false")
+* **rtl:** [recent_post_carousel rtl="true"] (for rtl mode. By default value is “false”. Options are “true OR false”).
 
 = Pro Features include: =
 > <strong>Premium Version</strong><br>
@@ -83,6 +116,8 @@ You can see and select all the designs from Post -> Post Slider Designs. Here yo
 >
 
 = Features include: =
+* Post slider
+* Post carousel
 * Easy to add.
 * Also work with Gutenberg shortcode block. 
 * Given 4 designs.
@@ -120,6 +155,21 @@ You can see and select all the designs from Post -> Post Slider Designs. Here yo
 6. Category shortcode for post
 
 == Changelog ==
+
+= 2.2.3 (09, Sept 2019) =
+* [*] Fixed title line height issue reported by a user.
+
+= 2.2.2 (20, August 2019) =
+* [+] Added : Added esc_url() for featured image in a design file.
+* [*] Fixed title duplicate issue reported by a user.
+
+= 2.2.1 (2, August 2019) =
+* [+] Added : Added a new shortcode for post carousel with a design.
+* [*] New Shortcode : [recent_post_carousel]
+* [+] Added : wp_reset_postdata();
+
+= 2.1 (22, June 2019) =
+* [*] Fixed : Fixed readmore button hover issue in all designs.
 
 = 2.0.2 (28, Jan 2019) =
 * [*] Fixed an error (Erro: Undifined variable: content) when contant not added in the editor and excerpt is also empty. Thanks @franfellipe2 for showing us this issue.

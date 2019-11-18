@@ -1,7 +1,0 @@
-drwxr-xr-x   2 mwra     mwra         4096 Aug  2  2018 .
-drwxr-xr-x   4 mwra     mwra         4096 Aug  2  2018 ..
--rw-r--r--   1 mwra     mwra        12466 Aug  2  2018 ClassLoader.php
--rw-r--r--   1 mwra     mwra          147 Aug  2  2018 autoload_classmap.php
--rw-r--r--   1 mwra     mwra          149 Aug  2  2018 autoload_namespaces.php
--rw-r--r--   1 mwra     mwra          214 Aug  2  2018 autoload_psr4.php
--rw-r--r--   1 mwra     mwra         1310 Aug  2  2018 autoload_real.php

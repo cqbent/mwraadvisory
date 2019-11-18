@@ -41,6 +41,9 @@
     <div class='container'>
         <h1 class='main'>{SFW_DIE_NOTICE_IP}<a href='https://cleantalk.org/blacklists/{REMOTE_ADDRESS}' target='_blank'>{REMOTE_ADDRESS}</a></h1>
         
+		<h3>{REAL_IP__HEADER} {REAL_IP} {REAL_IP_BLOCKED}</h3>
+		<h3>{TEST_IP__HEADER} {TEST_IP} {TEST_IP_BLOCKED}</h3>
+		
 		<h2>{TEST_TITLE}</h2>
 		
         <div id='js_info'><br />{SFW_DIE_MAKE_SURE_JS_ENABLED}</div>
@@ -68,7 +71,7 @@
 		
         document.getElementById('curr_date').innerHTML = ct_date.toGMTString();
 		
-		if(location.search.search('show_debug=1') === -1){
+		if(location.search.search('debug=1') === -1){
 			setTimeout(function(){
 				window.location.href = window.location.origin + window.location.pathname + '?sfw=pass' + Math.round(ct_date.getTime()/1000);
 			}, reload_timeout);

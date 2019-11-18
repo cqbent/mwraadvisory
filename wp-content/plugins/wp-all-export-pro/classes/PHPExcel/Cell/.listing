@@ -1,8 +1,0 @@
-drwxr-xr-x   2 mwra     mwra         4096 Aug  2  2018 .
-drwxr-xr-x  15 mwra     mwra         4096 Aug  2  2018 ..
--rw-r--r--   1 mwra     mwra         8787 Aug  2  2018 AdvancedValueBinder.php
--rw-r--r--   1 mwra     mwra         3382 Aug  2  2018 DataType.php
--rw-r--r--   1 mwra     mwra        10310 Aug  2  2018 DataValidation.php
--rw-r--r--   1 mwra     mwra         3881 Aug  2  2018 DefaultValueBinder.php
--rw-r--r--   1 mwra     mwra         2838 Aug  2  2018 Hyperlink.php
--rw-r--r--   1 mwra     mwra         1550 Aug  2  2018 IValueBinder.php

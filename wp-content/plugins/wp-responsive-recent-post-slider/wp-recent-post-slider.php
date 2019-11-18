@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name: WP Responsive Recent Post Slider
+ * Plugin Name: WP Responsive Recent Post Slider/Carousel
  * Plugin URI: https://www.wponlinesupport.com/plugins/
  * Text Domain: wp-responsive-recent-post-slider
  * Domain Path: /languages/
- * Description: A quick, easy way to add and display Responsive WordPresss Recent Post Slider on your website with 4 designs using a shortcode. Also work with Gutenberg shortcode block. 
+ * Description: Add and display Responsive WordPresss Recent Post Slider and Carousel on your website with 4 designs (Slider) and 1 designs (Carousel) using a shortcode. Also work with Gutenberg shortcode block. 
  * Author: WP OnlineSupport
- * Version: 2.0.2
+ * Version: 2.2.3
  * Author URI: https://www.wponlinesupport.com/
  *
  * @package WordPress
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 if( !defined( 'WPRPS_VERSION' ) ) {
-	define( 'WPRPS_VERSION', '2.0.2' ); // Version of plugin
+	define( 'WPRPS_VERSION', '2.2.3' ); // Version of plugin
 }
 if( !defined( 'WPRPS_DIR' ) ) {
 	define( 'WPRPS_DIR', dirname( __FILE__ ) ); // Plugin dir
@@ -83,6 +83,7 @@ require_once( WPRPS_DIR . '/includes/admin/class-wprps-admin.php' );
 
 // Shortcodes
 require_once( WPRPS_DIR . '/includes/shortcodes/wppsac-slider.php' );
+require_once( WPRPS_DIR . '/includes/shortcodes/wppsac-carousel.php' );
 
 // How it work file, Load admin files
 if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {

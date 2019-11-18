@@ -1,6 +1,0 @@
-drwxr-xr-x   2 mwra     mwra         4096 Aug 17  2016 .
-drwxr-xr-x   7 mwra     mwra         4096 Aug 17  2016 ..
--rw-r--r--   1 mwra     mwra         3735 Aug 17  2016 Reader.php
--rw-r--r--   1 mwra     mwra         7563 Aug 17  2016 RowIterator.php
--rw-r--r--   1 mwra     mwra         1119 Aug 17  2016 Sheet.php
--rw-r--r--   1 mwra     mwra         2344 Aug 17  2016 SheetIterator.php

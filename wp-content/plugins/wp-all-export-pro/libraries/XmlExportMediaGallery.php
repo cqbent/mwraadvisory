@@ -47,6 +47,8 @@ final class XmlExportMediaGallery
 					'post_type' => 'attachment',
 					'posts_per_page' => -1,
 					'post_parent' => self::$pid,
+                    'orderby' => 'ID',
+                    'order' => 'ASC'
 				) );
 
 				if ( ! empty($attachments)):
@@ -68,7 +70,11 @@ final class XmlExportMediaGallery
 				// prepare featured image data
 				if ( empty(self::$featured_image) )
 				{
-					$_featured_image_id = get_post_meta(self::$pid, '_thumbnail_id', true); 
+					$_featured_image_id = self::get_meta(self::$pid, '_thumbnail_id', true);
+
+                    if (empty($_featured_image_id)){
+                        $_featured_image_id = self::get_meta(self::$pid, 'thumbnail_id', true);
+                    }
 
 					if ( ! empty($_featured_image_id) )
 					{
@@ -91,7 +97,7 @@ final class XmlExportMediaGallery
 				if ( empty($options) or ! empty($options['is_export_attached']) )
 				{
 
-					$_gallery = get_post_meta(self::$pid, '_product_image_gallery', true); 
+					$_gallery = self::get_meta(self::$pid, '_product_image_gallery', true);
 
 					if ( ! empty($_gallery))
 					{
@@ -118,13 +124,15 @@ final class XmlExportMediaGallery
 						'post_type' => 'attachment',
 						'posts_per_page' => -1,
 						'post_parent' => self::$pid,
+                        'orderby' => 'ID',
+                        'order' => 'ASC'
 					) );
 
 					if ( ! empty($images)):
 
 						foreach ($images as $image) 
 						{
-							if ( wp_attachment_is_image( $image->ID ) and ( empty(self::$featured_image) or self::$featured_image->ID != $image->ID ) ) 
+							if ( wp_attachment_is_image( $image->ID ) and ! in_array($image->ID, self::$images_ids) and ( empty(self::$featured_image) or self::$featured_image->ID != $image->ID ) )
 							{
 								self::$images[]     = $image;	
 								self::$images_ids[] = $image->ID;						
@@ -154,11 +162,11 @@ final class XmlExportMediaGallery
 			{
 				$v = self::get_media( str_replace("attachment_", "", $field), $attachment );
 
-				if ( $v and ! in_array($v, $data)) $data[] = $v;
+				$data[] = $v;
 			}
 		}
 
-		return array_unique($data);
+        return $data;
 	}
 
 	public static function get_images(  $field = 'image_url', $options = false )
@@ -167,17 +175,26 @@ final class XmlExportMediaGallery
 
 		$data = array();
 
-		if ( ! empty(self::$images) )
-		{
-			foreach (self::$images as $image) 
-			{
-				$v = self::get_media( str_replace("image_", "", $field), $image );
+        switch ($field){
 
-				if ( $v and ! in_array($v, $data)) $data[] = $v;
-			}
-		}
+            case 'image_featured':
+                $data[] = empty(self::$featured_image) ? '' : wp_get_attachment_url( self::$featured_image->ID );
+                break;
+            default:
+                if ( ! empty(self::$images) )
+                {
+                    foreach (self::$images as $image)
+                    {
+                        $v = self::get_media( str_replace("image_", "", $field), $image );
 
-		return array_unique($data);
+                        $data[] = $v;
+                    }
+                }
+                break;
+
+        }
+
+		return $data;
 	}
 
 	private static function get_media( $field = 'url', $attachment = false )
@@ -210,7 +227,7 @@ final class XmlExportMediaGallery
 				return $attachment->post_content;
 				break;
 			case 'alt':
-				return get_post_meta($attachment->ID, '_wp_attachment_image_alt', true);
+				return self::get_meta($attachment->ID, '_wp_attachment_image_alt', true);
 				break;
 			
 			default:
@@ -230,7 +247,7 @@ final class XmlExportMediaGallery
 
 		$is_xml_template = $options['export_to'] == 'xml';
 
-		$implode_delimiter = ($options['delimiter'] == ',') ? '|' : ',';
+		$implode_delimiter = XmlExportEngine::$implode;
 
 		$element_type = $options['cc_type'][$ID];
 
@@ -319,7 +336,10 @@ final class XmlExportMediaGallery
 					}
 				}
 				break;
-
+            case 'image_featured':
+                $templateOptions['is_featured'] = 1;
+                $templateOptions['is_featured_xpath'] = '{'. $element_name .'[1]}';
+                break;
 			case 'attachments':					
 			case 'attachment_url':				
 				$templateOptions['atch_delim'] = '|';
@@ -334,4 +354,17 @@ final class XmlExportMediaGallery
 		}
 
 	}
+
+	public static function get_meta($pid, $key){
+
+	    $addons = new \Wpae\App\Service\Addons\AddonService();
+
+	    if (XmlExportTaxonomy::$is_active){
+            return get_term_meta($pid, $key, true);
+        }
+        if ($addons->isUserAddonActiveAndIsUserExport()){
+            return get_user_meta($pid, $key, true);
+        }
+	    return get_post_meta($pid, $key, true);
+    }
 }

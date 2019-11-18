@@ -1,7 +1,0 @@
-drwxr-xr-x   2 mwra     mwra         4096 Jul 23  2016 .
-drwxr-xr-x   8 mwra     mwra         4096 Jul 23  2016 ..
--rw-r--r--   1 mwra     mwra         2879 Dec 17  2015 APC.php
--rw-r--r--   1 mwra     mwra         5055 Dec 17  2015 File.php
--rw-r--r--   1 mwra     mwra         3250 Dec 17  2015 Memcache.php
--rw-r--r--   1 mwra     mwra         2927 Dec 17  2015 XCache.php
--rw-r--r--   1 mwra     mwra         2907 Dec 17  2015 ZendPlatform.php

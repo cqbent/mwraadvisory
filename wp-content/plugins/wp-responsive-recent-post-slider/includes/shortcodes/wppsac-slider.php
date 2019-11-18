@@ -58,7 +58,7 @@ function get_wppsac_slider( $atts, $content = null ) {
 	}
 	
 	// Shortcode file
-	$design_file_path 	= WPRPS_DIR . '/templates/' . $design . '.php';
+	$design_file_path 	= WPRPS_DIR . '/templates/slider/' . $design . '.php';
 	$design_file 		= (file_exists($design_file_path)) ? $design_file_path : '';
 	
 	// Enqueus required script
@@ -115,7 +115,7 @@ function get_wppsac_slider( $atts, $content = null ) {
 				</div>
 		  <?php
             endif; 
-             wp_reset_query();
+             wp_reset_postdata();
 		return ob_get_clean();
 }
 add_shortcode('recent_post_slider', 'get_wppsac_slider');

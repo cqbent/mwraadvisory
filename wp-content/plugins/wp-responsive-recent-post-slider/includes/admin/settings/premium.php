@@ -90,7 +90,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	    	</tr>
 	    	<tr>
 		    	<th>Shortcodes <span>Shortcode provide output to the front-end side</span></th>
-		    	<td>1 (Slider)</td>
+		    	<td>2 (Slider and Carousel)</td>
 	    		<td>4 (Slider,  Carousel, Grid Box Slider )</td>
 	    	</tr>
 			<tr>

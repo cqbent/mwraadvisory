@@ -1,10 +1,10 @@
 === jQuery Smooth Scroll ===
 Contributors: digitalliberation, anand_kumar
 Tags: Smooth Scroll, smooth scroll anchor, scroll to top, scroll, back to top, jquery, top of page
-Donate link: https://digitalliberation.org
+Donate link: https://www.digitalliberation.org
 Requires at least: 4.0
-Tested up to: 4.9.8
-Stable tag: 1.4.4
+Tested up to: 5.2.2
+Stable tag: 1.4.5
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -25,7 +25,7 @@ This plugin makes your anchor links to scroll smooth and adds a scroll to top bu
 * Now change easing effect with the help of jQueruyUI
 
 = Important Links: =
-* [**Support**](https://digitalliberation.org/support/?utm_source=plugin&utm_medium=link&utm_campaign=jss_plugin_link)
+* [**Support**](https://forums.digitalliberation.org/?utm_source=plugin&utm_medium=link&utm_campaign=jss_plugin_link)
 * [**Github Repo**](https://github.com/anandkumar/jquery-smooth-scroll)
 * [Contribute](https://www.digitalliberation.org/contribute/?utm_source=plugin&utm_medium=link&utm_campaign=jss_plugin_link)
 
@@ -70,6 +70,10 @@ Note: This plugin is based on "Cudazi scroll to top".
 2. Example usage on dark background
 
 == Changelog ==
+
+= 1.4.4 =
+* Fix: Escape localization functions.
+* General maintainance.
 
 = 1.4.4 =
 * Renamed file name causing 404.
@@ -128,4 +132,4 @@ Note: This plugin is based on "Cudazi scroll to top".
 * Initial release at [blogsynthesis.com](https://www.blogsynthesis.com/plugins/jquery-smooth-scroll/)
 
 == Upgrade Notice ==
-Any modification made to the plugin files will be gone after upgrade. Please consider backing up before this upgrade. [Contact us](https://digitalliberation.org/wordpress) any clarification.
+Any modification made to the plugin files will be gone after upgrade. Please consider backing up before this upgrade. [Contact us](https://www.digitalliberation.org/wordpress) any clarification.

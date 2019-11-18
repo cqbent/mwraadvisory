@@ -198,8 +198,8 @@ function wprps_howitwork_page() { ?>
 													<label><?php _e('All Shortcodes', 'wp-responsive-recent-post-slider'); ?>:</label>
 												</th>
 												<td>
-													<span class="wprpsm-shortcode-preview">[recent_post_slider design="design-1"]</span> – <?php _e('Post slider Shortcode. Where you can use 4 designs', 'wp-responsive-recent-post-slider'); ?>
-													
+													<span class="wprpsm-shortcode-preview">[recent_post_slider design="design-1"]</span> – <?php _e('Post slider Shortcode. Where you can use 4 designs.', 'wp-responsive-recent-post-slider'); ?> <br />
+													<span class="wprpsm-shortcode-preview">[recent_post_carousel design="design-1"]</span> – <?php _e('Post carousel Shortcode. Where you can use 1 designs.', 'wp-responsive-recent-post-slider'); ?>
 												</td>
 											</tr>						
 												

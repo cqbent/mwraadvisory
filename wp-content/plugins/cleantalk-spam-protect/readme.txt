@@ -2,15 +2,15 @@
 Contributors: safronik 
 Tags: spam, antispam, protection, comments, firewall 
 Requires at least: 3.0
-Tested up to: 5.2
-Stable tag: 5.118.4
+Tested up to: 5.3
+Stable tag: 5.130
 License: GPLv2
 
 Spam protection, antispam, all-in-one, premium plugin. No spam comments & users, no spam contact form & WooCommerce anti-spam.
 
 == Description ==
 
-**Supports: Contact Form 7, Contact Form by WPForms, Ninja Forms, Gravity Forms, MailChimp, Formidable forms, WooCommerce, JetPack comments and contact form, BuddyPress, bbPress, Fast Secure Contact form, S2Member, MailPoet, wpDiscuz, any WordPress registrations & contact forms and themes. Just setup and forget the spam!** 
+**Supports: Contact Form 7, Contact Form by WPForms, Ninja Forms, Gravity Forms, MailChimp, Formidable forms, WooCommerce, JetPack comments and contact form, BuddyPress, bbPress, S2Member, MailPoet, wpDiscuz, any WordPress registrations & contact forms and themes. Just setup and forget the spam!** 
 
 No CAPTCHA, no questions, no animal counting, no puzzles, no math and no spam bots. Universal AntiSpam plugin. 
 
@@ -31,6 +31,7 @@ No CAPTCHA, no questions, no animal counting, no puzzles, no math and no spam bo
 14. Blocking  disposable & temporary emails.
 15. No Spam - No Google Penalties. Give your SEO boost.
 16. Mobile friendly Anti Spam & FireWall. 
+16. Stops spam in Search Form. 
 
 = Public reviews =
 > CleanTalk - Cloud-Based Anti-Spam Service to Keep Your Site Bot-Free.
@@ -55,7 +56,7 @@ Native spam protection for WordPress, JetPack comments and any other comment plu
 Filters spam bots on registration forms of WordPress, BuddyPress, bbPress, S2Member, WooCommerce, Profile builder, Login with AJAX and any other registration plugins.
 
 = Protection from contact form spam =
-The plugin is tested and ready to protect from spam emails via Formidable forms, Contact form 7, JetPack Contact form, Fast Secure Contact form, Ninja forms, Landing pages, Gravity forms, Contact Form by BestWebSoft, Simple Contact Form Plugin - PirateForms, Visual Form Builder, Form, Contact Form by WebDorado, Contact Form Email, MW WP Form, Contact Form by Jeff Bulllins, Easy Contact, Contact Us Form, Grunion Contact Form, WCP Contact Form, Easy WordPress Contact Form Plugin, WPForms Lite, Custom Contact, Forms, Amo Forms, Caldera Forms, Visual Form Builder, Contact Form Clean and Simple, Divi by Elegant Themes, The7 theme and any other themes or custom contact forms, amoForms, Custom Contact Form, Ultimate Form Builder, Contact Bank - Contact Forms Builder, Forms easily built with Smart Forms, Quick Contact Form, Usernoise contact form, cformsII - contact form, Contact Form by Web-Settler, HubSpot Marketing Free.
+The plugin is tested and ready to protect from spam emails via Formidable forms, Contact form 7, JetPack Contact form, Fast Secure Contact form, Ninja forms, Landing Page Builder, Gravity forms, Contact Form by BestWebSoft, Simple Contact Form Plugin - PirateForms, Visual Form Builder, Contact Form by WebDorado, Contact Form Email, MW WP Form, Contact Form by Jeff Bulllins, Contact Us Form, WCP Contact Form, WPForms Lite, Custom Contact, Forms, Caldera Forms, Visual Form Builder, Contact Form Clean and Simple, Divi by Elegant Themes, The7 theme and any other themes or custom contact forms, amoForms, Ultimate Form Builder, Contact Bank - Contact Forms Builder, Forms easily built with Smart Forms, Usernoise contact form, Contact Form by Web-Settler, HubSpot Marketing Free, QuForm.
 
 = WooCommerce spam filter =
 Anti-spam by CleanTalk filters spam registrations and spam reviews for WooCommerce. The plugin is fully compatible with WooCommerce 2.1 and higher.
@@ -213,14 +214,12 @@ CleanTalk has an advanced option "Spam FireWall". This option allows you to bloc
 
 = White Label Mode =
 
-To switch the plugin work in the white-label mode you must insert this code to your wp-config.php: 
+To switch the plugin work in the white-label mode you should set up a few settings on your main site in Wordpress Multisite Network:
 
-	define('APBCT_WHITELABEL',     true);
-	define('APBCT_WHITELABEL_NAME', 'YOUR_PLUGIN_NAME');
-	define('APBCT_HOSTER_API_KEY', 'YOUR_HOSTER_API_KEY');
-
-Where APBCT_WHITELABEL_NAME is any name you want for the plugin.
-Where YOUR_HOSTER_API_KEY is a key from CleanTalk's hoster panel.
+1. Check setting "Enable White Label Mode".
+2. Fill "Hoster API Key" field with key from CleanTalk's hoster panel.
+3. Fill "Plugin name" field. It could be any name you want for the plugin.
+4. Save settings.
 
 The plugin will do everything rest.
 
@@ -243,9 +242,23 @@ Non-existing email addresses also entail several other problems for website owne
 * the client will never receive any notifications from you (account activation letter, password recovery, email distribution, notifications, etc.),
 * if you use email marketing for your clients, then a large number of nonexistent emails in the mailing list may result in your IP address being added to various blacklists of email servers.
 
+Improve your email list with email validation without fake emails.
+
 = Blocking  disposable & temporary emails =
 
 Block fake and suspicious users with disposable & temporary emails to improve email delivery. So, it also prevents malicious activity, spam bots, and internet trolls.
+
+= Stops Spam in Search Form =
+
+Spam bots can use your search form to make a GET request with spam text.
+CleanTalk Anti-Spam has the option to protect your website search form from spam bots. Each time, the search generates a new page and if there are many requests, this can create additional load. So, under some conditions, spam searches can be indexed, which affects SEO,
+
+* Spam FireWall blocks access to all website pages for the most active spambots. It lowers your web server load and traffic just by doing this.
+* Anti-Spam protection for website search forms repels spambots.
+* If your search form gets data too often the CleanTalk Anti-Spam plugin will add a pause and increase it with each new attempt to send data. It saves your web server processor time.
+* Spam protection allows you to not forbid indexation for the crawler bots if you really need it but simultaneously you will get protection from spambots.
+
+You will always know what users were looking for on your site.
 
 = Translations = 
 * Albanian (sq_AL) - thanks to fjalaime https://wordpress.org/support/users/fjalaime/ 
@@ -419,13 +432,6 @@ example.com/some/body
 You should type this in wp-config.php:
 
 	$cleantalk_url_exclusions = array('some');
-	
-= Can I add exclusions for some IP addresses? =
-Yes, you can. Add this string in your wp-config.php file before defining database constants:
-
-	$cleantalk_ip_exclusions = array('127.0.0.1', '8.8.8.8');
-
-Now, all requests from IP 127.0.0.1 and 8.8.8.8 will be excluded from anti-spam checking. Remember, that this option will not be applied in registration and comment checking - they are always protected from spam.
 
 = Can I not send my personal data to CleanTalk servers? =
 Yes, you can exclude your data. Add this string in your wp-config.php file before defining database constants:
@@ -438,6 +444,8 @@ Now all fields in your submissions with the keys named 'key1', 'key2' or 'key3' 
 Use special IP 10.10.10.10 in URL to test Spam FireWall. For example,
 
     https://cleantalk.org/blog/?sfw_test_ip=10.10.10.10
+
+Attention! The incognito mode should be enabled in your browser when you do a test. To enable incognito mode press Ctrl+Shift+N for Chrome, Opera и Safari browsers; press Ctrl+Shift+P for Firefox, Internet Explorer and Microsoft Edge. A full guide to enable Incognito mode is here: https://www.wikihow.com/Activate-Incognito-Mode
 
 = How can I enter access key in WPMU version? =
 To set up global CleanTalk access key for all websites in WPMU, define constant in your wp-config.php file before defining database constants:
@@ -558,6 +566,166 @@ If your website has forms that send data to external sources, you can enable opt
 10. Website's options.
 
 == Changelog ==
+= 5.130 November 14 2019 =
+  * Fix: JetPack contact form JS check.
+  * FIx: Iphorm AJAX form.
+  * Fix: Paid Memberships Pro fix.
+  * Fix: Divi theme contact form fix.
+  * Integration: Paid Memberships Pro.
+  * Integration: Elementor Pro page builder forms.
+  * Improved: Compatibility with different server.
+
+= 5.129.1 November 5 2019 =
+  * Fix: WooCommerce order detecting.
+
+= 5.129 October 30 2019 =
+  * Upd: Localize updated.
+  * Fix: Direct $_SERVER access replaced.
+  * Integration: The 7 theme contact form.
+  * Fix: Minor improvements and bug fixes.
+  * Mod: Putting site in maintenance mode during plugin update.
+
+= 5.128.1 October 23 2019 =
+  * Fix: Fatal error when using buffer output.
+  * Fix: Translate domain for errors.
+  * Code: Fix spelling in function name.
+  * Fix: JS disabled error.
+  * Upd: Comment edit screen updated.
+  * Fix: Cleantalk\Arr::search() fixed.
+
+= 5.128 October 17 2019 =
+  * Mod: Users check - functionality updated.
+  * Fix: Users check - dates format updated.
+  * Mod: Comments check - functionality updated.
+  * Fix: Comments check - dates format updated.
+  * Fix: Fields exclusion fixed.
+  * Fix: Notice fixed.
+  * Fix: Cleantalk/Antispam/API.
+  * Fix: Minor improvements and bug fixes.
+
+= 5.127.4 October 13 2019 =
+  * Mod: Automatically decrease amount of checked users by one request if an error occurs.
+  * Fix: Security issue.
+  * Fix: Static JS key.
+  
+= 5.127.3 October 8 2019 =
+  * Fix: Errors during registration.
+
+= 5.127.2 October 8 2019 =
+  * Integration: SeedProd Coming Soon Page Pro.
+  * Fix: WooCommerce double reuqests.
+  * Fix: Static JS key.
+
+= 5.127.1 October 7 2019 =
+  * Fix: WPMS settings logic.
+  * Using default database storage engine for tables.
+
+= 5.127 September 30 2019 =
+  * Fix: Delete redirect notice on external forms
+  * Fix: Storing spam for 15 days.
+  * Fix: correct DiVi display message.
+  * Integration: Ultimate Members.
+  * Mod: Setting "Use static JS key" switched to "Auto" if it was "No". Default is "Auto".
+  * Mod: Moving White Label option to main site settings.
+  * New: Use static JS key if cache plugin detected.
+  * New: Settings for URLs, fields, roles exclusions.
+  * New: Regular Expressions support in URLs, fields exclusions.
+  * New: Send validation errors on standard registration form.
+  * Updater: Move exclusions from global variable to settings.
+  * Deprecated: IP exclusions.
+
+= 5.126 September 9 2019 =
+  * Spam protection improved!
+  * Integration: Option wheel.
+  * Mod: Improved Email detection.
+  * Mod: Improved IP detection.
+  * Fix: Too large database table with alternative sessions.
+  * Fix: Exception for WooCommerce AJAX.
+  * Fix: API key validation.
+  * Minor fixes.
+
+= 5.125 August 26 2019 =
+  * Fix: PHP Notices.
+  * Fix: Auto update.
+  * Fix: Displaying protection status for IP license.
+  * Fix: prevent capturing buffer for XMLRPC requests (check_external functionality).
+  * Fix: API key validating.
+  * New: Complete deactivation setting.
+
+= 5.124.1 August 8 2019 =
+  * Fix: Error on PHP 5.3.
+
+= 5.124 August 8 2019 =
+  * Spam protection improved.
+  * Fix: SpamFireWall local database counter on Multisite.
+  * Fix: Caldera Forms integration.
+  * Fix: Settings "Use AJAX for JS check" description.
+  * Fix: Formidable integration.
+  * New: External forms check now independed from JavaScript.
+  * New: Setting Protect external - capture buffer.
+  * New: QuForm integration.
+
+= 5.123 July 25 2019 =
+  * Fix: Plenty of minor fixes.
+  * Fix: wpDiscuz integration.
+  * Fix: Integration with bbPress.
+  * Fix: New comment email notification.
+  * New: Follow-Up Emails integration.
+  * Fix: Woocommerce integration.
+  * Fix: Spelling.
+
+= 5.122 July 10 2019 =
+  * Spam Protection improved.
+  * Fix: Error while checking account status.
+  * Fix: Conflict with Elementor Pro.
+  * Fix: Integration with Ninja Forms.
+  * Fix: Integration with Formidable.
+  * New: Detecting mobile devices.
+  * New: Integration for Easy Forms for Mailchimp.
+
+= 5.121 June 26 2019 =
+  * Fix: Translation typos.
+  * Fix: Woocommerce integration.
+  * Fix: Catching admin in AJAX queries.
+  * Mod: Session table (cleantalk_sessions) issue.
+  * Mod: Spam protection improved.
+  * Integration: Wilcity theme custom registration validation enabled
+  * New: Option "Use static JS key".
+
+= 5.120.2 June 17 2019 =
+  * Fix: WPForms integration.
+  * Fix: Translation and spelling.
+  * Fix: Minor PHP error
+
+= 5.120.1 June 6 2019 =
+  * Mod: Description for Search form protection.
+  * Fix: CSS and JS attachment.
+  * Fix: Undefined index error.
+
+= 5.120 June 5 2019 =
+  * Fix: bbPress false positives.
+  * Fix: SpamFireWall check condition.
+  * Fix: SpamFireWall block page.
+  * Fix: Catch admin action via search form test.
+  * Fix: Catch admin action (AJAX).
+  * Mod: Using minified version of JS and CSS.
+  * Mod: Date format in statistics.
+
+= 5.119.1 May 30 2019 =
+  * Fix: Helper class error.
+
+= 5.119 May 30 2019 =
+  * Fix: No more second request after registration.
+  * Fix: Activation hook.
+  * Fix: Alternative sessions. Clear table.
+  * Fix: Stop capchuring AJAX requests in admin area.
+  * Fix: Spelling.
+  * Fix: Registration cookies set.
+  * Mod: SFW exdtended die page when testing.
+  * Mod: User-agent modified.
+  * New: Test search queries for spam.
+  * New: Gathering and output statistics.
+
 = 5.118.4 May 13 2019 =
   * Fix: SFW cookie. Set correct domain for subdomains.
   * Fix: SFW update.
@@ -1878,6 +2046,167 @@ If your website has forms that send data to external sources, you can enable opt
   * First version
   
 == Upgrade Notice ==
+= 5.130 November 14 2019 =
+  * Fix: JetPack contact form JS check.
+  * FIx: Iphorm AJAX form.
+  * Fix: Paid Memberships Pro fix.
+  * Fix: Divi theme contact form fix.
+  * Integration: Paid Memberships Pro.
+  * Integration: Elementor Pro page builder forms.
+  * Improved: Compatibility with different server.
+
+= 5.129.1 November 5 2019 =
+  * Fix: WooCommerce order detecting.
+
+= 5.129 October 30 2019 =
+  * Upd: Localize updated.
+  * Fix: Direct $_SERVER access replaced.
+  * Integration: The 7 theme contact form.
+  * Fix: Minor improvements and bug fixes.
+  * Mod: Putting site in maintenance mode during plugin update.
+
+= 5.128.1 October 23 2019 =
+  * Fix: Fatal error when using buffer output.
+  * Fix: Translate domain for errors.
+  * Code: Fix spelling in function name.
+  * Fix: JS disabled error.
+  * Upd: Comment edit screen updated.
+  * Fix: Cleantalk\Arr::search() fixed.
+
+= 5.128 October 17 2019 =
+  * Mod: Users check - functionality updated.
+  * Fix: Users check - dates format updated.
+  * Mod: Comments check - functionality updated.
+  * Fix: Comments check - dates format updated.
+  * Fix: Fields exclusion fixed.
+  * Fix: Notice fixed.
+  * Fix: Cleantalk/Antispam/API.
+  * Fix: Minor improvements and bug fixes.
+
+= 5.127.4 October 13 2019 =
+  * Mod: Automatically decrease amount of checked users by one request if an error occurs.
+  * Fix: Security issue.
+  * Fix: Static JS key.
+
+= 5.127.3 October 8 2019 =
+  * Fix: Errors during registration.
+
+= 5.127.2 October 8 2019 =
+  * Integration: SeedProd Coming Soon Page Pro.
+  * Fix: WooCommerce double reuqests.
+  * Fix: Static JS key.
+
+= 5.127.1 October 7 2019 =
+  * Fix: WPMS settings logic.
+  * Using default database storage engine for tables.
+
+= 5.127 September 30 2019 =
+  * Fix: Delete redirect notice on external forms
+  * Fix: Storing spam for 15 days.
+  * Fix: correct DiVi display message.
+  * Integration: Ultimate Members.
+  * Mod: Setting "Use static JS key" switched to "Auto" if it was "No". Default is "Auto".
+  * Mod: Moving White Label option to main site settings.
+  * New: Use static JS key if cache plugin detected.
+  * New: Settings for URLs, fields, roles exclusions.
+  * New: Regular Expressions support in URLs, fields exclusions.
+  * New: Send validation errors on standard registration form.
+  * Updater: Move exclusions from global variable to settings.
+  * Deprecated: IP exclusions.
+
+= 5.126 September 9 2019 =
+  * Spam protection improved!
+  * Integration: Option wheel.
+  * Mod: Improved Email detection.
+  * Mod: Improved IP detection.
+  * Fix: Too large database table with alternative sessions.
+  * Fix: Exception for WooCommerce AJAX.
+  * Fix: API key validation.
+  * Minor fixes.
+
+= 5.125 August 26 2019 =
+  * Fix: PHP Notices.
+  * Fix: Auto update.
+  * Fix: Displaying protection status for IP license.
+  * Fix: prevent capturing buffer for XMLRPC requests (check_external functionality).
+  * Fix: API key validating.
+  * New: Complete deactivation setting.
+
+= 5.124.1 August 8 2019 =
+  * Fix: Error on PHP 5.3.
+
+= 5.124 August 8 2019 =
+  * Spam protection improved.
+  * Fix: SpamFireWall local database counter on Multisite.
+  * Fix: Caldera Forms integration.
+  * Fix: Settings "Use AJAX for JS check" description.
+  * Fix: Formidable integration.
+  * New: External forms check now independed from JavaScript.
+  * New: Setting Protect external - capture buffer.
+  * New: QuForm integration.
+
+= 5.123 July 25 2019 =
+  * Fix: Plenty of minor fixes.
+  * Fix: wpDiscuz integration.
+  * Fix: Integration with bbPress.
+  * Fix: New comment email notification.
+  * New: Follow-Up Emails integration.
+  * Fix: Woocommerce integration.
+  * Fix: Spelling.
+
+= 5.122 July 10 2019 =
+  * Spam Protection improved.
+  * Fix: Error while checking account status.
+  * Fix: Conflict with Elementor Pro.
+  * Fix: Integration with Ninja Forms.
+  * Fix: Integration with Formidable.
+  * New: Detecting mobile devices.
+  * New: Integration for Easy Forms for Mailchimp.
+
+= 5.121 June 26 2019 =
+  * Fix: Translation typos.
+  * Fix: Woocommerce integration.
+  * Fix: Catching admin in AJAX queries.
+  * Mod: Session table (cleantalk_sessions) issue.
+  * Mod: Spam protection improved.
+  * Integration: Wilcity theme custom registration validation enabled
+  * New: Option "Use static JS key".
+
+= 5.120.2 June 17 2019 =
+  * Fix: WPForms integration.
+  * Fix: Translation and spelling.
+  * Fix: Minor PHP error
+
+= 5.120.1 June 6 2019 =
+  * Mod: Description for Search form protection.
+  * Fix: CSS and JS attachment.
+  * Fix: Undefined index error.
+
+= 5.120 June 5 2019 =
+  * Fix: bbPress false positives.
+  * Fix: SpamFireWall check condition.
+  * Fix: SpamFireWall block page.
+  * Fix: Catch admin action via search form test.
+  * Fix: Catch admin action (AJAX).
+  * Mod: Using minified version of JS and CSS.
+  * Mod: Date format in statistics.
+
+
+= 5.119.1 May 30 2019 =
+  * Fix: Helper class error.
+
+= 5.119 May 30 2019 =
+  * Fix: No more second request after registration.
+  * Fix: Activation hook.
+  * Fix: Alternative sessions. Clear table.
+  * Fix: Stop capchuring AJAX requests in admin area.
+  * Fix: Spelling.
+  * Fix: Registration cookies set.
+  * Mod: SFW exdtended die page when testing.
+  * Mod: User-agent modified.
+  * New: Test search queries for spam.
+  * New: Gathering and output statistics.
+
 = 5.118.4 May 13 2019 =
   * Fix: SFW cookie. Set correct domain for subdomains.
   * Fix: SFW update.
