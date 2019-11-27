@@ -19,30 +19,16 @@ get_header(); ?>
 <?php
 				// Start the Loop.
 				while ( have_posts() ) : the_post();
-
-					// Include the page content template.
-					//get_template_part( 'content', 'page' );
 					?>
                    <article>
-                   
-					<?php /*?><header class="entry-header">
-                        <h1 class="entry-title"><?php the_title();?></h1>
-                    </header><?php */?><!-- .entry-header -->
                     
                     <div class="entry-content">
                         <?php the_content(); ?>
-                    </div><!-- .entry-content -->
-                    
+                    </div>
                 </article>
-                
-                    <?php
-
-					// If comments are open or we have at least one comment, load up the comment template.
-					/*if ( comments_open() || get_comments_number() ) {
-						comments_template();
-					}*/
+                <?php
 				endwhile;
-			?>
+			    ?>
 			
 
 		</main><!-- #main -->
