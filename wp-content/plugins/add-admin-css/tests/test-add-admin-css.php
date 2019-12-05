@@ -67,6 +67,11 @@ class Add_Admin_CSS_Test extends WP_UnitTestCase {
 
 
 	public function get_action_output( $action = 'admin_head' ) {
+		if ( 'wp_head' === $action ) {
+			// This enqueues a script that doesn't exist in the develop.svn repo.
+			remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+		}
+
 		ob_start();
 		do_action( $action );
 		$out = ob_get_contents();
@@ -166,7 +171,11 @@ class Add_Admin_CSS_Test extends WP_UnitTestCase {
 	}
 
 	public function test_version() {
-		$this->assertEquals( '1.7', c2c_AddAdminCSS::instance()->version() );
+		$this->assertEquals( '1.8', c2c_AddAdminCSS::instance()->version() );
+	}
+
+	public function test_hooks_plugins_loaded() {
+		$this->assertEquals( 10, has_action( 'plugins_loaded', array( 'c2c_AddAdminCSS', 'instance' ) ) );
 	}
 
 	/**
@@ -237,20 +246,46 @@ class Add_Admin_CSS_Test extends WP_UnitTestCase {
 		$this->assertContains( $this->add_css( '' ), $this->get_action_output() );
 	}
 
-	public function test_add_css_to_head_with_just_css( $expected = false ) {
+	public function test_add_css_to_head_with_just_css_no_html5_support( $expected = false ) {
 		$css = $this->add_css( 'p { margin-top: 1.5em; }', 'settingfooter' );
 
 		$this->set_option( array( 'css' => $css, 'files' => array() ) );
 		$this->test_turn_on_admin();
 
 		ob_start();
-		c2c_AddAdminCSS::instance()->add_css( $css );
+		c2c_AddAdminCSS::instance()->add_css();
 		$out = ob_get_contents();
 		ob_end_clean();
 
 		if ( false === $expected ) {
 			$expected = "
-			<style type='text/css'>
+			<style type=\"text/css\">
+			{$css}
+			</style>
+			";
+		}
+
+		$this->assertEquals( $expected, $out );
+
+		return $out;
+	}
+
+	public function test_add_css_to_head_with_just_css_with_html5_support( $expected = false ) {
+		$css = $this->add_css( 'p { margin-top: 1.5em; }', 'settingfooter' );
+
+		$this->set_option( array( 'css' => $css, 'files' => array() ) );
+		$this->test_turn_on_admin();
+
+		add_theme_support( 'html5', array( 'script', 'style' ) );
+
+		ob_start();
+		c2c_AddAdminCSS::instance()->add_css();
+		$out = ob_get_contents();
+		ob_end_clean();
+
+		if ( false === $expected ) {
+			$expected = "
+			<style>
 			{$css}
 			</style>
 			";
@@ -274,17 +309,17 @@ class Add_Admin_CSS_Test extends WP_UnitTestCase {
 		$this->test_turn_on_admin();
 
 		ob_start();
-		c2c_AddAdminCSS::instance()->add_css( $css );
+		c2c_AddAdminCSS::instance()->add_css();
 		$out = ob_get_contents();
 		ob_end_clean();
 
 		$ver = c2c_AddAdminCSS::instance()->version();
 
 		if ( false === $expected ) {
-			$expected = "<link rel='stylesheet' id='font-awesome.min-remote-css'  href='https://maxcdn.example.com/font-awesome/4.4.0/css/font-awesome.min.css?ver=4.4.0' type='text/css' media='all' />
-<link rel='stylesheet' id='sample-remote-css'  href='http://example.org/css/sample.css?ver={$ver}' type='text/css' media='all' />
-<link rel='stylesheet' id='site-relative-css'  href='http://example.org/css/site-relative.css?ver={$ver}' type='text/css' media='all' />
-<link rel='stylesheet' id='theme-relative-css'  href='http://example.org/wp-content/themes/twentyseventeen/theme-relative.css?ver={$ver}' type='text/css' media='all' />
+			$expected = "<link rel='stylesheet' id='font-awesome.min-remote-css'  href='https://maxcdn.example.com/font-awesome/4.4.0/css/font-awesome.min.css?ver=4.4.0' media='all' />
+<link rel='stylesheet' id='sample-remote-css'  href='http://example.org/css/sample.css?ver={$ver}' media='all' />
+<link rel='stylesheet' id='site-relative-css'  href='http://example.org/css/site-relative.css?ver={$ver}' media='all' />
+<link rel='stylesheet' id='theme-relative-css'  href='http://example.org/wp-content/themes/twentyseventeen/theme-relative.css?ver={$ver}' media='all' />
 ";
 		}
 
@@ -319,7 +354,7 @@ class Add_Admin_CSS_Test extends WP_UnitTestCase {
 	public function test_recovery_mode_via_query_param_disables_add_css() {
 		$this->test_can_show_css_with_true_query_param();
 
-		$out = $this->test_add_css_to_head_with_just_css( '' );
+		$out = $this->test_add_css_to_head_with_just_css_with_html5_support( '' );
 
 		$this->assertEmpty( $out );
 	}
@@ -354,7 +389,7 @@ class Add_Admin_CSS_Test extends WP_UnitTestCase {
 	}
 
 	public function test_recovery_mode_via_constant_disables_add_css() {
-		$out = $this->test_add_css_to_head_with_just_css( '' );
+		$out = $this->test_add_css_to_head_with_just_css_with_html5_support( '' );
 
 		$this->assertEmpty( $out );
 	}

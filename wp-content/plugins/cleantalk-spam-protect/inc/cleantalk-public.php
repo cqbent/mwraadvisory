@@ -114,9 +114,10 @@ function apbct_init() {
 
     // WooCommerce registration
     if(class_exists('WooCommerce')){
-	    if( $apbct->settings['wc_register_from_order'] == 1 ){
-		    add_filter( 'woocommerce_registration_errors', 'ct_registration_errors', 1, 3 );
-	    }
+        add_filter( 'woocommerce_registration_errors', 'ct_registration_errors', 1, 3 );
+        if( isset($_REQUEST['wc-ajax']) && $_REQUEST['wc-ajax'] == 'checkout' && $apbct->settings['wc_checkout_test'] == 0 && $apbct->settings['wc_register_from_order'] == 0 ){
+            remove_filter( 'woocommerce_registration_errors', 'ct_registration_errors', 1 );
+        }
     }
 
 	// WooCommerce whishlist
@@ -263,7 +264,7 @@ function apbct_init() {
             ! empty( $pmpro_required_user_fields['bconfirmemail'] ) &&
             $pmpro_required_user_fields['bemail'] == $pmpro_required_user_fields['bconfirmemail']
         ) {
-            $check = ct_test_registration( $pmpro_required_user_fields['username'], $pmpro_required_user_fields['bemail'], apbct_http_remote_addr() );
+            $check = ct_test_registration( $pmpro_required_user_fields['username'], $pmpro_required_user_fields['bemail'], apbct_get_server_variable( 'REMOTE_ADDR' ) );
             if( $check['allow'] == 0 ) {
                 pmpro_setMessage( $check['comment'], 'pmpro_error' );
             }
@@ -539,7 +540,7 @@ function apbct_integration__buddyPres__activityWall( $is_spam, $activity_obj = n
 
 	global $apbct;
 
-	if($activity_obj === null || !isset($_POST['action']) || $_POST['action'] && $_POST['action'] !== 'post_update')
+	if($activity_obj === null || $activity_obj->privacy == 'media' || !isset($_POST['action']) || $_POST['action'] && $_POST['action'] !== 'post_update')
 		return;
 
   	$curr_user = get_user_by('id', $activity_obj->user_id);
@@ -834,12 +835,14 @@ function ct_add_hidden_fields($field_name = 'ct_checkjs', $return_string = false
     	$field_id = $field_name . '_' . $field_id_hash;
 		$html = "<input type='hidden' id='{$field_id}' name='{$field_name}' value='{$ct_checkjs_def}' />
 		<script type='text/javascript'>
-			setTimeout(function(){
-				apbct_sendAJAXRequest(
-					{action: 'apbct_js_keys__get'},
-					{callback: apbct_js_keys__set_input_value, input_name: '{$field_id}'}
-				);
-			}, 1000);
+			window.addEventListener('load', function () {
+				setTimeout(function(){
+                    apbct_sendAJAXRequest(
+                        {action: 'apbct_js_keys__get'},
+                        {callback: apbct_js_keys__set_input_value, input_name: '{$field_id}'}
+                    );
+                }, 1000);
+			});
 		</script>";
 
 	// Set KEY from backend
@@ -1255,11 +1258,11 @@ function ct_preprocess_comment($comment) {
 
 		// Terminate. Definitely spam.
 		if($ct_result->stop_queue == 1)
-			wp_die($err_text, 'Blacklisted', array('back_link' => true));
+			wp_die($err_text, 'Blacklisted', array('response' => 200, 'back_link' => true));
 
 		// Terminate by user's setting.
 		if($ct_result->spam == 3)
-			wp_die($err_text, 'Blacklisted', array('back_link' => true));
+			wp_die($err_text, 'Blacklisted', array('response' => 200, 'back_link' => true));
 
 		// Trash comment.
 		if($ct_result->spam == 2){
@@ -1387,7 +1390,7 @@ function ct_die($comment_id, $comment_status) {
         }
         else
         {
-        	wp_die($err_text, 'Blacklisted', array('back_link' => true));
+        	wp_die($err_text, 'Blacklisted', array('response' => 200, 'back_link' => true));
         }
 }
 
@@ -1398,7 +1401,7 @@ function ct_die($comment_id, $comment_status) {
 function ct_die_extended($comment_body) {
     $err_text = '<center><b style="color: #49C73B;">Clean</b><b style="color: #349ebf;">Talk.</b> ' . __('Spam protection', 'cleantalk') . "</center><br><br>\n" . $comment_body;
         $err_text .= '<script>setTimeout("history.back()", 5000);</script>';
-        wp_die($err_text, 'Blacklisted', array('back_link' => true));
+        wp_die($err_text, 'Blacklisted', array('response' => 200, 'back_link' => true));
 }
 
 /**
@@ -3058,7 +3061,9 @@ function ct_contact_form_validate() {
 		(isset($_POST['wpum_form']) && $_POST['wpum_form'] == 'login') || //WPUM login skip
 		isset($_POST['password']) || // Exception for login form. From Analysis uid=406596
         (isset($_POST['action']) && $_POST['action'] == 'wilcity_reset_password') || // Exception for reset password form. From Analysis uid=430898
-        (isset($_POST['action']) && $_POST['action'] == 'wilcity_login') // Exception for login form. From Analysis uid=430898
+        (isset($_POST['action']) && $_POST['action'] == 'wilcity_login') || // Exception for login form. From Analysis uid=430898
+        (isset($_POST['qcfsubmit'])) || //Exception for submit quick forms - duplicates with qcfvalidate
+        apbct_is_in_uri('wc-ajax=update_order_review')
 		) {
         return null;
     }

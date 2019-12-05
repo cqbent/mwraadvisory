@@ -3,7 +3,8 @@ Contributors: safronik
 Tags: spam, antispam, protection, comments, firewall 
 Requires at least: 3.0
 Tested up to: 5.3
-Stable tag: 5.130
+Requires PHP: 5.4
+Stable tag: 5.130.1
 License: GPLv2
 
 Spam protection, antispam, all-in-one, premium plugin. No spam comments & users, no spam contact form & WooCommerce anti-spam.
@@ -548,7 +549,7 @@ We develop plugin to do it as optimized as possible, CleanTalk doesn't downgrade
 
 = Is the plugin EU GDPR compatible? =
 Yes, it is. Please read this article,
-<a href="https://cleantalk.org/help/CleanTalk-GDPR-Compliance">https://cleantalk.org/help/CleanTalk-GDPR-Compliance</a>
+<a href="https://cleantalk.org/publicoffer#cleantalk_gdpr_compliance">https://cleantalk.org/publicoffer#cleantalk_gdpr_compliance</a>
 
 = Check external forms =
 If your website has forms that send data to external sources, you can enable option to "Protect external forms". In this case, if plugin determinates that the current message is spam, your form action will be temporary replaced to your current hostname to prevent sending false data to an external source.
@@ -566,6 +567,13 @@ If your website has forms that send data to external sources, you can enable opt
 10. Website's options.
 
 == Changelog ==
+= 5.130.1 November 20 2019 =
+  * Fix: Plugin autoupdate issues.
+  * FIx: Woocommerce checking.
+  * Fix: Correct IP detection.
+  * Fix: CSV export not working after update.
+  * Fix: QuickForms duplicates issues.
+
 = 5.130 November 14 2019 =
   * Fix: JetPack contact form JS check.
   * FIx: Iphorm AJAX form.

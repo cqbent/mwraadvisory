@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Add Admin CSS
- * Version:     1.7
+ * Version:     1.8
  * Plugin URI:  http://coffee2code.com/wp-plugins/add-admin-css/
  * Author:      Scott Reilly
  * Author URI:  http://coffee2code.com/
@@ -10,7 +10,7 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Description: Interface for easily defining additional CSS (inline and/or by URL) to be added to all administration pages.
  *
- * Compatible with WordPress 4.7+ through 5.1+
+ * Compatible with WordPress 4.7+ through 5.3+
  *
  * =>> Read the accompanying readme.txt file for instructions and documentation.
  * =>> Also, visit the plugin's homepage for additional information and updates.
@@ -18,7 +18,7 @@
  *
  * @package Add_Admin_CSS
  * @author  Scott Reilly
- * @version 1.7
+ * @version 1.8
  **/
 
 /*
@@ -26,7 +26,7 @@
  */
 
 /*
-	Copyright (c) 2010-2019 by Scott Reilly (aka coffee2code)
+	Copyright (c) 2010-2020 by Scott Reilly (aka coffee2code)
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -107,7 +107,7 @@ final class c2c_AddAdminCSS extends c2c_AddAdminCSS_Plugin_049 {
 	 * Constructor.
 	 */
 	protected function __construct() {
-		parent::__construct( '1.7', 'add-admin-css', 'c2c', __FILE__, array( 'settings_page' => 'themes' ) );
+		parent::__construct( '1.8', 'add-admin-css', 'c2c', __FILE__, array( 'settings_page' => 'themes' ) );
 		register_activation_hook( __FILE__, array( __CLASS__, 'activation' ) );
 
 		return self::$instance = $this;
@@ -411,9 +411,11 @@ HTML;
 		 */
 		$css = trim( apply_filters( 'c2c_add_admin_css', $options['css'] . "\n" ) );
 
+		$type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
+
 		if ( ! empty( $css ) ) {
 			echo "
-			<style type='text/css'>
+			<style{$type_attr}>
 			$css
 			</style>
 			";

@@ -1,12 +1,11 @@
-jQuery(document).ready(function($) {
+jQuery(document).ready(function ($) {
     // add sticky class to site header when scrolling
     var sticky = jQuery('.site-header, .shiftnav-toggle');
-    $(window).scroll(function() {
+    $(window).scroll(function () {
         var scroll = jQuery(window).scrollTop();
         if (scroll >= 20) {
             sticky.addClass('sticky');
-        }
-        else {
+        } else {
             sticky.removeClass('sticky');
         }
     });
@@ -14,7 +13,7 @@ jQuery(document).ready(function($) {
 
     // add classes to misc. elements
     jQuery('.wsp-pages-list').find('li').addClass('my_table');
-    jQuery('.budget ul li a').css('color','#3598dc');
+    jQuery('.budget ul li a').css('color', '#3598dc');
 
     // wrap "new" div to my_table elements (?)
     var divs = jQuery("li.my_table");
@@ -27,11 +26,10 @@ jQuery(document).ready(function($) {
         divs.slice(i, i + 3).wrapAll("<div class='new'></div>");
     }
 
-    jQuery('.documents-by-category .category').click(function() {
+    jQuery('.documents-by-category .category').click(function () {
         if ($(this).hasClass('active')) {
             $(this).removeClass('active');
-        }
-        else {
+        } else {
             $(this).addClass('active');
         }
     });
@@ -434,13 +432,9 @@ jQuery(document).ready(function($) {
     jQuery(".pagination a").each(function () {
         var url = jQuery(this).attr('href');
 
-
         if (url.includes("&?")) {
             jQuery(this).attr('href', url.replace("&?", "&"));
-
         }
-
-
         var a = ['?', '&'];
         var i = 0;
 
@@ -451,6 +445,5 @@ jQuery(document).ready(function($) {
         jQuery(this).attr('href', url);
 
     });
-
 
 });

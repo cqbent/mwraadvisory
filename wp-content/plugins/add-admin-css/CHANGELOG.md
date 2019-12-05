@@ -1,6 +1,24 @@
 # Changelog
 
-## 1.7_(2019-04-13)_
+## 1.8 _(2019-12-04)_
+
+### Highlights:
+
+* This minor release adds HTML5 compliance when supported by the theme, modernizes and fixes unit tests, and notes compatibility through WP 5.3+.
+
+### Details:
+
+* New: Add HTML5 compliance by omitting `type` attribute when the theme supports 'html5'
+* Unit tests:
+    * New: Add unit test to ensure plugin is hooked to initialize on `plugins_loaded`
+    * Fix: Don't pass argument to plugin object's `add_css()`
+    * Fix: Don't expect `type` attribute in `link` tags since they're not HTML5-compliant
+    * Fix: Prevent WP from attempting to print the emoji detection script (which isn't built in the develop.svn repo)
+    * Change: Update unit test install script and bootstrap to use latest WP unit test repo
+* Change: Note compatibility through WP 5.3+
+* Change: Update copyright date (2020)
+
+## 1.7 (2019-04-13)_
 
 ### Highlights:
 

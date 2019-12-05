@@ -3,7 +3,7 @@
   Plugin Name: Anti-Spam by CleanTalk
   Plugin URI: http://cleantalk.org
   Description: Max power, all-in-one, no Captcha, premium anti-spam plugin. No comment spam, no registration spam, no contact spam, protects any WordPress forms.
-  Version: 5.130
+  Version: 5.130.1
   Author: СleanTalk <welcome@cleantalk.org>
   Author URI: http://cleantalk.org
   Text Domain: cleantalk
@@ -201,6 +201,15 @@ if( !defined( 'CLEANTALK_PLUGIN_DIR' ) ){
     add_action( 'wp_ajax_elementor_pro_forms_send_form',        'apbct_form__elementor_pro__testSpam' );
     add_action( 'wp_ajax_nopriv_elementor_pro_forms_send_form', 'apbct_form__elementor_pro__testSpam' );
 
+    // Custom register form (ticket_id=13668)
+    add_action('website_neotrends_signup_fields_check',function( $username, $fields ){
+        $ip = CleantalkHelper::ip__get( array('real'), false );
+        $ct_result = ct_test_registration( $username, $fields['email'], $ip );
+        if( $ct_result['allow'] == 0 ) {
+            ct_die_extended( $ct_result['comment'] );
+        }
+    }, 1, 2);
+
 	// Public actions
 	if(!is_admin() && !apbct_is_ajax()){
 		
@@ -216,7 +225,8 @@ if( !defined( 'CLEANTALK_PLUGIN_DIR' ) ){
 		// SpamFireWall check
 		if( $apbct->plugin_version == APBCT_VERSION && // Do not call with first start
 			$apbct->settings['spam_firewall'] == 1 &&
-            apbct_is_get()
+            apbct_is_get() &&
+            ! wp_doing_cron()
 		){
 			apbct_sfw__check();
 	    }
@@ -975,7 +985,8 @@ function apbct_rc__parse_result($rc_result){
  * @param string $plugin_slug
  */
 function apbct_rc__install_plugin($wp = null, $plugin = null){
-	
+	global $wp_version;
+
 	$plugin = $plugin ? $plugin : (isset($_GET['plugin']) ? $_GET['plugin'] : null);
 	
 	if($plugin){
@@ -1003,8 +1014,11 @@ function apbct_rc__install_plugin($wp = null, $plugin = null){
 					include_once( ABSPATH . 'wp-admin/includes/misc.php' );
 					include_once( CLEANTALK_PLUGIN_DIR . 'lib/CleantalkUpgrader.php' );
 					include_once( CLEANTALK_PLUGIN_DIR . 'lib/CleantalkUpgraderSkin.php' );
-					
-					$installer= new CleantalkUpgrader( new CleantalkUpgraderSkin() );
+					include_once( CLEANTALK_PLUGIN_DIR . 'lib/CleantalkUpgraderSkin_Deprecated.php' );
+					if (version_compare(PHP_VERSION, '5.6.0') >= 0 && version_compare($wp_version, '5.3') >= 0)
+						$installer= new CleantalkUpgrader( new CleantalkUpgraderSkin() );
+					else 
+						$installer= new CleantalkUpgrader( new CleantalkUpgraderSkin_Deprecated() );
 					$installer->install($result->download_link);
 					
 					if($installer->apbct_result === 'OK'){
@@ -1139,7 +1153,8 @@ function apbct_rc__uninstall_plugin__check_deactivate(){
 }
 
 function apbct_rc__update(){
-	
+	global $wp_version;
+
 	//Upgrade params
 	$plugin      = 'cleantalk-spam-protect/cleantalk.php';
 	$plugin_slug = 'cleantalk-spam-protect';
@@ -1156,10 +1171,13 @@ function apbct_rc__update(){
 	
 	include_once( CLEANTALK_PLUGIN_DIR . 'lib/CleantalkUpgrader.php' );
 	include_once( CLEANTALK_PLUGIN_DIR . 'lib/CleantalkUpgraderSkin.php' );
+	include_once( CLEANTALK_PLUGIN_DIR . 'lib/CleantalkUpgraderSkin_Deprecated.php' );
 	
 	apbct_maintance_mode__enable( 30 );
-	
-	$upgrader = new CleantalkUpgrader( new CleantalkUpgraderSkin( compact('title', 'nonce', 'url', 'plugin') ) );
+	if (version_compare(PHP_VERSION, '5.6.0') >= 0 && version_compare($wp_version, '5.3') >= 0)
+		$upgrader = new CleantalkUpgrader( new CleantalkUpgraderSkin( compact('title', 'nonce', 'url', 'plugin') ) );
+	else
+		$upgrader = new CleantalkUpgrader( new CleantalkUpgraderSkin_Deprecated( compact('title', 'nonce', 'url', 'plugin') ) );
     $upgrader->upgrade($plugin);
 	
 	apbct_maintance_mode__disable();
@@ -1183,7 +1201,10 @@ function apbct_rc__update(){
 			apbct_maintance_mode__enable( 30 );
 			
 			// Rollback
-			$rollback = new CleantalkUpgrader( new CleantalkUpgraderSkin( compact('title', 'nonce', 'url', 'plugin_slug', 'prev_version') ) );
+			if (version_compare(PHP_VERSION, '5.6.0') >= 0 && version_compare($wp_version, '5.3') >= 0)
+				$rollback = new CleantalkUpgrader( new CleantalkUpgraderSkin( compact('title', 'nonce', 'url', 'plugin_slug', 'prev_version') ) );
+			else
+				$rollback = new CleantalkUpgrader( new CleantalkUpgraderSkin_Deprecated( compact('title', 'nonce', 'url', 'plugin_slug', 'prev_version') ) );
 			$rollback->rollback($plugin);
 			
 			apbct_maintance_mode__disable();

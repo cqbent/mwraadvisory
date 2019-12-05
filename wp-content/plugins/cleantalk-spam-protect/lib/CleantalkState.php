@@ -537,20 +537,4 @@ class CleantalkState
 	{
 		unset($this->storage[$name]);
 	}
-	
-	public function server(){
-		return \Cleantalk\Common\Server::getInstance();
-	}
-	public function cookie(){
-		return \Cleantalk\Common\Cookie::getInstance();
-	}
-	public function request(){
-		return \Cleantalk\Common\Request::getInstance();
-	}
-	public function post(){
-		return \Cleantalk\Common\Post::getInstance();
-	}
-	public function get(){
-		return \Cleantalk\Common\Get::getInstance();
-	}
 }

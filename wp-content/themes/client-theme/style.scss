@@ -988,6 +988,9 @@ h6 {
           max-width: 615px;
           margin: 30px auto 0 auto;
           position: relative;
+          label {
+            display: block;
+          }
           input.search-field {
             width: 100%;
             height: 55px;
@@ -2955,11 +2958,11 @@ ul.ftr-social {
 }
 .com_img {
   width: 100%;
-  float: left;
+  //float: left;
   position: relative;
   img {
     width: 100%;
-    float: left;
+    //float: left;
     object-fit: cover;
   }
   .pt-title-main {
@@ -2993,6 +2996,9 @@ input[type="button"] {
     max-width: 615px;
     margin: 0 auto;
     position: relative;
+    label {
+      display: block;
+    }
     input.search-field {
       width: 100%;
       height: 60px;
@@ -4492,7 +4498,7 @@ ul#input_8_1 {
     margin-right: 10px;
   }
   #primary {
-    border-left: solid 1px #e0e0e0;
+    //border-left: solid 1px #e0e0e0;
     padding-top: 20px;
     padding-left: 11px;
   }
@@ -4541,7 +4547,7 @@ ul#input_8_1 {
     font-size: 22px;
     color: #000;
     margin-top: 10px;
-    border-bottom: solid 1px #e0e0e0;
+    //border-bottom: solid 1px #e0e0e0;
   }
 }
 .service-listing-main {
@@ -4593,14 +4599,13 @@ p.library-title {
       width: 220px;
       word-break: initial;
       padding-top: 17px;
-      min-height: 80px;
       min-height: 70px;
     }
     img {
       min-height: 115px;
     }
     a {
-      box-shadow: 1px 1px 28px grey;
+      box-shadow: 1px 1px 15px #999999;
       float: left;
     }
   }
@@ -4629,7 +4634,7 @@ p.library-title {
 }
 .libraries-documents {
   ul {
-    margin: 0px;
+    margin: 0;
   }
 }
 .libraries-search-list {
@@ -5284,7 +5289,7 @@ ul.library-most-popular-list-slider {
 .libraries-tag-list {
   li.library-list {
     a {
-      box-shadow: 1px 1px 28px #444444;
+      box-shadow: 1px 1px 15px #999999;
       float: left;
       width: auto;
       height: 275px;
@@ -6252,6 +6257,31 @@ li.price_field_align {
     }
   }
 }
+
+// document library category pages
+.o-f-t {
+  h1 {
+    text-align: center;
+  }
+  p {
+    float: left;
+    margin: 0 20px 15px 0;
+    font-size: 15px !important;
+    font-family: 'Montserrat', sans-serif !important;
+    select {
+      padding: 7px 10px;
+      margin: 0 5px;
+      min-width: 118px;
+    }
+    &:last-child {
+      margin-top: -3px;
+    }
+  }
+  #filter {
+    padding: 13px 14px;
+  }
+}
+
 
 
 /*
@@ -7951,7 +7981,6 @@ label.gfield_label {
  */
 
 
-/*
 
 div#comunity_tab_wrap .et_pb_tab_active a {
   color: #fff !important;
@@ -7995,7 +8024,7 @@ div#comunity_tab_wrap .et_pb_tab_active {
 }
 
 div#content {
-  margin-top: -30px;
+  //margin-top: -30px;
 }
 
 #gform_confirmation_wrapper_7 {
@@ -8192,4 +8221,3 @@ img.animation {
   color: #ffffff !important;
 }
 
- */
