@@ -2,7 +2,7 @@
 Contributors: wponlinesupport, anoopranawat, pratik-jain
 Tags: wponlinesupport, post slider, posts slider, recent post slider, recent posts slider, slider, responsive post slider, responsive posts slider, responsive recent post slider, responsive recent posts slider, wordpress posts slider, post slideshow, posts slideshow, recent posts slideshow, shortcodes
 Requires at least: 4.0
-Tested up to: 5.2.3
+Tested up to: 5.3.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -18,8 +18,7 @@ This plugin displays your recent WordPress posts using :
 * Posts Slider (4 designs), 
 * Posts Carousel (1 designs)
 
-Check [FREE DEMO](http://demo.wponlinesupport.com/recent-post-slider-demo/) 
-Check [PRO DEMO and Features](https://demo.wponlinesupport.com/prodemo/post-slider-pro/) for additional information.
+Check [Demo and Features](https://demo.wponlinesupport.com/recent-post-slider-demo/) for additional information.
 
 When you want to makeover your WordPress website theme with something extraordinary and creative, you must consider WP responsive recent post slider. Help your website to get a slide-wise display to show the recent posts/news. Not just eye appealing, it is also loved by the visitors as they find it quite easy to locate the recent posts. 
 
@@ -109,8 +108,11 @@ Where designs are : design-1, design-2, design-3, design-4. You can use same par
 > * Recent Post Carousel with 30 designs.
 > * Recent Post gridbox slider with 8 designs.
 > * Shortcode <code>[recent_post_carousel]</code> and <code>[gridbox_post_slider]</code>
-> * 3 Widgets (Post slider, Post List/Slider-1, Post List/Slider-2)
-> * V1.3.4 Support WordPress default post as well as any custom post-type and taxonomy 
+> * 3 Widgets (Post slider, Post List/Slider-1, Post List/Slider-2).
+> * V1.3.4 Support WordPress default post as well as any custom post-type and taxonomy .
+> * Gutenberg Block Supports.
+> * Visual Composer Support.
+> * WP Templating Features.
 >
 > View [PRO DEMO and Features](https://www.wponlinesupport.com/wp-plugin/wp-responsive-recent-post-slider/) for additional information.
 >
@@ -155,6 +157,12 @@ Where designs are : design-1, design-2, design-3, design-4. You can use same par
 6. Category shortcode for post
 
 == Changelog ==
+
+= 2.2.4 (26, Dec 2019) =
+* [*] Tested : Tested with Gutenberg blocks.
+* [*] Updated features list.
+* [*] Added unique prefix to all classes to avoid the conflict with any theme and third-party plugins.  
+* [*] Fixed some css issues.
 
 = 2.2.3 (09, Sept 2019) =
 * [*] Fixed title line height issue reported by a user.

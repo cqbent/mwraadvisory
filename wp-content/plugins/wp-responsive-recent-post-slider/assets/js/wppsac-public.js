@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
 
 	// For Slider
-	$( '.recent-post-slider' ).each(function( index ) {
+	$( '.wppsac-post-slider' ).each(function( index ) {
 		
 		var slider_id   	= $(this).attr('id');			
 		var slider_conf 	= $.parseJSON( $(this).closest('.wppsac-slick-slider-wrp').find('.wppsac-slider-conf').attr('data-conf'));
@@ -22,7 +22,7 @@ jQuery(document).ready(function($) {
 	});
 	
 	// For Carousel
-	$( '.recent-post-carousel' ).each(function( index ) {
+	$( '.wppsac-post-carousel' ).each(function( index ) {
 		
 		var carousel_id   	= $(this).attr('id');			
 		var carousel_conf 	= $.parseJSON( $(this).closest('.wppsac-slick-carousel-wrp').find('.wppsac-carousel-conf').attr('data-conf'));

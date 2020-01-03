@@ -123,12 +123,6 @@ function wprps_help_tabs() {
 													'url'				=> 'http://wponlinesupport.com/plugin-data-api/plugins-data.php',
 													'transient_key'		=> 'wpos_plugins_feed',
 													'transient_time'	=> 172800
-												),
-						'offers-feed' 	=> array(
-													'name'				=> __('Hire Us', 'wp-responsive-recent-post-slider'),
-													'url'				=> 'http://wponlinesupport.com/plugin-data-api/wpos-offers.php',
-													'transient_key'		=> 'wpos_offers_feed',
-													'transient_time'	=> 86400,
 												)
 					);
 	return $wpos_feed_tabs;
@@ -148,6 +142,7 @@ function wprps_howitwork_page() { ?>
 		.postbox-container .wpos-list li:before{font-family: dashicons; content: "\f139"; font-size:20px; color: #0073aa; vertical-align: middle;}
 		.wprpsm-wrap .wpos-button-full{display:block; text-align:center; box-shadow:none; border-radius:0;}
 		.wprpsm-shortcode-preview{background-color: #e7e7e7; font-weight: bold; padding: 2px 5px; display: inline-block; margin:0 0 2px 0;}
+		.upgrade-to-pro{font-size:18px; text-align:center; margin-bottom:15px;}
 	</style>
 
 	<div class="post-box-container">
@@ -239,12 +234,15 @@ function wprps_howitwork_page() { ?>
 										<li>3 Widgets (Post slider, Post List/Slider-1, Post List/Slider-2)</li>
 										<li>Drag & Drop order change</li>
 										<li>Custom CSS option</li>
+										<li>Gutenberg Block Supports</li>
 										<li>Visual Composer Support</li>
+										<li>WP Templating Features</li>
 										<li>Slider RTL support</li>
 										<li>Fully responsive</li>
 										<li>100% Multi language</li>
 									</ul>
-									<a class="button button-primary wpos-button-full" href="https://1.envato.market/Yye" target="_blank"><?php _e('Go Premium ', 'wp-responsive-recent-post-slider'); ?></a>	
+									<div class="upgrade-to-pro">Gain access to <strong>Responsive Recent Post Slider</strong> included in <br /><strong>Essential Plugin Bundle</div>
+									<a class="button button-primary wpos-button-full" href="https://www.wponlinesupport.com/wp-plugin/wp-responsive-recent-post-slider/?ref=WposPratik&utm_source=WP&utm_medium=WP-Plugins&utm_campaign=Upgrade-PRO" target="_blank"><?php _e('Go Premium ', 'wp-responsive-recent-post-slider'); ?></a>	
 									<p><a class="button button-primary wpos-button-full" href="http://demo.wponlinesupport.com/prodemo/post-slider-pro/" target="_blank"><?php _e('View PRO Demo ', 'wp-responsive-recent-post-slider'); ?></a>			</p>								
 								</div><!-- .inside -->
 							</div><!-- #general -->

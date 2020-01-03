@@ -100,7 +100,7 @@ function get_wppsac_slider( $atts, $content = null ) {
              if ( $query->have_posts() ) :
 			 ?>
 				<div class="wppsac-slick-slider-wrp wppsac-clearfix">
-					<div id="recent-post-slider-<?php echo $unique; ?>" class="recent-post-slider <?php echo $design; ?>">
+					<div id="wppsac-post-slider-<?php echo $unique; ?>" class="wppsac-post-slider <?php echo $design; ?>">
 						<?php
 					 while ( $query->have_posts() ) : $query->the_post();
 						$post_id 		= isset($post->ID) ? $post->ID : '';						

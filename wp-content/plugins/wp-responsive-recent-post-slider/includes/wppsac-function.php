@@ -48,7 +48,7 @@ function wppsac_get_category_list( $post_id = 0, $taxonomy = '' ) {
     $terms  = get_the_terms( $post_id, $taxonomy );
 
     if( $terms && !is_wp_error($terms) && !empty($taxonomy) ) {
-        $output .= '<ul class="post-categories wppsac-post-categories">';
+        $output .= '<ul class="wppsac-post-categories-list">';
         foreach ( $terms as $term ) {
              $output .= '<li><a href="'.get_term_link($term).'" rel="'.$taxonomy.'"> '.$term->name.' </a></li>';
         }

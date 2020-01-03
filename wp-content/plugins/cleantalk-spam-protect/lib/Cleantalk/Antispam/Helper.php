@@ -75,7 +75,7 @@ class Helper
 		if(isset($ips['remote_addr'])){
 			$ip_type = self::ip__validate( isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '' );
 			if($ip_type){
-				$ips['remote_addr'] = $ip_type == 'v6' ? self::ip__v6_normalize(isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '' ) : isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '';
+				$ips['remote_addr'] = ($ip_type == 'v6' ? self::ip__v6_normalize(isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '' ) : isset( $_SERVER['REMOTE_ADDR'] )) ? $_SERVER['REMOTE_ADDR'] : '';
 			}
 		}
 		
@@ -151,7 +151,17 @@ class Helper
 			}
 			
 			// Is private network
-			if($ip_type === false || ($ip_type && (self::ip__is_private_network($ips['real'], $ip_type) || self::ip__mask_match($ips['real'], isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] . '/24' : '127.0.0.1' . '/24', $ip_type)))){
+			if($ip_type === false ||
+				($ip_type && 
+					(self::ip__is_private_network($ips['real'], $ip_type) || 
+						self::ip__mask_match(
+							$ips['real'],
+							(isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] . '/24' : '127.0.0.1/24'),
+							$ip_type
+						)
+					)
+				)
+			){
 				
 				// X-Forwarded-For
 				if(isset($headers['X-Forwarded-For'])){

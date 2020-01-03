@@ -51,8 +51,14 @@ if ( !defined( 'ABSPATH' ) ) {
 
 		/* Table Footer */
 		.wpos-plugin-pricing-table tfoot th, .wpos-plugin-pricing-table tfoot td{text-align: center; border-top: 1px solid #ccc;}
-		.wpos-plugin-pricing-table tfoot a{font-weight: 600; color: #fff; text-decoration: none; text-transform: uppercase; display: inline-block; padding: 1em 2em; background: #59c7fb; border-radius: .2em;}
+		.wpos-plugin-pricing-table tfoot a{font-weight: 600; color: #fff; text-decoration: none; text-transform: uppercase; display: inline-block; padding: 1em 2em; background: #ca4a1f; border-radius: .2em;}
+		
+		.essential-plugin-bundle{clear:both; margin-bottom:15px;}
+		.essential-plugin-bundle img{max-width:100%;}
 	</style>
+	<div class="essential-plugin-bundle">
+		<a href="https://www.wponlinesupport.com/pricing/?ref=WposPratik&utm_source=WP&utm_medium=WP-Plugins&utm_campaign=Essential-Plugin-Banner" target="_blank"><img src="https://www.wponlinesupport.com/plugin-data-api/images/plugin-bundle-banner.png?time=<?php echo current_time('timestamp'); ?>" alt="essential-plugin-bundle" /></a>
+	</div>
 
 	<table class="wpos-plugin-pricing-table">
 		<colgroup></colgroup>
@@ -67,7 +73,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	    		</th>
 	    		<th>
 	    			<h2>Premium</h2>
-	    			<p>Gain access to <strong>WP Responsive Recent Post Slider</strong> and <strong>all other products</strong> with a single purchase.</p>
+	    			<p>Gain access to <strong>WP Responsive Recent Post Slider</strong> included in <br /><strong>Essential Plugin Bundle</p>
 	    			<p class="promo">Our most valuable package!</p>
 	    		</th>	    		
 	    	</tr>
@@ -77,8 +83,8 @@ if ( !defined( 'ABSPATH' ) ) {
 	    	<tr>
 	    		<th></th>
 	    		<td></td>
-	    		<td><p>Gain access to <strong>WP Responsive Recent Post Slider</strong> and <strong>all other products</strong> with a single purchase.</p>
-				<a href="https://www.wponlinesupport.com/pricing/?ref=WposPratik" target="_blank">View Pricing Options</a></td>
+	    		<td><p>Gain access to <strong>WP Responsive Recent Post Slider</strong> included in <br /><strong>Essential Plugin Bundle</p>
+				<a href="https://www.wponlinesupport.com/pricing/?ref=WposPratik&utm_source=WP&utm_medium=WP-Plugins&utm_campaign=Upgrade-PRO" target="_blank">View Buying Options</a></td>
 	    	</tr>
 	    </tfoot>
 
@@ -123,8 +129,18 @@ if ( !defined( 'ABSPATH' ) ) {
 	    		<td><i class="dashicons dashicons-no-alt"></i></td>
 	    		<td><i class="dashicons dashicons-yes"></i></td>
 	    	</tr>
+			<tr>
+	    		<th>Gutenberg Block Supports <span>Use this plugin with Gutenberg easily</span></th>
+	    		<td><i class="dashicons dashicons-no-alt"></i></td>
+	    		<td><i class="dashicons dashicons-yes"></i></td>
+	    	</tr>
 	    	<tr>
 	    		<th>Visual Composer Page Builder Supports <span>Use this plugin with Visual Composer easily</span></th>
+	    		<td><i class="dashicons dashicons-no-alt"></i></td>
+	    		<td><i class="dashicons dashicons-yes"></i></td>
+	    	</tr>
+			<tr>
+	    		<th>Center Mode for Carousel Shortcode <span>Display carousel layout with center mode</span></th>
 	    		<td><i class="dashicons dashicons-no-alt"></i></td>
 	    		<td><i class="dashicons dashicons-yes"></i></td>
 	    	</tr>
@@ -172,6 +188,11 @@ if ( !defined( 'ABSPATH' ) ) {
 	    		<th>Slider RTL Support <span>Slider supports for RTL website</span></th>
 	    		<td><i class="dashicons dashicons-yes"></i></td>
 	    		<td><i class="dashicons dashicons-yes"></i></td>
+	    	</tr>
+			<tr>
+	    		<th>Automatic Update <span>Get automatic  plugin updates </span></th>
+	    		<td>Lifetime</td>
+	    		<td>Lifetime</td>
 	    	</tr>
 	    	<tr>
 	    		<th>Support <span>Get support for plugin</span></th>

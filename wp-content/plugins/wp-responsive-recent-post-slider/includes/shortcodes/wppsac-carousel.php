@@ -104,7 +104,7 @@ function get_wppsac_carousel( $atts, $content = null ) {
              if ( $query->have_posts() ) :
 			 ?>
 				<div class="wppsac-slick-carousel-wrp wppsac-clearfix">
-					<div id="recent-post-carousel-<?php echo $unique; ?>" class="recent-post-carousel <?php echo $design; ?>">
+					<div id="wppsac-post-carousel-<?php echo $unique; ?>" class="wppsac-post-carousel <?php echo $design; ?>">
 						<?php
 					 while ( $query->have_posts() ) : $query->the_post();
 						$post_id 		= isset($post->ID) ? $post->ID : '';						
