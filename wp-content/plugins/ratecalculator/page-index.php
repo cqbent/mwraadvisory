@@ -299,7 +299,7 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
                     <input type="hidden" id="form_id" name="form_id" value="<?php if (isset($_GET['form_id'])) {
                         echo $_GET['form_id'];
                     } else {
-                        echo '45';
+                        echo '62';
                     } ?>"/>
 
                     <?php
@@ -347,19 +347,6 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
 
                         <span style="font-size:14px; font-weight:bold;">Community :</span>
                         <select selected="selected" id="community-box" name="community">
-                            <?php
-                            foreach ($loop as $ck => $cv) {
-                                if (!empty($cv->post_title)) {
-                                    ?>
-
-                                    <!--<option value="<?php echo $cv->post_title; ?>"><?php echo $cv->post_title; ?></option>-->
-
-                                    <?php
-
-                                }
-
-                            }
-                            ?>
 
                         </select>
                     </div>
@@ -775,7 +762,7 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
                     jQuery("input[name=kgl_water_usages]").val(ui.value);
                     jQuery("input[name=hcf_water_usages]").val(Math.round(ui.value / 0.748));
 
-                    calculate_rate();
+                    //calculate_rate();
 
                 }
             });
@@ -1040,8 +1027,8 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
 
 <script type="text/javascript">
 
-    jQuery(document).ready(function ($) {
 
+    jQuery(document).ready(function ($) {
 
         jQuery('#community-box,#year-box').change(function () {
 
@@ -1052,7 +1039,7 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
             var form_id = jQuery('#form_id').val();
 
 
-            if (form_id == '45') {
+            if (form_id == '62') {
 
                 jQuery.ajax({
                     type: "POST",
@@ -1323,7 +1310,7 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
                         jQuery('#sewer_minimum_fee_includes_uses').val(sewer_minimum_fee_includes_uses);
                         jQuery('#sewer_minimum_fee_include_amount').val(sewer_minimum_fee_include_amount);
 
-                        calculate_rate();
+                        //calculate_rate();
 
                         jQuery("#modal-overlay").hide();
                     },
@@ -1348,6 +1335,7 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
 
     function calculate_rate() {
 
+        console.log('calculate rate');
 
         var selected_community = jQuery('#community-box').val();
         var selected_year = jQuery('#year-box').val();
@@ -1528,7 +1516,7 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
             jQuery('#sewer_rates').show();
         }
 
-        calculate_rate();
+        //calculate_rate();
     });
 
 
@@ -1942,7 +1930,6 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
 
     function calculate_water_bill(billing_frequency, water_usages) {
 
-
         var community_water_use_same_rate_year = jQuery('#community_water_use_same_rate_year').val();
 
 
@@ -2041,8 +2028,8 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
 
             var water_bill_result = calculate_rate_func(range_array, range_value_array, max_range, billing_frequency, base_fee, water_usages, water_additional_fee_table, water_rate_type, has_community_minimum_fee_water, water_minimum_fee_include_amount, water_minimum_fee_includes_uses);
 
-            console.log('water_bill_result' + water_bill_result);
-            console.log('base_fee' + base_fee);
+            console.log('water_bill_result=' + water_bill_result);
+            console.log('base_fee=' + base_fee);
 
             water_bill_result = billing_frequency * water_bill_result;
         }
@@ -2173,6 +2160,37 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
       3.
     */
 
+    function calculate_rate_funczz(range_array, range_value_array, max_range, billing_frequency, base_fee, water_usages, additional_fee_table, sewer_water_rate_type, has_community_minimum_fee, minimum_fee_amount, minimum_fee_includes_uses) {
+        var rLen = range_array.length;
+        var total_difference = 0;
+        var actual_fee = 0;
+
+        for (var i = 0; i < rLen; i++) {
+            console.log('numb = ' + i);
+            var temp_array = range_array[i].split('-');
+            var max_value = parseFloat(temp_array[1]);
+            var min_value = parseFloat(temp_array[0]);
+            if (i === 0) {
+                var diff_value = max_value - min_value;
+
+                console.log('max_value=' + max_value);
+                console.log('min_value=' + min_value);
+                console.log('diff_value=' + diff_value);
+
+            } else {
+
+                var first_row_array = range_array[0].split('-');
+                var first_row_range_end = parseFloat(first_row_array[1]);
+                var second_row_array = range_array[1].split('-');
+                var second_row_range_start = parseFloat(second_row_array[0]);
+                var all_start_end_difference = second_row_range_start - first_row_range_end;
+                var diff_value = max_value - min_value;
+                diff_value = diff_value + all_start_end_difference;
+            }
+        }
+        var water_bill_result = base_fee + actual_fee;
+        return '219.60';
+    }
 
     function calculate_rate_func(range_array, range_value_array, max_range, billing_frequency, base_fee, water_usages, additional_fee_table, sewer_water_rate_type, has_community_minimum_fee, minimum_fee_amount, minimum_fee_includes_uses) {
 
@@ -2180,9 +2198,10 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
         var total_difference = 0;
         var actual_fee = 0;
 
-        for (i = 0; i < rLen; i++) {
+        for (var i = 0; i < rLen; i++) {
+            console.log('numb = ' + i);
 
-            if (sewer_water_rate_type == "1") {
+            if (sewer_water_rate_type === "1") {
 
 
                 var temp_array = range_array[i].split('-');
@@ -2190,7 +2209,7 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
                 var max_value = parseFloat(temp_array[1]);
                 var min_value = parseFloat(temp_array[0]);
 
-                if (i == 0) {
+                if (i === 0) {
                     var diff_value = max_value - min_value;
                 } else {
 
@@ -2216,7 +2235,7 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
 
                 if (max_value <= max_range) {
 
-                    if (i == 0) {
+                    if (i === 0) {
 
                         if (minimum_fee_includes_uses != '0') {
 
@@ -2238,7 +2257,7 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
 
 
                 } else {
-                    if (i == 0) {
+                    if (i === 0) {
 
                         //actual_fee  = actual_fee + 1*range_value_array[i];
                         if (minimum_fee_includes_uses != '0') {
@@ -2267,8 +2286,11 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
                 var temp_array = range_array[i].split('-');
                 var max_value = parseFloat(temp_array[1]);
                 var min_value = parseFloat(temp_array[0]);
+                console.log(range_array);
+                console.log(temp_array);
+                console.log(max_range);
 
-                if (i == 0) {
+                if (i === 0) {
                     var diff_value = max_value - min_value;
 
                     console.log('max_value=' + max_value);
@@ -2289,7 +2311,7 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
                 var remaining_difference = max_range - diff_value;
 
 
-                if (max_value <= max_range && rLen != i + 1) {
+                if (max_value <= max_range && rLen !== i + 1) {
 
                     total_difference = total_difference + diff_value;
                     var count = diff_value;
@@ -2300,7 +2322,7 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
                 }
 
 
-                if (sewer_water_rate_type == "1" && i == 0 && minimum_fee_includes_uses == '0') {
+                if (sewer_water_rate_type == "1" && i === 0 && minimum_fee_includes_uses == '0') {
                     count = 1;
 
                 }
@@ -2313,7 +2335,7 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
                 console.log('max_range=' + max_range);
                 console.log('actual_fee before loop=' + actual_fee);
 
-                if (max_value <= max_range && max_value != "") {
+                if (max_value <= max_range && max_value !== "") {
 
                     actual_fee = actual_fee + count * range_value_array[i];
 
@@ -2338,7 +2360,7 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
         //alert(actual_fee < parseFloat(minimum_fee_amount));
 
         // if(has_community_minimum_fee == '2' ){
-        if (has_community_minimum_fee == '2' && actual_fee < parseFloat(minimum_fee_amount)) {
+        if (has_community_minimum_fee === '2' && actual_fee < parseFloat(minimum_fee_amount)) {
 
             actual_fee = minimum_fee_amount;
             //actual_fee = actual_fee + parseFloat(minimum_fee_amount);
@@ -2347,7 +2369,7 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
 
         console.log('actual_fee_final=' + actual_fee);
 
-        if (base_fee == "") {
+        if (base_fee === "") {
             base_fee = 0;
         }
 
@@ -2358,14 +2380,14 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
 
         console.log('actual base_fee=' + base_fee);
 
-        if (jQuery('#community-box').val() == "Saint Paul") {
+        if (jQuery('#community-box').val() === "Saint Paul") {
 
             //var water_bill_result =  (billing_frequency*((base_fee+recovery_fee)+water_main_surcharge+actual_fee)).toFixed(2);
             //var water_bill_result = actual_fee;
 
             var water_bill_result = base_fee + actual_fee;
 
-        } else if (unit_type_water == "2" || unit_type_sewer == "2") {
+        } else if (unit_type_water === "2" || unit_type_sewer === "2") {
 
             var water_bill_result = base_fee + actual_fee;
 

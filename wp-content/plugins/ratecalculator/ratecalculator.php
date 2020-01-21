@@ -54,8 +54,16 @@ class Ratecalculator
 
     }
 
+    public function ratecalc_temp() {
+        self::load_header();
+        ob_start();
+        require_once(plugin_dir_path(__FILE__) . 'test.php');
+        return ob_get_clean();
+    }
+
 
 }
+add_shortcode('ratecalculator_temp', array('Ratecalculator', 'ratecalc_temp'));
 
 //add_shortcode( 'survey_data', array('Ratecalculator', 'get_surver_entries') );
 
