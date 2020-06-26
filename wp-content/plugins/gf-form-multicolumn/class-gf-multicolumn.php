@@ -304,7 +304,7 @@
 
         private function define_output_elements( $field_container, $field ) {
             $column_count = $this->rowColumnArray[ $this->rowNumber ];
-            $col_class = round(12 / $column_count);
+            $col_class = $column_count ? round(12 / $column_count) : 12;
             if ( $field->type == 'column_start' ) {
                 $this->increment_column_count();
 
