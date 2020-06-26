@@ -39,6 +39,9 @@
  * @property mixed        allow_custom_key
  * @property bool         white_label
  * @property mixed        moderate
+ *
+ * MISC
+ *
  */
 class CleantalkState
 {
@@ -57,8 +60,8 @@ class CleantalkState
         'comments_test'                  => 1, 
         'contact_forms_test'             => 1, 
         'general_contact_forms_test'     => 1, // Antispam test for unsupported and untested contact forms 
-		'wc_checkout_test'               => 0, // WooCommerce checkout default test => OFF
-		'wc_register_from_order'         => 1, // Woocommerce registration during checkout => ON
+		'wc_checkout_test'               => 1, // WooCommerce checkout default test
+		'wc_register_from_order'         => 1, // Woocommerce registration during checkout
 		'search_test'                    => 1, // Test deafult Wordpress form
 		'check_external'                 => 0,
 		'check_external__capture_buffer' => 0,
@@ -72,8 +75,9 @@ class CleantalkState
 		'bp_private_messages' =>   1, //buddyPress private messages test => ON
 		'check_comments_number' => 1,
         'remove_old_spam' =>       0,
-		'remove_comments_links' => 0, //Removes links from approved comments
-		'show_check_links' =>      1, //Shows check link to Cleantalk's DB. And allowing to control comments form public page.
+		'remove_comments_links' => 0, // Removes links from approved comments
+		'show_check_links' =>      1, // Shows check link to Cleantalk's DB.
+		'manage_comments_on_public_page' =>      0, // Allows to control comments on public page.
 		
 		// Data processing
         'protect_logged_in' =>     1, // Do anit-spam tests to for logged in users.
@@ -83,7 +87,7 @@ class CleantalkState
         'set_cookies'=>            1, // Disable cookies generatation to be compatible with Varnish.
         'set_cookies__sessions'=>  0, // Use alt sessions for cookies.
         'ssl_on' =>                0, // Secure connection to servers 
-		'use_buitin_http_api' =>   0, // Using Wordpress HTTP built in API
+		'use_buitin_http_api' =>   1, // Using Wordpress HTTP built in API
 		
 		// Exclusions
 		'exclusions__urls'               => '',
@@ -191,8 +195,9 @@ class CleantalkState
 	public $def_network_settings = array(
 		
 		// Key
-		'apikey'             => '',
-		'allow_custom_key'   => 1,
+		'apikey'                => '',
+		'allow_custom_key'      => 1,
+		'allow_custom_settings' => 1,
 		
 		// White label settings
 		'white_label'              => 0,
@@ -248,6 +253,7 @@ class CleantalkState
 			'last_send_amount' => 0,
 			'last_update_time' => 0,
 			'entries'          => 0,
+			'update_in_process' => false,
 		),
 		'last_sfw_block' => array(
 			'time' => 0,
@@ -499,7 +505,7 @@ class CleantalkState
 	public function __set($name, $value)
     {
         $this->storage[$name] = $value;
-		if(isset($this->storage['data']) && array_key_exists($name, $this->storage['data'])){
+		if(isset($this->storage['data'][$name])){
 			$this->storage['data'][$name] = $value;
 		}
     }
@@ -515,11 +521,11 @@ class CleantalkState
 	public function __get($name)
     {
 		// First check in storage
-        if (array_key_exists($name, $this->storage)){
+        if (isset($this->storage[$name])){
             return $this->storage[$name];
 	        
 		// Then in data
-        }elseif(array_key_exists($name, $this->storage['data'])){
+        }elseif(isset($this->storage['data'][$name])){
 			$this->$name = $this->storage['data'][$name];
 			return $this->storage['data'][$name];
 			
@@ -540,5 +546,21 @@ class CleantalkState
 	public function __unset($name)
 	{
 		unset($this->storage[$name]);
+	}
+	
+	public function server(){
+		return \Cleantalk\Common\Server::getInstance();
+	}
+	public function cookie(){
+		return \Cleantalk\Common\Cookie::getInstance();
+	}
+	public function request(){
+		return \Cleantalk\Common\Request::getInstance();
+	}
+	public function post(){
+		return \Cleantalk\Common\Post::getInstance();
+	}
+	public function get(){
+		return \Cleantalk\Common\Get::getInstance();
 	}
 }

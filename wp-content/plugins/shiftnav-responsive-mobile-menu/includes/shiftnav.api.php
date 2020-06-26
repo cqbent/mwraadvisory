@@ -31,7 +31,7 @@ function shiftnav( $id , $settings = array() ){
 		<div class="shiftnav-inner">
 
 		<?php if( shiftnav_op( 'display_panel_close_button' , $id ) == 'on' ): ?>
-			<span class="shiftnav-panel-close"><i class="fa fa-times"></i></span>
+			<button class="shiftnav-panel-close"><i class="fa fa-times"></i></button>
 		<?php endif; ?>
 
 		<?php
@@ -43,7 +43,7 @@ function shiftnav( $id , $settings = array() ){
 		if( !$disable_menu ){
 
 			$args = array(
-				//'container_class' 	=> 'shiftnav-nav', //$container_class,	//shiftnav-transition-standard 
+				//'container_class' 	=> 'shiftnav-nav', //$container_class,	//shiftnav-transition-standard
 				//'container_id'		=> $id,
 				'container'			=> $container,
 				// 'menu_class' 		=> 'shiftnav-menu',
@@ -73,7 +73,7 @@ function shiftnav( $id , $settings = array() ){
 
 			// //Active Highlight
 			// if( shiftnav_op( 'active_highlight' , 'general' ) == 'on' ) $args['menu_class'].= '	shiftnav-active-highlight';
-			
+
 
 			if( $menu != '_none' ){
 				$args['menu'] = $menu;
@@ -105,6 +105,11 @@ function shiftnav( $id , $settings = array() ){
 		do_action( 'shiftnav_after' , $id );
 
 		?>
+
+		<button class="shiftnav-sr-close shiftnav-sr-only shiftnav-sr-only-focusable">
+			<?php echo apply_filters( 'shiftnav_panel_sr_close_text' , '&times; Close Panel' ); ?>
+		</button>
+
 		</div><!-- /.shiftnav-inner -->
 	</div><!-- /.shiftnav #<?php echo $id; ?> -->
 
@@ -115,9 +120,9 @@ function shiftnav( $id , $settings = array() ){
 function shiftnav_toggle( $target_id , $content = null, $args = array() ){
 
 	//echo $target_id;
-	
+
 	$ops = shiftnav_get_instance_options( $target_id );
-	//shiftp( $ops );	
+	//shiftp( $ops );
 
 	if( $content == null && $content !== false ){
 		$content = isset( $ops['toggle_content'] ) ? $ops['toggle_content'] : '';

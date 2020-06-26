@@ -131,44 +131,44 @@ if ( !defined( 'ABSPATH' ) ) {
 	    	</tr>
 			<tr>
 	    		<th>Gutenberg Block Supports <span>Use this plugin with Gutenberg easily</span></th>
-	    		<td><i class="dashicons dashicons-no-alt"></i></td>
+	    		<td><i class="dashicons dashicons-yes"></i></td>
 	    		<td><i class="dashicons dashicons-yes"></i></td>
 	    	</tr>
 	    	<tr>
 	    		<th>Visual Composer Page Builder Supports <span>Use this plugin with Visual Composer easily</span></th>
 	    		<td><i class="dashicons dashicons-no-alt"></i></td>
 	    		<td><i class="dashicons dashicons-yes"></i></td>
-	    	</tr>
+	    	</tr>	
 			<tr>
-	    		<th>Center Mode for Carousel Shortcode <span>Display carousel layout with center mode</span></th>
-	    		<td><i class="dashicons dashicons-no-alt"></i></td>
-	    		<td><i class="dashicons dashicons-yes"></i></td>
-	    	</tr>
+				<th>Image Lazyload <span>Lazyload support for the image.</span></th>
+				<td><i class="dashicons dashicons-yes"></i></td>
+				<td><i class="dashicons dashicons-yes"></i></td>
+			</tr>		
 			<tr>
 				<th>Custom Read More link for Post <span>Redirect post to third party destination if any</span></th>
 				<td><i class="dashicons dashicons-no-alt"></i></td>
 				<td><i class="dashicons dashicons-yes"></i></td>
 			</tr>
-	    	<tr>
-				<th>Display Sticky Post <span>Display sticky post</span></th>
+	    		<tr>
+				<th>Ignore Sticky Post <span>Ignore sticky post or not</span></th>
 				<td><i class="dashicons dashicons-no-alt"></i></td>
 				<td><i class="dashicons dashicons-yes"></i></td>
 			</tr>
 			<tr>
 				<th>Display Desired Post <span>Display only the post you want</span></th>
-				<td><i class="dashicons dashicons-no-alt"></i></td>
+				<td><i class="dashicons dashicons-yes"></i></td>
+				<td><i class="dashicons dashicons-yes"></i></td>
+			</tr>			
+	    	<tr>
+				<th>Exclude Some Posts <span>Do not display the posts you want</span></th>
+				<td><i class="dashicons dashicons-yes"></i></td>
 				<td><i class="dashicons dashicons-yes"></i></td>
 			</tr>
 			<tr>
 	    		<th>Display Post for Particular Categories <span>Display only the posts with particular category</span></th>
-	    		<td><i class="dashicons dashicons-no-alt"></i></td>
+	    		<td><i class="dashicons dashicons-yes"></i></td>
 	    		<td><i class="dashicons dashicons-yes"></i></td>
 	    	</tr>
-	    	<tr>
-				<th>Exclude Some Posts <span>Do not display the posts you want</span></th>
-				<td><i class="dashicons dashicons-no-alt"></i></td>
-				<td><i class="dashicons dashicons-yes"></i></td>
-			</tr>
 			<tr>
 				<th>Exclude Some Categories <span>Do not display the posts for particular categories</span></th>
 				<td><i class="dashicons dashicons-no-alt"></i></td>

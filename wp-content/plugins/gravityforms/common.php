@@ -62,9 +62,24 @@ class GFCommon {
 		}
 	}
 
+	/**
+	 * Removes the currency symbol from the supplied value.
+	 *
+	 * @since unknown
+	 * @since 2.4.18 Updated to support the currency code being passed for the $currency param.
+	 *
+	 * @param string            $value    The value to be cleaned.
+	 * @param null|array|string $currency Null to use the default currency, an array of currency properties, or the currency code.
+	 *
+	 * @return string
+	 */
 	public static function remove_currency_symbol( $value, $currency = null ) {
-		if ( $currency == null ) {
-			$code = GFCommon::get_currency();
+		if ( empty( $value ) ) {
+			return $value;
+		}
+
+		if ( ! is_array( $currency ) ) {
+			$code = empty( $currency ) ? GFCommon::get_currency() : $currency;
 			if ( empty( $code ) ) {
 				$code = 'USD';
 			}
@@ -72,10 +87,15 @@ class GFCommon {
 			$currency = RGCurrency::get_currency( $code );
 		}
 
-		$value = str_replace( $currency['symbol_left'], '', $value );
-		$value = str_replace( $currency['symbol_right'], '', $value );
+		if ( ! empty( $currency['symbol_left'] ) ) {
+			$value = str_replace( $currency['symbol_left'], '', $value );
+		}
 
-		//some symbols can't be easily matched up, so this will catch any of them
+		if ( ! empty( $currency['symbol_right'] ) ) {
+			$value = str_replace( $currency['symbol_right'], '', $value );
+		}
+
+		// Some symbols can't be easily matched up, so this will catch any of them.
 		$value = preg_replace( '/[^,.\d]/', '', $value );
 
 		return $value;
@@ -1187,14 +1207,8 @@ class GFCommon {
 			$text = str_replace( '{ip}', $url_encode ? urlencode( $ip ) : $ip, $text );
 
 			//user agent
-			$user_agent = RGForms::get( 'HTTP_USER_AGENT', $_SERVER );
-			if ( $esc_html ) {
-				$user_agent = esc_html( $user_agent );
-			}
-			if ( $url_encode ) {
-				$user_agent = urlencode( $user_agent );
-			}
-			$text = str_replace( '{user_agent}', $user_agent, $text );
+			$user_agent = isset( $entry['user_agent'] ) ? $entry['user_agent'] : sanitize_text_field( rgar( $_SERVER, 'HTTP_USER_AGENT' ) );
+			$text       = str_replace( '{user_agent}', self::format_variable_value( $user_agent, $url_encode, $esc_html, $format, $nl2br ), $text );
 
 			//referrer
 			$referer = RGForms::get( 'HTTP_REFERER', $_SERVER );
@@ -1685,6 +1699,19 @@ class GFCommon {
 		return compact( 'to', 'from', 'bcc', 'reply_to', 'subject', 'message', 'from_name', 'message_format', 'attachments', 'disableAutoformat' );
 	}
 
+	/**
+	 * Prepare admin notification.
+	 *
+	 * @deprecated
+	 *
+	 * @since unknown
+	 *
+	 * @param array      $form             The form object.
+	 * @param array      $lead             The lead object.
+	 * @param bool|array $override_options Defaults to false, or can be an array to override options.
+	 *
+	 * @return array
+	 */
 	private static function prepare_admin_notification( $form, $lead, $override_options = false ) {
 		$form_id = $form['id'];
 
@@ -2566,6 +2593,7 @@ Content-Type: text/html;
 	/**
 	 * Returns all the plugin capabilities.
 	 *
+	 * @since 2.4.18 Added gravityforms_logging and gravityforms_api_settings.
 	 * @since 2.2.1.12 Added gravityforms_system_status.
 	 * @since unknown
 	 *
@@ -2589,6 +2617,8 @@ Content-Type: text/html;
 			'gravityforms_view_addons',
 			'gravityforms_preview_forms',
 			'gravityforms_system_status',
+			'gravityforms_logging',
+			'gravityforms_api_settings',
 		);
 	}
 
@@ -2860,19 +2890,24 @@ Content-Type: text/html;
 		update_option( 'rg_gforms_message', $message );
 	}
 
+	/**
+	 * Post request to Gravity Manager.
+	 *
+	 * @since unknown
+	 * @since 2.5     Remove Gravity Manager Proxy.
+	 *
+	 * @param string $file    The file.
+	 * @param string $query   The query string.
+	 * @param array  $options The options.
+	 *
+	 * @return array|WP_Error
+	 */
 	public static function post_to_manager( $file, $query, $options ) {
 
 		$request_url = GRAVITY_MANAGER_URL . '/' . $file . '?' . $query;
 		self::log_debug( __METHOD__ . '(): endpoint: ' . $request_url );
 		$raw_response = wp_remote_post( $request_url, $options );
 		self::log_remote_response( $raw_response );
-
-		if ( is_wp_error( $raw_response ) || 200 != $raw_response['response']['code'] ) {
-			self::log_error( __METHOD__ . '(): Error from manager. Sending to proxy...' );
-			$request_url  = GRAVITY_MANAGER_PROXY_URL . '/proxy.php?f=' . $file . '&' . $query;
-			$raw_response = wp_remote_post( $request_url, $options );
-			self::log_remote_response( $raw_response );
-		}
 
 		return $raw_response;
 	}
@@ -3923,6 +3958,62 @@ Content-Type: text/html;
 		return do_shortcode( $content );
 	}
 
+	/**
+	 * Determines if the supplied entry is spam.
+	 *
+	 * @since 2.4.17
+	 *
+	 * @param array $entry The entry currently being processed.
+	 * @param array $form  The form currently being processed.
+	 *
+	 * @return bool
+	 */
+	public static function is_spam_entry( $entry, $form ) {
+		$form_id   = absint( $form['id'] );
+		$use_cache = class_exists( 'GFFormDisplay' );
+
+		if ( $use_cache ) {
+			$is_spam = rgars( GFFormDisplay::$submission, $form_id . '/is_spam' );
+
+			if ( is_bool( $is_spam ) ) {
+				return $is_spam;
+			}
+		}
+
+		$is_spam = false;
+
+		if ( self::akismet_enabled( $form_id ) ) {
+			$is_spam = self::is_akismet_spam( $form, $entry );
+			self::log_debug( __METHOD__ . '(): Result from Akismet: ' . json_encode( $is_spam ) );
+		}
+
+		if ( has_filter( 'gform_entry_is_spam' ) || has_filter( "gform_entry_is_spam_{$form_id}" ) ) {
+
+			/**
+			 * Allows submissions to be flagged as spam by custom methods.
+			 *
+			 * @since 1.8.17
+			 * @since 2.4.17 Moved from GFFormDisplay::handle_submission().
+			 *
+			 * @param bool  $is_spam Indicates if the submission has been flagged as spam.
+			 * @param array $form    The form currently being processed.
+			 * @param array $entry   The entry currently being processed.
+			 */
+			$is_spam = gf_apply_filters( array( 'gform_entry_is_spam', $form_id ), $is_spam, $form, $entry );
+			self::log_debug( __METHOD__ . '(): Result from gform_entry_is_spam filter: ' . json_encode( $is_spam ) );
+
+		}
+
+		$log_is_spam = $is_spam ? 'Yes' : 'No';
+		self::log_debug( __METHOD__ . "(): Is submission considered spam? {$log_is_spam}." );
+
+		if ( $use_cache ) {
+			GFFormDisplay::$submission[ $form_id ]['is_spam'] = $is_spam;
+		}
+
+		return $is_spam;
+	}
+
 	public static function spam_enabled( $form_id ) {
 		$spam_enabled = self::akismet_enabled( $form_id ) || has_filter( 'gform_entry_is_spam' ) || has_filter( "gform_entry_is_spam_{$form_id}" );
 
@@ -3930,7 +4021,7 @@ Content-Type: text/html;
 	}
 
 	public static function has_akismet() {
-		$akismet_exists = function_exists( 'akismet_http_post' ) || function_exists( 'Akismet::http_post' );
+		$akismet_exists = function_exists( 'akismet_http_post' ) || method_exists( 'Akismet', 'http_post' );
 
 		return $akismet_exists;
 	}
@@ -4545,7 +4636,7 @@ Content-Type: text/html;
 					'merge_tag' => '',
 					'condition' => '',
 					'value'     => '',
-				), $attributes
+				), $attributes, 'gravityforms_conditional'
 			)
 		);
 
@@ -4676,6 +4767,7 @@ Content-Type: text/html;
 		$gf_vars['contains']                = esc_html__( 'contains', 'gravityforms' );
 		$gf_vars['startsWith']              = esc_html__( 'starts with', 'gravityforms' );
 		$gf_vars['endsWith']                = esc_html__( 'ends with', 'gravityforms' );
+		$gf_vars['emptyChoice']             = wp_strip_all_tags( __( 'Empty (no choices selected)', 'gravityforms' ) );
 
 		$gf_vars['thisConfirmation']                 = esc_html__( 'Use this confirmation if', 'gravityforms' );
 		$gf_vars['thisNotification']                 = esc_html__( 'Send this notification if', 'gravityforms' );

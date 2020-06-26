@@ -5,9 +5,10 @@ jQuery(document).ready(function($) {
 		
 		var slider_id   	= $(this).attr('id');			
 		var slider_conf 	= $.parseJSON( $(this).closest('.wppsac-slick-slider-wrp').find('.wppsac-slider-conf').attr('data-conf'));
-		
+
 		if( typeof(slider_id) != 'undefined' && slider_id != '' ) {
 			jQuery('#'+slider_id).slick({
+				lazyLoad        : slider_conf.lazyload,
 				dots			: (slider_conf.dots) == "true" ? true : false,
 				infinite		: true,
 				arrows			: (slider_conf.arrows) == "true" ? true : false,
@@ -29,6 +30,7 @@ jQuery(document).ready(function($) {
 		
 		if( typeof(carousel_id) != 'undefined' && carousel_id != '' ) {
 			jQuery('#'+carousel_id).slick({
+				lazyLoad        : carousel_conf.lazyload,
 				dots			: (carousel_conf.dots) == "true" ? true : false,
 				infinite		: true,
 				arrows			: (carousel_conf.arrows) == "true" ? true : false,

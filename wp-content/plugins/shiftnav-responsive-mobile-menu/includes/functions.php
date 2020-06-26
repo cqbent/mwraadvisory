@@ -91,23 +91,30 @@ function shiftnav_inject_css(){
 }
 add_action( 'wp_head' , 'shiftnav_inject_css' );
 
-function shiftnav_direct_injection(){
+function shiftnav_togglebar( $toggle_target = 'shiftnav-main', $content = '', $args = array() ){
 
-	if( !_SHIFTNAV()->display_now() ) return;
+	extract( shortcode_atts( array(
+		'bar_id'			=> '',
+		'toggle_align'	=> shiftnav_op( 'align' , 'togglebar' ),
+		'toggle_style' => shiftnav_op( 'toggle_bar_style' , 'togglebar' ),
+		'toggle_target_area' => shiftnav_op( 'toggle_target' , 'togglebar' ),
+		'togglebar_gap' => shiftnav_op( 'togglebar_gap' , 'togglebar' ),
+		'togglebar_transparent' => shiftnav_op( 'background_transparent' , 'togglebar' ),
+	), $args ))
 
-	if( shiftnav_op( 'display_toggle' , 'togglebar' ) == 'on' ){
 
-		?>
+	?>
+
 	<!-- ShiftNav Main Toggle -->
 		<?php
 
 		$disable_toggle = false; //true;
-		$toggle_class = 'shiftnav-toggle-main-align-'.shiftnav_op( 'align' , 'togglebar' );
 
-		$main_toggle_style = shiftnav_op( 'toggle_bar_style' , 'togglebar' );
-		$toggle_class.= ' shiftnav-toggle-style-'.$main_toggle_style;
+		$toggle_class = 'shiftnav-toggle-main-align-'.$toggle_align;
+		$toggle_class.= ' shiftnav-toggle-style-'.$toggle_style;
+		$toggle_class.= ' shiftnav-togglebar-gap-'.$togglebar_gap;
 
-		if( shiftnav_op( 'toggle_target' , 'togglebar' ) == 'entire_bar' ){
+		if( $toggle_target_area == 'entire_bar' ){
 			$toggle_class.= ' shiftnav-toggle-main-entire-bar';
 		}
 		else{
@@ -115,12 +122,9 @@ function shiftnav_direct_injection(){
 			add_action( 'shiftnav_toggle_before_content' , 'shiftnav_main_toggle_burger' , 10 , 3 );
 		}
 
-
-		$togglebar_gap = shiftnav_op( 'togglebar_gap' , 'togglebar' );
-		$toggle_class.= ' shiftnav-togglebar-gap-'.$togglebar_gap;
-
-		$togglebar_transparent = shiftnav_op( 'background_transparent' , 'togglebar' );
-		if( $togglebar_transparent == 'on' ) $toggle_class.= ' shiftnav-togglebar-transparent';
+		if( $togglebar_transparent == 'on' ){
+			$toggle_class.= ' shiftnav-togglebar-transparent';
+		}
 
 
 		/* 	<div id="shiftnav-toggle-main" class="<?php echo $main_toggle_class; ?>">
@@ -128,24 +132,46 @@ function shiftnav_direct_injection(){
 		 		<?php shiftnav_main_toggle_content(); ?>
 		 	</div> */
 
-		$main_toggle_target = apply_filters( 'shiftnav_main_toggle_target' , 'shiftnav-main' );
+		$toggle_target = apply_filters( 'shiftnav_main_toggle_target' , $toggle_target );
 
-		$content = false;
-		if( $main_toggle_style != 'burger_only' ) $content = shiftnav_main_toggle_content();
+		if( $toggle_style === 'burger_only' ) $content = false;
 
+		/*
+		?>
+		<div id="<?php echo $bar_id; ?>">
 
-		shiftnav_toggle( $main_toggle_target , $content , array(
-			'id' => 'shiftnav-toggle-main' ,
+		</div>
+		<?php
+		*/
+
+		// echo $content;
+
+		shiftnav_toggle( $toggle_target , $content , array(
+			'id' => $bar_id,
 			'el' => 'div',
 			'class' => $toggle_class,
 			'disable_toggle' => $disable_toggle,
+			'tabindex' => 1,
 		));
 
 		remove_action( 'shiftnav_toggle_before_content' , 'shiftnav_main_toggle_burger' , 10 , 3 );
 
 		?>
 
-	<!-- /#shiftnav-toggle-main --> <?php
+	<!-- /#shiftnav-toggle-main -->
+
+	<?php
+}
+
+function shiftnav_direct_injection(){
+
+	if( !_SHIFTNAV()->display_now() ) return;
+
+	if( shiftnav_op( 'display_toggle' , 'togglebar' ) == 'on' ){
+		$content = '';
+		$toggle_style = shiftnav_op( 'toggle_bar_style' , 'togglebar' );
+		if( $toggle_style !== 'burger_only' ) $content = shiftnav_main_toggle_content();
+		shiftnav_togglebar( 'shiftnav-main' , $content , array( 'bar_id' => 'shiftnav-toggle-main' ));
 	}
 
 	if( shiftnav_op( 'display_main' , 'shiftnav-main' ) == 'on' ){
@@ -158,27 +184,6 @@ function shiftnav_direct_injection(){
 	if( $footer_content = shiftnav_op( 'footer_content' , 'general' ) ){
 		echo do_shortcode( $footer_content );
 	}
-
-	/*
-	if( current_user_can( 'manage_options') ):
-		?>
-		<div class="shiftnav-loading">
-			<h5>ShiftNav is waiting to load...</h5>
-			<div class="shiftnav-loading-message">
-				<p>If this message does not disappear, it means you have a javascript
-					issue on your site which is preventing ShiftNav's script from running.
-					You'll need to resolve that issue in order for ShiftNav to work properly.
-				</p>
-				<p>Check for javascript errors by opening up your browser's javascript console.</p>
-
-				<p>This message will only display to admin users</p>
-			</div>
-		</div>
-		<?php
-	endif;
-	*/
-
-
 }
 add_action( 'wp_footer', 'shiftnav_direct_injection' );
 
@@ -191,8 +196,10 @@ function shiftnav_main_toggle_burger( $main_toggle , $target_id , $id ){
 
 		shiftnav_toggle( $main_toggle_target , $main_toggle_content , array(
 			'id' => 'shiftnav-toggle-main-button' ,
-			'el' => 'div',
+			'el' => 'button',
 			'class' => 'shiftnav-toggle-burger',
+			'tabindex' => 1,
+			'aria_label' => shiftnav_op( 'aria_label' , 'togglebar' ),
 			'actions' => false, //if we ran the actions, we'd enter into a weird fifth dimension and collapse the universe
 		));
 		//echo '<span class="shiftnav-toggle-burger"><i class="fa fa-bars"></i></span>';
@@ -216,6 +223,8 @@ function _shiftnav_toggle( $target_id , $content = '', $args = array() ){
 		'disable_toggle' => false,
 		'actions' => true,
 		'icon'	=> '',
+		'tabindex' => 0,
+		'aria_label' => false,
 	) ) );
 
 	$content = do_shortcode( $content );
@@ -231,14 +240,29 @@ function _shiftnav_toggle( $target_id , $content = '', $args = array() ){
 			$class.= ' shiftnav-toggle-position-absolute';
 		}
 
-		$class.= ' ' . $class;
+		if( shiftnav_op( 'hide_bar_on_scroll', 'togglebar', 'off' ) === 'on' ){
+			$class.= ' shiftnav--hide-scroll-down';
+		}
+
+		// $class.= ' ' . $class;
 	}
 
-	if( !$disable_toggle ) $class = 'shiftnav-toggle shiftnav-toggle-'.$target_id.' '.$class;
+	$target_att = '';
+	$tabindex_att = '';
+	if( !$disable_toggle ){
+		$tabindex_att = 'tabindex="'.$tabindex.'"';
+		$target_att = 'data-shiftnav-target="'.$target_id.'"';
+		$class = 'shiftnav-toggle shiftnav-toggle-'.$target_id.' '.$class;
+	}
+
+	if( $aria_label ) $aria_label = 'aria-label="'.$aria_label.'"';
+
+
+
 
 	echo "<$el ";
 		if( $id ): ?>id="<?php echo $id; ?>"<?php endif;
-		?> class="<?php echo $class; ?>" data-shiftnav-target="<?php echo $target_id; ?>"><?php
+		?> class="<?php echo $class; ?>" <?php echo $tabindex_att; ?> <?php echo $target_att; ?> <?php echo $aria_label; ?>><?php
 		if( $actions ) do_action( 'shiftnav_toggle_before_content' , $main_toggle , $target_id , $id );
 		if( $icon ) echo '<i class="fa fa-'.$icon.'"></i> ';
 		echo apply_filters( 'shiftnav_toggle_content' , $content , $target_id , $id );
@@ -258,13 +282,14 @@ function shiftnav_toggle_shortcode( $atts, $content ){
 		'class'		=> '',
 		'icon'		=> '',
 		'disable_content' => '',
+		'aria_label' => false,
 	), $atts, 'shiftnav_toggle' ) );
 
 	if( $disable_content == 'true' ) $content = false;
 
 	ob_start();
 
-	shiftnav_toggle( $target , $content , array( 'id' => $toggle_id , 'el' => $el , 'class' => $class , 'icon' => $icon ) );
+	shiftnav_toggle( $target , $content , array( 'id' => $toggle_id , 'el' => $el , 'class' => $class , 'icon' => $icon, 'aria_label' => $aria_label ) );
 
 	$toggle = ob_get_contents();
 
@@ -318,20 +343,23 @@ function shiftnav_load_assets(){
 	}
 
 	wp_localize_script( 'shiftnav' , 'shiftnav_data' , array(
-		'shift_body'			=>	shiftnav_op( 'shift_body' , 'general' ),
-		'shift_body_wrapper'	=>	shiftnav_op( 'shift_body_wrapper' , 'general' ),
-		'lock_body'				=>	shiftnav_op( 'lock_body' , 'general' ),
-		'lock_body_x'			=>	shiftnav_op( 'lock_body_x' , 'general' ),
-		'open_current'			=>	shiftnav_op( 'open_current' , 'general' ),
-		'collapse_accordions'	=> 	shiftnav_op( 'collapse_accordions' , 'general' ),
-		'scroll_panel'			=>	shiftnav_op( 'scroll_panel' , 'general' ),
-		'breakpoint'			=> 	shiftnav_op( 'breakpoint' , 'togglebar' ),
-		'v'								=> SHIFTNAV_VERSION,
+		'shift_body'						=>	shiftnav_op( 'shift_body' , 'general' ),
+		'shift_body_wrapper'		=>	shiftnav_op( 'shift_body_wrapper' , 'general' ),
+		'lock_body'							=>	shiftnav_op( 'lock_body' , 'general' ),
+		'lock_body_x'						=>	shiftnav_op( 'lock_body_x' , 'general' ),
+		'open_current'					=>	shiftnav_op( 'open_current' , 'general' ),
+		'collapse_accordions'		=> 	shiftnav_op( 'collapse_accordions' , 'general' ),
+		'scroll_panel'					=>	shiftnav_op( 'scroll_panel' , 'general' ),
+		'breakpoint'						=> 	shiftnav_op( 'breakpoint' , 'togglebar' ),
+		'v'											=>	SHIFTNAV_VERSION,
+		'pro'										=>  SHIFTNAV_PRO ? 1 : 0,
 
-		'touch_off_close'		=>	shiftnav_op( 'touch_off_close' , 'general' ),
-		'scroll_offset'			=>	shiftnav_op( 'scroll_offset' , 'general' ),
-		'disable_transforms'	=>	shiftnav_op( 'disable_transforms' , 'general' ),
-
+		'touch_off_close'				=>	shiftnav_op( 'touch_off_close' , 'general' ),
+		'scroll_offset'					=>	shiftnav_op( 'scroll_offset' , 'general' ),
+		'disable_transforms'		=>	shiftnav_op( 'disable_transforms' , 'general' ),
+		'close_on_target_click' => 	shiftnav_op( 'close_on_target_click' , 'general' ),
+		'scroll_top_boundary'		=> 	shiftnav_op( 'scroll_top_boundary', 'general', 50 ),
+		'process_uber_segments'	=> 	shiftnav_op( 'process_uber_segments', 'general' ),
 	) );
 }
 add_action( 'wp_enqueue_scripts' , 'shiftnav_load_assets' , 101 );

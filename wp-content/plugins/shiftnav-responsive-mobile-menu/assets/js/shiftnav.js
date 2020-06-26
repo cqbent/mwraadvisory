@@ -69,7 +69,9 @@ var shift_supports = (function() {
 			open_current: false,
 			collapse_accordions: false,
 			scroll_offset:100,
-			disable_transforms: false
+			disable_transforms: false,
+      close_on_target_click: false,
+      process_uber_segments: true,
 		};
 
 	function Plugin ( element, options ) {
@@ -128,6 +130,7 @@ var shift_supports = (function() {
 
 			this.initializeTargets();
 			this.initializeSubmenuToggleMouseEvents();
+      this.initializeSubmenuToggleKeyboardEvents();
 			this.initializeRetractors();
 			this.initializeResponsiveToggle();
 
@@ -171,59 +174,62 @@ var shift_supports = (function() {
 
 				//Pad top when either using the Full Bar & Auto Gap, or if override is enabled
 				var $main_toggle = $( '#shiftnav-toggle-main' );
-				if( ( !$main_toggle.hasClass( 'shiftnav-toggle-style-burger_only') && $main_toggle.hasClass( 'shiftnav-togglebar-gap-auto' ) ) ||
-					$main_toggle.hasClass( 'shiftnav-togglebar-gap-on' ) ){
-					var toggleHeight = $main_toggle.outerHeight();
-					$wrap.css( 'padding-top' , toggleHeight );
-					$main_toggle.addClass( 'shiftnav-togglebar-gap-on' );
+        if( $main_toggle.length ){ //Only mess with gap if there is a main toggle bar in use
+  				if( ( !$main_toggle.hasClass( 'shiftnav-toggle-style-burger_only') && $main_toggle.hasClass( 'shiftnav-togglebar-gap-auto' ) ) ||
+  					$main_toggle.hasClass( 'shiftnav-togglebar-gap-on' ) ){
+  					var toggleHeight = $main_toggle.outerHeight();
+  					$wrap.css( 'padding-top' , toggleHeight );
+  					$main_toggle.addClass( 'shiftnav-togglebar-gap-on' );
 
-          //Pad body if wrap doesn't exist because shift body is disabled
-          if( shiftnav_data.shift_body == 'off' ){
+            //Pad body if wrap doesn't exist because shift body is disabled
+            if( shiftnav_data.shift_body == 'off' ){
 
-              //Create style for padding-top on body
-              var style = 'body.shiftnav-disable-shift-body{ padding-top:'+ toggleHeight + 'px; }';
+                //Create style for padding-top on body
+                var style = 'body.shiftnav-disable-shift-body{ padding-top:'+ toggleHeight + 'px; }';
 
-              //If the breakpoint is set, set up the media query
-              if( shiftnav_data.breakpoint !== '' ){
-                style = '@media screen and (max-width:'+(shiftnav_data.breakpoint-1)+'px){ '+style+' }';
-              }
+                //If the breakpoint is set, set up the media query
+                if( shiftnav_data.breakpoint !== '' ){
+                  style = '@media screen and (max-width:'+(shiftnav_data.breakpoint-1)+'px){ '+style+' }';
+                }
 
-              var sheet = null;
+                var sheet = null;
 
-              //Get the existing style element in the site head, or create one if it does not exist
-              var style_el = document.getElementById( 'shiftnav-dynamic-css' );
-              if( style_el ){
-                sheet = style_el.sheet;
-              }
-              else{
-                style_el = document.createElement("style");
-                style_el.appendChild(document.createTextNode(""));
-                document.head.appendChild(style_el);
-                sheet = style_el.sheet;
-              }
+                //Get the existing style element in the site head, or create one if it does not exist
+                var style_el = document.getElementById( 'shiftnav-dynamic-css' );
+                if( style_el ){
+                  sheet = style_el.sheet;
+                }
+                else{
+                  style_el = document.createElement("style");
+                  style_el.appendChild(document.createTextNode(""));
+                  document.head.appendChild(style_el);
+                  sheet = style_el.sheet;
+                }
 
-              //Add the rule to the style element
-              if( sheet && "insertRule" in sheet ){
-                sheet.insertRule( style , 0 );
-              }
-              // else{
-              //   $body.css( 'padding-top' , toggleHeight ); //would need to pair with an extra class and padding-top:0 in PHP generated CSS
-              // }
-          }
-				}
-				else if( $( 'body' ).hasClass( 'admin-bar' ) ) $( 'html' ).addClass( 'shiftnav-nogap' );
+                //Add the rule to the style element
+                if( sheet && "insertRule" in sheet ){
+                  sheet.insertRule( style , 0 );
+                }
+                // else{
+                //   $body.css( 'padding-top' , toggleHeight ); //would need to pair with an extra class and padding-top:0 in PHP generated CSS
+                // }
+            }
+  				}
+  				else if( $( 'body' ).hasClass( 'admin-bar' ) ) $( 'html' ).addClass( 'shiftnav-nogap' );
+        }
 
 				//Setup non-transform
 				//Some browsers provide false positives for feature detection, so we have to do browser detection as well, sadly
 				var fpos = false;	//falsePositive	-
 				var ua = navigator.userAgent.toLowerCase();
 
+        // if( /android [1-3]\./.test( 'mozilla/5.0 (linux; android 9.0; pixel 2 build/opd3.170816.012)' ) ) console.log( 'caught' );
+
 				//Many mobile Android browsers are dumb
 				if( /android/.test( ua ) ){
 					fpos = true; //we're going to whitelist mobile Android browsers, so assume false positive on Android
-
 					//always ignore old androids
-					if( /android [1-3]/.test( ua ) ) fpos = true;
+					if( /android [1-3]\./.test( ua ) ) fpos = true;
 					//Chrome on 4+ is good
 					else if( /chrome/.test( ua ) ) fpos = false;
 					//Firefox on 4+ is good
@@ -243,33 +249,24 @@ var shift_supports = (function() {
 
 
 				//Handle searchbar toggle
-				$( '.shiftnav-searchbar-toggle' ).on( this.toggleevent , function( e ){
-					e.stopPropagation();
-					e.preventDefault();
+				$( '.shiftnav-searchbar-toggle' ).each( function(){
+          var $drop = $( this ).next( '.shiftnav-searchbar-drop' );
 
-					var $drop = $( this ).next( '.shiftnav-searchbar-drop' );
-
-					//Close
-					if( $drop.hasClass( 'shiftnav-searchbar-drop-open' ) ){
-						$drop.removeClass( 'shiftnav-searchbar-drop-open' );
-						$( 'body' ).off( 'click.shiftnav-searchbar-drop' );
-					}
-					//Open
-					else{
-						$drop.addClass( 'shiftnav-searchbar-drop-open' );
-						$drop.find( '.shiftnav-search-input' ).focus();
-
-						//Close on click-off - can't do this immediately because IE is so damn dumb
-            if( plugin.settings.touchOffClose ){
-  						setTimeout( function(){
-  							$( 'body' ).on( 'click.shiftnav-searchbar-drop' , function( e ){
-  								$( '.shiftnav-searchbar-drop' ).removeClass( 'shiftnav-searchbar-drop-open' );
-  								$( 'body' ).off( 'click.shiftnav-searchbar-drop' );
-  							});
-  						}, 100);
-            }
-					}
-				});
+          $(this)
+            .on( plugin.toggleevent , function(e){
+              plugin.toggleSearchBar(e, $drop, plugin);
+            })
+            .on( 'keyup.shiftnav-searchbar-toggle' , function(e){
+              if( e.keyCode === 13 ){ //return/Enter
+                plugin.toggleSearchBar(e, $drop, plugin);
+              }
+            })
+            .on( 'keydown.shiftnav-searbar-toggle', function(e){
+              if( e.keyCode === 13 ){
+                e.stopPropagation();
+              }
+            });
+        });
 				$( '.shiftnav-searchbar-drop' ).on( this.toggleevent , function( e ){
 					e.stopPropagation();
 				});
@@ -309,8 +306,12 @@ var shift_supports = (function() {
 
 			this.openclass = 'shiftnav-open shiftnav-open-' + this.edge;
 
-			this.$shiftnav.find( '.shiftnav-panel-close' ).on( 'click' , function(){
+			this.$shiftnav.find( '.shiftnav-panel-close' ).on( 'click' , function(e){
 				plugin.closeShiftNav();
+			});
+			this.$shiftnav.find( '.shiftnav-sr-close' ).on( 'click' , function(e){
+				plugin.closeShiftNav();
+        plugin.focusMainToggle();
 			});
 
 			//Set retractor heights
@@ -322,14 +323,25 @@ var shift_supports = (function() {
 				//$( this ).css( 'height' , $( this ).parent( '.menu-item' ).height() );
 			});
 
+      //Open on Focus - hidden elements don't get focus
+      // this.$shiftnav.on( 'focusin' , function(){
+      //   if( !$(this).hasClass( 'shiftnav-open-target' ) ){
+      //     plugin.openShiftNav();
+      //   }
+      // });
 
+      // Setup current item ancestors when using UberMenu segments
+      if( plugin.settings.process_uber_segments ){
+        this.$shiftnav.find( '.sub-menu .menu-item.current-menu-item' ).parents( '.menu-item' ).addClass( 'current-menu-ancestor' );
+      }
 
-			//Current open
+      //Current open
 			if( plugin.settings.open_current ){
 				$( '.shiftnav .shiftnav-sub-accordion.current-menu-item, .shiftnav .shiftnav-sub-accordion.current-menu-ancestor' ).addClass( 'shiftnav-active' );
 			}
 
 		},
+
 
 		initializeTargets: function(){
 
@@ -339,7 +351,8 @@ var shift_supports = (function() {
 				.removeClass( 'current-menu-item' )
 				.removeClass( 'current-menu-ancestor');
 
-			this.$shiftnav.on( 'click' , '.shiftnav-target' , function( e ){
+      // Retractors are also targets, so only listen on menu items
+			this.$shiftnav.on( 'click' , '.menu-item > .shiftnav-target' , function( e ){
 				var scrolltarget = $(this).data( 'shiftnav-scrolltarget' );
 				if( scrolltarget ){
 					var $target = $( scrolltarget ).first();
@@ -380,6 +393,12 @@ var shift_supports = (function() {
 						plugin.openSubmenu( $li , 'disabledLink' , plugin );
 					}
 				}
+
+        // Close panel if setting is enabled and we're clicking a link
+        if( $(this).prop('tagName').toLowerCase() === 'a' && plugin.settings.close_on_target_click ){
+          plugin.closeShiftNav();
+        }
+
 			});
 
 		},
@@ -406,6 +425,27 @@ var shift_supports = (function() {
 			$shiftnav.off( 'mouseout.shift-submenu-toggle'  );
 		},
 
+    initializeSubmenuToggleKeyboardEvents: function(){
+
+			if( this.settings.debug ) console.log( 'initializeSubmenuToggleKeyboardEvents' );
+
+			var plugin = this;
+
+			this.$shiftnav.on( 'keyup.shift-submenu-toggle' , '.shiftnav-submenu-activation' , function(e){
+        if( e.keyCode === 13 ){ //return/enter
+          plugin.handleMouseActivation( e , this , plugin );
+
+          //For accordions, set focus on opposite toggle
+          var $switch = $(this).siblings('.shiftnav-submenu-activation').first();
+          if( $switch.length ){
+            setTimeout( function() {
+              $switch.focus();
+            }, 10 );
+          }
+         }
+      });
+		},
+
 
 		initializeRetractors: function() {
 
@@ -414,6 +454,11 @@ var shift_supports = (function() {
 
 			//set up the retractors
 			this.$shiftnav.on( 'mouseup.shiftnav' , '.shiftnav-retract' , function(e){ plugin.handleSubmenuRetractorEnd( e , this, plugin); } );
+      this.$shiftnav.on( 'keyup.shiftnav' , '.shiftnav-retract' , function(e){
+        if( e.keyCode === 13 ){ //return/enter
+          plugin.handleSubmenuRetractorEnd( e , this, plugin);
+        }
+      });
 		},
 
 
@@ -431,6 +476,28 @@ var shift_supports = (function() {
 			this.$toggles.on( 'click' , function(e){
 				plugin.toggle( $(this) , plugin , e );
 			});
+
+      //Tabbing off of toggle - accessibility
+      this.$toggles.on( 'keydown' , function(e){
+        if( e.keyCode === 9 ){ //TAB
+          var target_id = $(this).data('shiftnav-target');
+          var $panel = $( '[data-shiftnav-id="'+target_id+'"]' );
+          if( $panel.length && $panel.hasClass('shiftnav-open-target') ){
+            e.preventDefault(); //If we don't do this, then we end up on the second focusable - focus, then tab (keyup)
+            $panel.find( 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]' ).first().focus();
+          }
+        }
+      });
+
+      //Specifically for main shiftnav
+      if( 'shiftnav-main' === this.$shiftnav.attr('id') ){
+        //Special setup for clicking entire toggle bar, which is a div
+        $('#shiftnav-toggle-main.shiftnav-toggle-main-entire-bar').on( 'keydown', function(e){
+          if( e.keyCode === 13 ){ //return/enter
+            plugin.toggle( $(this), plugin, e );
+          }
+        })
+      }
 
 		},
 
@@ -466,7 +533,7 @@ var shift_supports = (function() {
 			}
 
 			//Temporarily disable toggle for click event when touch is fired
-			if( e.originalEvent.type != 'click' ){
+			if( e.originalEvent.type !== 'click' && e.originalEvent.type !== 'keydown' ){
 				$( this ).data( 'disableToggle' , true );
 				setTimeout( function(){
 					$( this ).data( 'disableToggle' , false );
@@ -501,8 +568,27 @@ var shift_supports = (function() {
 						$( this ).off( plugin.transitionend );
 					});
 
+      this.$shiftnav.trigger( 'shiftnav-open' );
+
 			this.disableTouchoffClose();
 			this.initializeTouchoffClose();
+
+      //When focus leaves Panel, close
+      $('body').on( 'focusin.shiftnavPanel', function(e){
+        plugin.closeShiftNav();
+        plugin.focusMainToggle();
+      });
+      this.$shiftnav.on( 'focusin.shiftnavPanel', function(e){
+        e.stopPropagation();
+      });
+
+      //On Escape, close panel
+      $(document).on( 'keyup.shiftnavPanel', function(e){
+        if( e.keyCode === 27 ){
+          plugin.closeShiftNav();
+          plugin.focusMainToggle();
+        }
+      })
 
 		},
 
@@ -522,8 +608,21 @@ var shift_supports = (function() {
 						$( this ).off( plugin.transitionend );
 					});
 
+      this.$shiftnav.trigger( 'shiftnav-close' );
+
 			this.disableTouchoffClose();
+
+      //Remove focus handlers
+      $( 'body' ).off( 'focusin.shiftnavPanel' );
+      this.$shiftnav.off( 'focusin.shiftnavPanel' );
+      $(document).off( 'keyup.shiftnavPanel' );
 		},
+
+    focusMainToggle: function(plugin){
+      if( this.$shiftnav.attr('id') === 'shiftnav-main' ){
+        $('#shiftnav-toggle-main .shiftnav-toggle[data-shiftnav-target="shiftnav-main"]').focus();
+      }
+    },
 
 		initializeTouchoffClose: function(){
 
@@ -564,7 +663,6 @@ var shift_supports = (function() {
 			if( plugin.settings.debug ) console.log( 'handleSubmenuRetractorEnd ' + $li.find('> a').text());
 
 		},
-
 
 
 		handleTouchoffClose: function( e , _this , plugin ){
@@ -640,7 +738,8 @@ var shift_supports = (function() {
 						//scroll to top of the menu, make note of initial position
 						var y = plugin.scrollPanel();
 						$li.data( 'scroll-back' , y );
-						var scrollPanelTo = $li.offset().top + y;
+						var scrollPanelTo = $li.offset().top + y - $(window).scrollTop(); //offset by page scroll distance
+            //console.log( $li.offset(), $li.offset().top , y );
 						plugin.scrollPanel( scrollPanelTo );
 						//plugin.scrollPanel( 0 );
 					}, 100 );
@@ -704,7 +803,51 @@ var shift_supports = (function() {
 			$( this.element ).find( 'li.menu-item-has-children' ).removeClass( 'shiftnav-active' );
 		},
 
+
+    toggleSearchBar: function( e , $drop, plugin ){
+      e.stopPropagation();
+      e.preventDefault();
+
+      // var $drop = $( this ).next( '.shiftnav-searchbar-drop' );
+
+      //Close
+      if( $drop.hasClass( 'shiftnav-searchbar-drop-open' ) ){
+        $drop.removeClass( 'shiftnav-searchbar-drop-open' );
+        $( 'body' ).off( 'click.shiftnav-searchbar-drop' );
+      }
+      //Open
+      else{
+        $drop.addClass( 'shiftnav-searchbar-drop-open' );
+        $drop.find( '.shiftnav-search-input' ).focus();
+
+        //Close on click-off - can't do this immediately because IE is so damn dumb
+        if( plugin.settings.touchOffClose ){
+          setTimeout( function(){
+            $( 'body' ).on( 'click.shiftnav-searchbar-drop' , function( e ){
+              $( '.shiftnav-searchbar-drop' ).removeClass( 'shiftnav-searchbar-drop-open' );
+              $( 'body' ).off( 'click.shiftnav-searchbar-drop' );
+            });
+          }, 100);
+        }
+      }
+    },
+
+    // throttle: function(f, t) {
+    //   return function (args) {
+    //     let previousCall = this.lastCall;
+    //     if (previousCall === undefined // function is being called for the first time
+    //         || (this.lastCall - previousCall) > t) { // throttle time has elapsed
+    //       this.lastCall = Date.now();
+    //       f(args);
+    //     }
+    //     else console.log( 'ignore' , this.lastCall - previousCall );
+    //   }
+    // }
+
+
+
 	};
+
 
 	$.fn[ pluginName ] = function ( options ) {
 
@@ -775,7 +918,9 @@ var shift_supports = (function() {
 			breakpoint : parseInt( shiftnav_data.breakpoint ),
 			touchOffClose: shiftnav_data.touch_off_close == 'on' ? true : false,
 			scroll_offset:  shiftnav_data.scroll_offset,
-			disable_transforms: shiftnav_data.disable_transforms == 'on' ? true : false
+			disable_transforms: shiftnav_data.disable_transforms == 'on' ? true : false,
+      close_on_target_click: shiftnav_data.close_on_target_click == 'on' ? true : false,
+      process_uber_segments: shiftnav_data.process_uber_segments == 'on' ? true : false,
 			//debug: true
 			//mouseEvents: false
 			//clicktest: true
@@ -808,8 +953,83 @@ var shift_supports = (function() {
 			}
 		}
 
+    //Scroll events - we throttle and debounce so that we get updates while scrolling, and also update for the very last position
+    if( shiftnav_data.pro == '1' ){
+      updateScrollDirection();
+      $( window ).on( 'scroll', throttle( debounce( updateScrollDirection, 200 ), 200 ));
+    }
+
+    //Done
 		$( '.shiftnav' ).trigger( 'shiftnav-loaded' );
 	}
+
+  var prevScrollTop = 0; //$(window).scrollTop();
+  var prevScrollDir = '';
+  function updateScrollDirection(){
+    var plugin = this;
+    var $body = $('body');
+
+    // What direction are we scrolling?
+    var scrollTop = $(window).scrollTop();
+    var scrollDir = '';
+    if( scrollTop <= shiftnav_data.scroll_top_boundary ) scrollDir = 'top';
+    else if( scrollTop > prevScrollTop ) scrollDir = 'down';
+    else if( scrollTop < prevScrollTop ) scrollDir = 'up';
+
+
+    // Update classes, but only if we've actually changed direction
+    if( scrollDir !== prevScrollDir ){
+      $body.removeClass( 'shiftnav--scroll-top shiftnav--scroll-up shiftnav--scroll-down' );
+      switch( scrollDir ){
+        case 'top':
+          $body.addClass( 'shiftnav--scroll-top' );
+          break;
+        case 'down':
+          $body.addClass( 'shiftnav--scroll-down' );
+          break;
+        case 'up':
+          $body.addClass( 'shiftnav--scroll-up' );
+          break;
+        default:
+      }
+    }
+
+    // Emit event
+    $body.trigger( 'shiftnav-window-scroll', { scrollTop: scrollTop, scrollDir: scrollDir, prevScrollDir: prevScrollDir } );
+
+    // Update
+    prevScrollDir = scrollDir;
+    prevScrollTop = scrollTop;
+
+  };
+
+  function debounce(func, wait, immediate) {
+  	var timeout;
+  	return function() {
+  		var context = this, args = arguments;
+  		var later = function() {
+  			timeout = null;
+  			if (!immediate) func.apply(context, args);
+  		};
+  		var callNow = immediate && !timeout;
+  		clearTimeout(timeout);
+  		timeout = setTimeout(later, wait);
+  		if (callNow) func.apply(context, args);
+  	};
+  };
+
+  function throttle( func, limit ){
+    var inThrottle;
+    return function() {
+      var args = arguments;
+      var context = this;
+      if (!inThrottle) {
+        func.apply(context, args);
+        inThrottle = true;
+        setTimeout(function(){ inThrottle = false }, limit);
+      }
+    }
+  }
 
   function escapeHtml(str) {
     var div = document.createElement('div');

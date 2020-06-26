@@ -79,21 +79,29 @@ function apbct_plugin_loaded() {
  * @return array array('ct'=> Cleantalk, 'ct_result' => CleantalkResponse)
  */
 function apbct_base_call($params = array(), $reg_flag = false){
-	
+
 	global $apbct, $cleantalk_executed;
-	
+
 	$cleantalk_executed = true;
-	
+
 	$sender_info = !empty($params['sender_info'])
 		? CleantalkHelper::array_merge__save_numeric_keys__recursive(apbct_get_sender_info(), (array)$params['sender_info'])
 		: apbct_get_sender_info();
-	
-	// Fileds exclusions
+
+	// Fields exclusions
 	if( ! empty( $params['message'] ) && is_array( $params['message'] ) ){
 
 		$params['message'] = apbct_array( $params['message'] )
 			->get_keys( $apbct->settings['exclusions__fields'], $apbct->settings['exclusions__fields__use_regexp'] )
 			->delete();
+	}
+
+	// Reversed url exclusions. Pass everything except one.
+	if( ! apbct_exclusions_check__url__reversed() ){
+		return array(
+			'ct'        => false,
+			'ct_result' => new CleantalkResponse( null, null )
+		);
 	}
 	
 	$default_params = array(
@@ -185,7 +193,10 @@ function apbct_base_call($params = array(), $reg_flag = false){
     }else{
        	ct_add_event('yes');
     }
-	
+
+    //Strip tags from comment
+	$ct_result->comment = strip_tags($ct_result->comment, '<p><a><br>');
+
 	// Set cookies if it's not.
 	if(empty($apbct->flags__cookies_setuped))
 		apbct_cookie();
@@ -228,6 +239,12 @@ function apbct_exclusions_check($func = null){
 	}
 	
 	return false;
+}
+
+function apbct_exclusions_check__url__reversed(){
+	return defined( 'APBCT_URL_EXCLUSIONS__REVERSED' ) && ! \Cleantalk\Common\Server::has_string( 'REQUEST_URI', APBCT_URL_EXCLUSIONS__REVERSED )
+		? false
+		: true;
 }
 
 /**
@@ -364,12 +381,11 @@ function apbct_get_sender_info() {
 		'source_url'             => !empty($urls)                                                  ? json_encode($urls)                                                : null,
 		// Debug stuff
 		'amp_detected'           => $amp_detected,
-		'hook'                   => current_action(),
+		'hook'                   => current_action()                    ? current_action()            : 'no_hook',
 		'headers_sent'           => !empty($apbct->headers_sent)        ? $apbct->headers_sent        : false,
-		'headers_sent__hook'     => !empty($apbct->headers_sent__hook)  ? $apbct->headers_sent__hook  : false,
+		'headers_sent__hook'     => !empty($apbct->headers_sent__hook)  ? $apbct->headers_sent__hook  : 'no_hook',
 		'headers_sent__where'    => !empty($apbct->headers_sent__where) ? $apbct->headers_sent__where : false,
 		'request_type'           => apbct_get_server_variable('REQUEST_METHOD') ? apbct_get_server_variable('REQUEST_METHOD') : 'UNKNOWN',
-		'abpct_hyro_acc_collect' => !empty($_COOKIE['abpct_hyro_acc_collect'])                     ? json_decode(stripslashes($_COOKIE['abpct_hyro_acc_collect']), true): null,
 	);
 }
 
@@ -734,6 +750,7 @@ function ct_get_fields_any($arr, $message=array(), $email = null, $nickname = ar
 		'ebd_settings',
 		'ebd_downloads_',
 		'ecole_origine',
+		'signature',
 	);
 	
 	// Reset $message if we have a sign-up data
@@ -791,14 +808,15 @@ function ct_get_fields_any($arr, $message=array(), $email = null, $nickname = ar
 						continue(2);
 					}
 				}unset($needle);
-				
-				// Removes whitespaces
-				$value = urldecode( trim( strip_shortcodes( $value ) ) ); // Fully cleaned message
-				$value_for_email = trim( strip_shortcodes( $value ) );    // Removes shortcodes to do better spam filtration on server side.
+
+                $value_for_email = trim( strip_shortcodes( $value ) );    // Removes shortcodes to do better spam filtration on server side.
 				
 				// Email
 				if ( ! $email && preg_match( "/^\S+@\S+\.\S+$/", $value_for_email ) ) {
 					$email = $value_for_email;
+
+                // Removes whitespaces
+                $value = urldecode( trim( strip_shortcodes( $value ) ) ); // Fully cleaned message
 					
 				// Names
 				}elseif (preg_match("/name/i", $key)){
@@ -926,7 +944,7 @@ function cleantalk_debug($key,$value)
 }
 
 /**
-* Function changes CleanTalk result object if an error occured.
+* Function changes CleanTalk result object if an error occurred.
 * @return object
 */ 
 function ct_change_plugin_resonse($ct_result = null, $checkjs = null) {

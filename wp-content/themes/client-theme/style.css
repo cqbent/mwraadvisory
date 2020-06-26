@@ -4980,280 +4980,312 @@ li#field_38_53 table td {
   margin: 40px auto;
 }
 
-li#field_62_32:before {
-  content: "(select one)" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+/*
+li#field_62_32 {
+  &:before {
+    content: "(select one)" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_33:before {
-  content: "(select one)" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_33 {
+  &:before {
+    content: "(select one)" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_35:before {
-  content: "(if none of the above)" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_35 {
+  &:before {
+    content: "(if none of the above)" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_36:before {
-  content: "(if none of the above)" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_36 {
+  &:before {
+    content: "(if none of the above)" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_38:before {
-  content: "Month" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_38 {
+  &:before {
+    content: "Month" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_39:before {
-  content: "Month" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_39 {
+  &:before {
+    content: "Month" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_41:before {
-  content: "Year" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_41 {
+  &:before {
+    content: "Year" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_42:before {
-  content: "Year" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_42 {
+  &:before {
+    content: "Year" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_44:before {
-  content: "Month" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_44 {
+  &:before {
+    content: "Month" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_45:before {
-  content: "Month" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_45 {
+  &:before {
+    content: "Month" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_46:before {
-  content: "Year" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_46 {
+  &:before {
+    content: "Year" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_48:before {
-  content: "Year" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_48 {
+  &:before {
+    content: "Year" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_50:before {
-  content: "(select one)" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_50 {
+  &:before {
+    content: "(select one)" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_51:before {
-  content: "(select one)" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_51 {
+  &:before {
+    content: "(select one)" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_58:before {
-  content: "(select one)" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_58 {
+  &:before {
+    content: "(select one)" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_59:before {
-  content: "(select one)" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_59 {
+  &:before {
+    content: "(select one)" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_60:before {
-  content: "$" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_60 {
+  &:before {
+    content: "$" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_61:before {
-  content: "$" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_61 {
+  &:before {
+    content: "$" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_143:before {
-  content: "Discount Description :" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_143 {
+  &:before {
+    content: "Discount Description :" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_146:before {
-  content: "Discounts :" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_146 {
+  &:before {
+    content: "Discounts :" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_147:before {
-  content: "Discount :" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_147 {
+  &:before {
+    content: "Discount :" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_148:before {
-  content: "Discount Description :" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_148 {
+  &:before {
+    content: "Discount Description :" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_68:before {
-  content: "(select one) :" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_68 {
+  &:before {
+    content: "(select one) :" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_69:before {
-  content: "(select one) :" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_69 {
+  &:before {
+    content: "(select one) :" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_70:before {
-  content: "$" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_70 {
+  &:before {
+    content: "$" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_71:before {
-  content: "$" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
+li#field_62_71 {
+  &:before {
+    content: "$" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+  }
 }
-
-li#field_62_97:before {
-  content: "$" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
-  top: 32px;
+li#field_62_97 {
+  &:before {
+    content: "$" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+    top: 32px;
+  }
 }
-
-li#field_62_98:before {
-  content: "$" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
-  top: 32px;
+li#field_62_98 {
+  &:before {
+    content: "$" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+    top: 32px;
+  }
 }
-
-li#field_62_100:before {
-  content: "$" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
-  top: 32px;
+li#field_62_100 {
+  &:before {
+    content: "$" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+    top: 32px;
+  }
 }
-
-li#field_62_101:before {
-  content: "$" !important;
-  position: relative;
-  font-family: "Montserrat", sans-serif;
-  font-size: inherit;
-  font-weight: 600;
-  color: #303033 !important;
-  top: 32px;
+li#field_62_101 {
+  &:before {
+    content: "$" !important;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: inherit;
+    font-weight: 600;
+    color: #303033 !important;
+    top: 32px;
+  }
 }
-
+ */
 .library-list li a {
   box-shadow: 1px 1px 28px grey;
   float: left;
@@ -7143,6 +7175,21 @@ img.animation {
 }
 .et_pb_tab_active a {
   color: #ffffff !important;
+}
+
+.gfmc-column ul {
+  padding: 0 !important;
+}
+.gfmc-column ul li {
+  padding: 0 !important;
+}
+@media all and (min-width: 641px) {
+  .gfmc-column.col-sm-4 {
+    width: 33.3333%;
+  }
+  .gfmc-column.col-sm-6 {
+    width: 50%;
+  }
 }
 
 /*# sourceMappingURL=style.css.map */

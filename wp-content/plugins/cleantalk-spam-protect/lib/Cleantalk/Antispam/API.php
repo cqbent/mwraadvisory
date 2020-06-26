@@ -7,7 +7,7 @@ namespace Cleantalk\Antispam;
  * Mostly contains wrappers for API methods. Check and send mehods.
  * Compatible with any CMS.
  *
- * @version       3.2
+ * @version       3.3
  * @author        Cleantalk team (welcome@cleantalk.org)
  * @copyright (C) 2014 CleanTalk team (http://cleantalk.org)
  * @license       GNU/GPL: http://www.gnu.org/copyleft/gpl.html
@@ -25,16 +25,18 @@ class API
 	 *
 	 * @param string      $api_key
 	 * @param null|string $out Data output type (JSON or file URL)
+     * @param string      $version API method version
 	 * @param boolean     $do_check
 	 *
 	 * @return mixed|string|array('error' => STRING)
 	 */
-	static public function method__get_2s_blacklists_db($api_key, $out = null, $do_check = true)
+	static public function method__get_2s_blacklists_db($api_key, $out = null, $version = '1_0', $do_check = true)
 	{
 		$request = array(
 			'method_name' => '2s_blacklists_db',
 			'auth_key'    => $api_key,
 			'out'         => $out,
+            'version'	  => $version,
 		);
 		
 		$result = static::send_request($request);
@@ -149,8 +151,9 @@ class API
 		);
 		
 		$product_id = null;
-		$product_id = $product_name == 'antispam' ? 1 : $product_id;
-		$product_id = $product_name == 'security' ? 4 : $product_id;
+		$product_id = $product_name == 'antispam'            ? 1 : $product_id;
+		$product_id = $product_name == 'anti-spam-hosting'   ? 3 : $product_id;
+		$product_id = $product_name == 'security'            ? 4 : $product_id;
 		if($product_id)
 			$request['product_id'] = $product_id;
 		
@@ -202,7 +205,7 @@ class API
 		
 		if($date) $request['date'] = $date;
 		
-		$result = static::send_request($request, self::URL, 10);
+		$result = static::send_request($request, self::URL, 20);
 		$result = $do_check ? static::check_response($result, 'spam_check_cms') : $result;
 		
 		return $result;
@@ -604,7 +607,7 @@ class API
 	 *
 	 * @return array|bool
 	 */
-	static public function send_request($data, $url = self::URL, $timeout = 5, $ssl = false, $ssl_path = '')
+	static public function send_request($data, $url = self::URL, $timeout = 10, $ssl = false, $ssl_path = '')
 	{
 		// Possibility to switch agent vaersion
 		$data['agent'] = !empty($data['agent'])
@@ -655,7 +658,7 @@ class API
 			$result = curl_exec($ch);
 			$errors = curl_error($ch);
 			curl_close($ch);
-			
+
 			// Retry with SSL enabled if failed
 			if($result === false){
 				if($ssl === false){
@@ -688,7 +691,7 @@ class API
 				$errors .= '_AND_ALLOW_URL_FOPEN_IS_DISABLED';
 			}
 		}
-		
+
 		return empty($result) || !empty($errors)
 			? array('error' => $errors)
 			: $result;
@@ -697,7 +700,7 @@ class API
 	/**
 	 * Function checks server response
 	 *
-	 * @param string $result
+	 * @param array|string $result
 	 * @param string $method_name
 	 *
 	 * @return mixed (array || array('error' => true))
@@ -706,10 +709,12 @@ class API
 	{
 		// Errors handling
 		// Bad connection
-		if(is_array($result) && isset($result['error'])){
-			return array(
-				'error' => 'CONNECTION_ERROR' . (isset($result['error']) ? ': "' . $result['error'] . '"' : ''),
-			);
+		if(isset($result['error'])){
+			$last = error_get_last();
+			$out = ! empty( $result['error'] )
+				? array( 'error' => 'CONNECTION_ERROR : "' . $result['error'] . '"' )
+				: array( 'error' => 'CONNECTION_ERROR : "Unknown Error. Last error: ' . $last['message'] );
+			return $out;
 		}
 		
 		// JSON decode errors

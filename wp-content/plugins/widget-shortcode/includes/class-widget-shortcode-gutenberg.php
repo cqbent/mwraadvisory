@@ -50,6 +50,10 @@ class Widget_Shortcode_Gutenberg {
 					'default' => '',
 					'type' => 'string',
 				),
+				'className' => array(
+					'default' => '',
+					'type' => 'string',
+				),
 			),
 		) );
 	}
@@ -67,6 +71,7 @@ class Widget_Shortcode_Gutenberg {
 		return Widget_Shortcode::get_instance()->do_widget( array(
 			'echo' => false,
 			'id' => $atts['id'],
+			'css_class' => $atts['className'],
 		) );
 	}
 }

@@ -303,15 +303,17 @@
         }
 
         private function define_output_elements( $field_container, $field ) {
+            $column_count = $this->rowColumnArray[ $this->rowNumber ];
+            $col_class = round(12 / $column_count);
             if ( $field->type == 'column_start' ) {
                 $this->increment_column_count();
 
-                return '<li class="gfmc-column gfmc-row-' . $this->rowNumber . '-column gfmc-row-' . $this->rowNumber . '-col-' . $this->columnCount . '-of-' . $this->rowColumnArray[ $this->rowNumber ] . '" style="width: ' . floor( 100 / $this->rowColumnArray[ $this->rowNumber ] ) . '%;"><ul>';
+                return '<li class="gfmc-column gfmc-row-' . $this->rowNumber . '-column gfmc-row-' . $this->rowNumber . '-col-' . $this->columnCount . '-of-' . $this->rowColumnArray[ $this->rowNumber ] . ' col-sm-' . $col_class. '"><ul>';
             }
             if ( $field->type == 'column_break' ) {
                 $this->increment_column_count();
 
-                return '</ul></li><li class="gfmc-column gfmc-row-' . $this->rowNumber . '-column gfmc-row-' . $this->rowNumber . '-col-' . $this->columnCount . '-of-' . $this->rowColumnArray[ $this->rowNumber ] . '" style="width: ' . floor( 100 / $this->rowColumnArray[ $this->rowNumber ] ) . '%;"><ul>';
+                return '</ul></li><li class="gfmc-column gfmc-row-' . $this->rowNumber . '-column gfmc-row-' . $this->rowNumber . '-col-' . $this->columnCount . '-of-' . $this->rowColumnArray[ $this->rowNumber ] . ' col-sm-' . $col_class. '"><ul>';
             }
             if ( $field->type == 'column_end' ) {
                 $this->columnCount = 0;

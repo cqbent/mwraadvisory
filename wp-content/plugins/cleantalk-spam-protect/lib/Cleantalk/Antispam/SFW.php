@@ -113,27 +113,49 @@ class SFW
 	public function ip_check()
 	{
 		foreach($this->ip_array as $origin => $current_ip){
-			
-			$query = "SELECT 
-				COUNT(network) AS cnt, network, mask
-				FROM ".$this->data_table."
-				WHERE network = ".sprintf("%u", ip2long($current_ip))." & mask;";
-			
+
+			$current_ip_v4 = sprintf("%u", ip2long($current_ip));
+			for ( $needles = array(), $m = 6; $m <= 32; $m ++ ) {
+				$mask      = sprintf( "%u", ip2long( long2ip( - 1 << ( 32 - (int) $m ) ) ) );
+				$needles[] = bindec( decbin( $mask ) & decbin( $current_ip_v4 ) );
+			}
+			$needles = array_unique( $needles );
+
+			$query = "SELECT
+				network, mask, status
+				FROM " . $this->data_table . "
+				WHERE network IN (". implode( ',', $needles ) .") 
+				AND	network = " . $current_ip_v4 . " & mask
+				ORDER BY status DESC LIMIT 1;";
 			$this->db->set_query($query)->fetch();
-			
-			if($this->db->result['cnt']){
-				$this->pass = false;
-				$this->blocked_ips[$origin] = array(
-					'ip'      => $current_ip,
-					'network' => long2ip($this->db->result['network']),
-					'mask'    => Helper::ip__mask__long_to_number($this->db->result['mask']),
-				);
-				$this->all_ips[$origin] = array(
-					'ip'      => $current_ip,
-					'network' => long2ip($this->db->result['network']),
-					'mask'    => Helper::ip__mask__long_to_number($this->db->result['mask']),
-					'status'  => -1,
-				);
+
+			if( ! empty( $this->db->result ) ){
+
+                if ( 1 == $this->db->result['status'] ) {
+                    // It is the White Listed network - will be passed.
+                    $this->passed_ips[$origin] = array(
+                        'ip'     => $current_ip,
+                    );
+                    $this->all_ips[$origin] = array(
+                        'ip'     => $current_ip,
+                        'status' => 1,
+                    );
+                    break;
+                } else {
+                    $this->pass = false;
+                    $this->blocked_ips[$origin] = array(
+                        'ip'      => $current_ip,
+                        'network' => long2ip($this->db->result['network']),
+                        'mask'    => Helper::ip__mask__long_to_number($this->db->result['mask']),
+                    );
+                    $this->all_ips[$origin] = array(
+                        'ip'      => $current_ip,
+                        'network' => long2ip($this->db->result['network']),
+                        'mask'    => Helper::ip__mask__long_to_number($this->db->result['mask']),
+                        'status'  => -1,
+                    );
+                }
+
 			}else{
 				$this->passed_ips[$origin] = array(
 					'ip'     => $current_ip,
@@ -205,7 +227,7 @@ class SFW
 			//Checking answer and deleting all lines from the table
 			if(empty($result['error'])){
 				if($result['rows'] == count($data)){
-					$this->db->execute("DELETE FROM ".$this->log_table.";");
+					$this->db->execute("TRUNCATE TABLE ".$this->log_table.";");
 					return $result;
 				}
 				return array('error' => 'SENT_AND_RECEIVED_LOGS_COUNT_DOESNT_MACH');
@@ -213,8 +235,6 @@ class SFW
 				return $result;
 			}
 				
-		}else{
-			return array('error' => 'NO_LOGS_TO_SEND');
 		}
 	}
 	
@@ -228,33 +248,63 @@ class SFW
 	 * @return array|bool array('error' => STRING)
 	 */
 	public function sfw_update($ct_key, $file_url = null, $immediate = false){
-		
+
 		// Getting remote file name
 		if(!$file_url){
-			
-			sleep(6);
-			
-			$result = API::method__get_2s_blacklists_db($ct_key, 'file');
-						
+
+			$result = API::method__get_2s_blacklists_db($ct_key, 'multifiles', '2_0');
+
 			if(empty($result['error'])){
 			
 				if( !empty($result['file_url']) ){
-					
-					$pattenrs = array();
-					$pattenrs[] = 'get';
-					if(!$immediate) $pattenrs[] = 'async';
-					
-					return Helper::http__request(
-						get_option('siteurl'), 
-						array(
-							'spbc_remote_call_token'  => md5($ct_key),
-							'spbc_remote_call_action' => 'sfw_update',
-							'plugin_name'             => 'apbct',
-							'file_url'                => $result['file_url'],
-						),
-						$pattenrs
-					);
-					
+
+					if(Helper::http__request($result['file_url'], array(), 'get_code') === 200) {
+
+						if(ini_get('allow_url_fopen')) {
+
+							$pattenrs = array();
+							$pattenrs[] = 'get';
+
+							if(!$immediate) $pattenrs[] = 'async';		
+
+							// Clear SFW table
+							$this->db->execute("TRUNCATE TABLE {$this->data_table};");
+							$this->db->set_query("SELECT COUNT(network) as cnt FROM {$this->data_table};")->fetch(); // Check if it is clear
+							if($this->db->result['cnt'] != 0){
+								$this->db->execute("DELETE FROM {$this->data_table};"); // Truncate table
+								$this->db->set_query("SELECT COUNT(network) as cnt FROM {$this->data_table};")->fetch(); // Check if it is clear
+								if($this->db->result['cnt'] != 0){
+									return array('error' => 'COULD_NOT_CLEAR_SFW_TABLE'); // throw an error
+								}
+							}
+							
+							$gf = \gzopen($result['file_url'], 'rb');
+
+							if ($gf) {
+
+								$file_urls = array();
+
+								while( ! \gzeof($gf) )
+									$file_urls[] = trim( \gzgets($gf, 1024) );
+
+								\gzclose($gf);
+
+								return Helper::http__request(
+									get_option('siteurl'),
+									array(
+										'spbc_remote_call_token'  => md5($ct_key),
+										'spbc_remote_call_action' => 'sfw_update',
+										'plugin_name'             => 'apbct',
+										'file_urls'               => implode(',', $file_urls),
+									),
+									$pattenrs
+								);
+							}else
+								return array('error' => 'COULD_NOT_OPEN_REMOTE_FILE_SFW');
+						}else
+							return array('error' => 'ERROR_ALLOW_URL_FOPEN_DISABLED');
+					}else
+						return array('error' => 'NO_FILE_URL_PROVIDED');
 				}else
 					return array('error' => 'BAD_RESPONSE');
 			}else
@@ -262,24 +312,20 @@ class SFW
 		}else{
 						
 			if(Helper::http__request($file_url, array(), 'get_code') === 200){ // Check if it's there
-				
-				if(ini_get('allow_url_fopen')){
-					
-					$gf = gzopen($file_url, 'rb');
-					
+									
+					$gf = \gzopen($file_url, 'rb');
+
 					if($gf){
 						
-						if(!gzeof($gf)){
+						if( ! \gzeof($gf) ){
 							
-							$this->db->execute("DELETE FROM ".$this->data_table.";");
-							
-							for($count_result = 0; !gzeof($gf); ){
+							for( $count_result = 0; ! \gzeof($gf); ){
 	
 								$query = "INSERT INTO ".$this->data_table." VALUES %s";
 	
-								for($i=0, $values = array(); APBCT_WRITE_LIMIT !== $i && !gzeof($gf); $i++, $count_result++){
+								for($i=0, $values = array(); APBCT_WRITE_LIMIT !== $i && ! \gzeof($gf); $i++, $count_result++){
 	
-									$entry = trim(gzgets($gf, 1024));
+									$entry = trim( \gzgets($gf, 1024) );
 	
 									if(empty($entry)) continue;
 	
@@ -288,10 +334,11 @@ class SFW
 									// Cast result to int
 									$ip   = preg_replace('/[^\d]*/', '', $entry[0]);
 									$mask = preg_replace('/[^\d]*/', '', $entry[1]);
+									$private = isset($entry[2]) ? $entry[2] : 0;
 	
 									if(!$ip || !$mask) continue;
 	
-									$values[] = '('. $ip .','. $mask .')';
+									$values[] = '('. $ip .','. $mask .','. $private .')';
 	
 								}
 								
@@ -302,15 +349,13 @@ class SFW
 								
 							}
 							
-							gzclose($gf);
+							\gzclose($gf);
 							return $count_result;
 							
 						}else
 							return array('error' => 'ERROR_GZ_EMPTY');
 					}else
 						return array('error' => 'ERROR_OPEN_GZ_FILE');
-				}else
-					return array('error' => 'ERROR_ALLOW_URL_FOPEN_DISABLED');
 			}else
 				return array('error' => 'NO_REMOTE_FILE_FOUND');
 		}			

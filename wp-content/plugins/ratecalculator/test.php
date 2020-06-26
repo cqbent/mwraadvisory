@@ -39,7 +39,7 @@ function get_survey_entries($form_id, $community, $year) {
     return $result;
 }
 
-$data = get_survey_entries('62', 'ARLINGTON', '2019');
+$data = get_survey_entries('62', 'SOUTHBOROUGH', '2019');
 
 header('Content-Type: application/json');
 echo json_encode($data);

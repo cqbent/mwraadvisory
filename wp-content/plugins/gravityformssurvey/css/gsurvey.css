@@ -21,6 +21,15 @@ table.gsurvey-likert {
     border-bottom: 1px solid #CCC;
 }
 
+.form-table.entry-details table.gsurvey-likert {
+    table-layout: auto;
+}
+
+table.form-table table.gsurvey-likert tr:last-child td, table.form-table table.gsurvey-likert tr:last-child th {
+    border-top: 1px solid #ccc !important;
+    border-right: 1px solid #ccc !important;
+}
+
 table.gsurvey-likert td {
     text-align: center;
     vertical-align: middle;
@@ -148,6 +157,12 @@ table.gsurvey-likert td.gsurvey-likert-choice.gsurvey-likert-selected {
     color: #ea0;
 }
 
+.gsurvey-rating-wrapper:after{
+    display: block;
+    content: "";
+    clear: both;
+}
+
 ul.gsurvey-rank.ui-sortable {
     width: auto;
     display: inline-block;
@@ -170,6 +185,8 @@ ul.gsurvey-rank.ui-sortable {
     border-top: 1px dashed rgba(204, 204, 204, 1);
     border-bottom: 1px dashed rgba(204, 204, 204, 1);
 }
+
+
 
 @media only screen and (max-width: 761px), (min-device-width: 768px) and (max-device-width: 1024px) {
 

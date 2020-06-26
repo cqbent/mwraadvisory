@@ -57,6 +57,11 @@ body.shiftnav-enabled.shiftnav-transition.admin-bar {
 .shiftnav-toggle {
   cursor: pointer;
 }
+.shiftnav-toggle-burger {
+  color: inherit;
+  font-size: inherit;
+  border: none;
+}
 /* Main Toggle */
 #shiftnav-toggle-main {
   position: fixed;
@@ -357,6 +362,9 @@ body.admin-bar .shiftnav {
 .shiftnav.shiftnav-right-edge {
   right: 0;
 }
+.shiftnav-target:focus {
+  outline-offset: -2px;
+}
 /* Shift the menu */
 .shiftnav.shiftnav-left-edge {
   -webkit-transform: translateX(-290px);
@@ -432,6 +440,9 @@ body.admin-bar .shiftnav {
   background: rgba(0, 0, 0, 0.2);
   z-index: 20;
   cursor: pointer;
+  border: none;
+  color: inherit;
+  font-size: inherit;
 }
 /* Menu Title */
 .shiftnav .shiftnav-menu-title {
@@ -497,14 +508,14 @@ body.admin-bar .shiftnav {
   text-decoration: none;
   position: relative;
   cursor: pointer;
-  -webkit-transition: .2s all ease;
-  -moz-transition: .2s all ease;
-  -ms-transition: .2s all ease;
-  -o-transition: .2s all ease;
-  transition: .2s all ease;
+  -webkit-transition: 0.2s all ease;
+  -moz-transition: 0.2s all ease;
+  -ms-transition: 0.2s all ease;
+  -o-transition: 0.2s all ease;
+  transition: 0.2s all ease;
 }
 .shiftnav ul.shiftnav-menu li.menu-item.shiftnav-has-icon > .shiftnav-target > i.shiftnav-icon {
-  margin-right: .8em;
+  margin-right: 0.8em;
   font-size: 150%;
   vertical-align: middle;
   line-height: inherit;
@@ -828,6 +839,33 @@ body.admin-bar .shiftnav {
 .ie7 .shiftnav-toggle {
   display: none !important;
 }
+.shiftnav-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+.shiftnav-sr-only-focusable:active,
+.shiftnav-sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+}
+.shiftnav .shiftnav-sr-close {
+  background: white;
+  color: #222;
+  width: 100%;
+  padding: 15px;
+  text-align: center;
+  font-size: 16px;
+}
 .rtl .shiftnav li.menu-item {
   text-align: right;
 }
@@ -847,7 +885,7 @@ body.admin-bar .shiftnav {
 }
 .rtl .shiftnav ul.shiftnav-menu li.menu-item.shiftnav-has-icon > .shiftnav-target > i.shiftnav-icon {
   margin-right: 0;
-  margin-left: .8em;
+  margin-left: 0.8em;
 }
 .rtl .shiftnav ul.shiftnav-menu li.shiftnav-retract > .shiftnav-target i:before {
   content: "\f054";

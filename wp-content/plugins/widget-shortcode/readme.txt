@@ -3,8 +3,8 @@ Contributors: shazdeh
 Plugin Name: Widget Shortcode
 Tags: widget, shortcode, theme, admin
 Requires at least: 3.0
-Tested up to: 5.0.3
-Stable tag: 0.3.4
+Tested up to: 5.4.1
+Stable tag: 0.3.5
 
 Adds [widget] shortcode which enables you to output widgets anywhere you like.
 
@@ -37,6 +37,9 @@ Additional Parameters:
 3. The new Widget Shortcode block in Gutenberg
 
 == Changelog ==
+
+= 0.3.5 =
+* Add support for the Additional CSS Classes field in Gutenberg
 
 = 0.3.4 =
 * New Gutenberg block

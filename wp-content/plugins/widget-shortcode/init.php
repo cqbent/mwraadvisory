@@ -3,7 +3,7 @@
 Plugin Name:    Widget Shortcode
 Description:    Output widgets using a simple shortcode.
 Author:         Hassan Derakhshandeh
-Version:        0.3.4
+Version:        0.3.5
 Text Domain:    widget-shortcode
 Domain Path:    /languages
 

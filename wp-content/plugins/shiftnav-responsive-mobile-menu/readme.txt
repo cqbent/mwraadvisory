@@ -3,8 +3,8 @@ Contributors: sevenspark
 Donate link: http://shiftnav.io/pro
 Tags: responsive, menu, navigation, mobile, off-canvas, app, slide, sidebar
 Requires at least: 4.0
-Tested up to: 4.9.8
-Stable tag: 1.6.3
+Tested up to: 5.3.2
+Stable tag: 1.7.0.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,6 +55,25 @@ Please see the [ShiftNav Quick Setup Guide](http://sevenspark.com/docs/shiftnav-
 
 
 == Changelog ==
+
+= 1.7.0.1 =
+
+* [Pro] Feature: Hide Toggle Bar when scrolling down
+* Feature: Major keyboard accessibility features upgrade
+* Feature: Added shiftnav-open and shiftnav-close Javascript events to panel
+* Feature: Option to close panel immediately on link click
+* Accessibility Enhancement: Close panel when focus leaves
+* Accessibility Enhancement: Screenreader close button inside panel
+* Accessibility Enhancement: Close panel on escape
+* Accessibility Enhancement: Aria Label setting for toggle
+* [Pro] Enhancement: Improve ScrollTo offset accuracy
+* Enhancement: Handle current item ancestors when using UberMenu menu segments
+* Enhancement: Improve gap logic
+* Enhancement: Properly handle SVG image sizing when selected for panel Top Image
+* Compatibility: Removed deprecated create_function() call; minimum PHP version 5.3
+* Fix: Panel Title Font Weight setting
+* Fix: Properly parse Android 10 to fix animation disabling
+* Fix: Class duplication issue
 
 
 = 1.6.3 =

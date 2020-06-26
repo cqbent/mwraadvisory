@@ -154,6 +154,9 @@ class GFSurvey extends GFAddOn {
 	 * @return array
 	 */
 	public function scripts() {
+
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
+
 		$gsurvey_js_deps = array( 'jquery', 'jquery-ui-sortable' );
 		if ( wp_is_mobile() ) {
 			$gsurvey_js_deps[] = 'jquery-touch-punch';
@@ -162,7 +165,7 @@ class GFSurvey extends GFAddOn {
 		$scripts = array(
 			array(
 				'handle'   => 'gsurvey_form_editor_js',
-				'src'      => $this->get_base_url() . '/js/gsurvey_form_editor.js',
+				'src'      => $this->get_base_url() . "/js/gsurvey_form_editor{$min}.js",
 				'version'  => $this->_version,
 				'deps'     => array( 'jquery' ),
 				'callback' => array( $this, 'localize_scripts' ),
@@ -172,7 +175,7 @@ class GFSurvey extends GFAddOn {
 			),
 			array(
 				'handle'  => 'gsurvey_js',
-				'src'     => $this->get_base_url() . '/js/gsurvey.js',
+				'src'     => $this->get_base_url() . "/js/gsurvey{$min}.js",
 				'version' => $this->_version,
 				'deps'    => $gsurvey_js_deps,
 				'enqueue' => array(
@@ -192,10 +195,12 @@ class GFSurvey extends GFAddOn {
 	 */
 	public function styles() {
 
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
+
 		$styles = array(
 			array(
 				'handle'  => 'gsurvey_form_editor_css',
-				'src'     => $this->get_base_url() . '/css/gsurvey_form_editor.css',
+				'src'     => $this->get_base_url() . "/css/gsurvey_form_editor{$min}.css",
 				'version' => $this->_version,
 				'enqueue' => array(
 					array( 'admin_page' => array( 'form_editor' ) ),
@@ -203,7 +208,7 @@ class GFSurvey extends GFAddOn {
 			),
 			array(
 				'handle'  => 'gsurvey_css',
-				'src'     => $this->get_base_url() . '/css/gsurvey.css',
+				'src'     => $this->get_base_url() . "/css/gsurvey{$min}.css",
 				'version' => $this->_version,
 				'media'   => 'screen',
 				'enqueue' => array(
@@ -918,7 +923,7 @@ class GFSurvey extends GFAddOn {
 		if ( $position == 25 ) {
 			?>
 			<li class="gsurvey-setting-question field_setting">
-				<label for="gsurvey-question">
+				<label for="gsurvey-question" class="section_label">
 					<?php esc_html_e( 'Survey Question', 'gravityformssurvey' ); ?>
 					<?php gform_tooltip( 'gsurvey_question' ); ?>
 				</label>
@@ -927,7 +932,7 @@ class GFSurvey extends GFAddOn {
 						  size="35"></textarea>
 			</li>
 			<li class="gsurvey-setting-field-type field_setting">
-				<label for="gsurvey-field-type">
+				<label for="gsurvey-field-type" class="section_label">
 					<?php esc_html_e( 'Survey Field Type', 'gravityformssurvey' ); ?>
 					<?php gform_tooltip( 'gsurvey_field_type' ); ?>
 				</label>
@@ -953,7 +958,7 @@ class GFSurvey extends GFAddOn {
 						   onclick="SetFieldProperty('gsurveyLikertEnableScoring', this.checked); jQuery('#gsurvey-likert-columns-container').toggleClass('gsurvey-likert-scoring-enabled');">
 					<label class="inline gfield_value_label" for="gsurvey-likert-enable-scoring"><?php esc_html_e( 'Enable Scoring', 'gravityformssurvey' ); ?></label> <?php gform_tooltip( 'gsurvey_likert_enable_scoring' ) ?>
 				</div>
-				<label for="gsurvey-likert-columns">
+				<label for="gsurvey-likert-columns" class="section_label">
 					<?php esc_html_e( 'Columns', 'gravityformssurvey' ); ?>
 					<?php gform_tooltip( 'gsurvey_likert_columns' ); ?>
 				</label>
@@ -973,8 +978,10 @@ class GFSurvey extends GFAddOn {
 
 			</li>
 			<li class="gsurvey-likert-setting-rows field_setting">
-				<?php esc_html_e( 'Rows', 'gravityformssurvey' ); ?>
-				<?php gform_tooltip( 'gsurvey_likert_rows' ) ?>
+				<label for="gsurvey-likert-rows" class="section_label">
+					<?php esc_html_e( 'Rows', 'gravityformssurvey' ); ?>
+					<?php gform_tooltip( 'gsurvey_likert_rows' ) ?>
+				</label>
 				<div id="gsurvey-likert-rows-container">
 					<ul id="gsurvey-likert-rows"></ul>
 				</div>

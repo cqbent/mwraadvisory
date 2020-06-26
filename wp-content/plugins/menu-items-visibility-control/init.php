@@ -3,7 +3,7 @@
 Plugin Name:    Menu Items Visibility Control
 Description:    Control the display logic of individual menu items.
 Author:         Hassan Derakhshandeh
-Version:        0.3.7
+Version:        0.3.9
 Text Domain:    menu-items-visibility-control
 Domain Path:    /languages
 */
@@ -24,9 +24,9 @@ class Menu_Items_Visibility_Control {
 	private function __construct() {
 		if ( is_admin() ) {
 			add_action( 'init', array( $this, 'i18n' ) );
-			add_action( 'admin_enqueue_scripts', array( $this, 'nav_menu_script' ) );
 			add_action( 'wp_update_nav_menu_item', array( $this, 'update_option' ), 10, 3 );
 			add_action( 'delete_post', array( $this, 'remove_visibility_meta' ), 1, 3 );
+			add_action( 'wp_nav_menu_item_custom_fields', array( $this, 'wp_nav_menu_item_custom_fields' ) );
 		} else {
 			add_filter( 'wp_get_nav_menu_items', array( $this, 'visibility_check' ), 10, 3 );
 		}
@@ -37,57 +37,26 @@ class Menu_Items_Visibility_Control {
 	}
 
 	/**
-	 * Scripts for admin Menus manager
+	 * Displays the field
 	 *
-	 * @since 0.3.6
+	 * @since 0.3.8
 	 */
-	function nav_menu_script() {
-		global $menu_items, $wpdb;
-
-		$screen = get_current_screen();
-		if( 'nav-menus' != $screen->base )
-			return;
-
-		$this->template_edit();
-		wp_enqueue_script( 'menu-items-visibility-control', trailingslashit( plugin_dir_url( __FILE__ ) ) . 'assets/scripts.js', array( 'jquery', 'underscore', 'wp-util' ), '0.3.7', true );
-		$values = array();
-		if ( ! empty( $menu_items ) ) {
-			$menu_items_ids = join( ',', wp_list_pluck( $menu_items, 'ID' ) );
-			$results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}postmeta WHERE meta_key = '_menu_item_visibility' AND post_id IN({$menu_items_ids})", OBJECT );
-			if ( ! empty( $results ) ) {
-				$values = array_combine( wp_list_pluck( $results, 'post_id' ), wp_list_pluck( $results, 'meta_value' ) );
-			}
-		}
-		wp_localize_script( 'menu-items-visibility-control', 'MIVC', array(
-			'values' => $values,
-		) );
-
-		/* ensure this does not run again */
-		remove_action( 'admin_enqueue_scripts', array( $this, 'nav_menu_script' ) );
-	}
-
-	/**
-	 * Template for the Visibility field
-	 *
-	 * @since 0.3.6
-	 */
-	function template_edit() {
+	function wp_nav_menu_item_custom_fields( $item_id ) {
+		$value = get_post_meta( $item_id, '_menu_item_visibility', true );
 		?>
-		<script type="text/html" id="tmpl-menu-items-visivility-control">
-			<p class="field-visibility description description-wide">
-				<label for="edit-menu-item-visibility-{{data.id}}">
-					<?php _e( 'Visibility', 'menu-items-visibility-control' ) ?>:
-					<input type="text" class="widefat code" id="edit-menu-item-visibility-{{data.id}}" name="menu-item-visibility[{{data.id}}]" value="{{data.value}}" />
-				</label>
-			</p>
-		</script>
+		<p class="field-visibility description description-wide">
+			<label for="edit-menu-item-visibility-<?php echo $item_id; ?>">
+				<?php printf( __( 'Visibility logic (<a href="%s">?</a>)', 'menu-items-visibility-control' ), 'https://codex.wordpress.org/Conditional_Tags' ); ?><br>
+				<input type="text" class="widefat code" id="edit-menu-item-visibility-<?php echo $item_id; ?>" name="menu-item-visibility[<?php echo esc_attr( $item_id ); ?>]" value="<?php echo esc_attr( $value ); ?>" />
+			</label>
+		</p>
 		<?php
 	}
 
 	function update_option( $menu_id, $menu_item_db_id, $args ) {
-		if ( isset( $_POST['menu-item-visibility'][$menu_item_db_id] ) ) {
+		if ( isset( $_POST['menu-item-visibility'][ $menu_item_db_id ] ) ) {
 			$meta_value = get_post_meta( $menu_item_db_id, '_menu_item_visibility', true );
-			$new_meta_value = stripcslashes( $_POST['menu-item-visibility'][$menu_item_db_id] );
+			$new_meta_value = stripcslashes( $_POST['menu-item-visibility'][ $menu_item_db_id ] );
 
 			if ( '' == $new_meta_value ) {
 				delete_post_meta( $menu_item_db_id, '_menu_item_visibility', $meta_value );
@@ -114,10 +83,10 @@ class Menu_Items_Visibility_Control {
 				$visible = true;
 			}
 			if ( ! $visible
-				|| isset( $hidden_items[$item_parent] ) // also hide the children of invisible items
+				|| isset( $hidden_items[ $item_parent ] ) // also hide the children of invisible items
 			) {
-				unset( $items[$key] );
-				$hidden_items[$item->ID] = '1';
+				unset( $items[ $key ] );
+				$hidden_items[ $item->ID ] = '1';
 			}
 		}
 
@@ -130,7 +99,7 @@ class Menu_Items_Visibility_Control {
 	 * @since 0.2.2
 	 */
 	function remove_visibility_meta( $post_id ) {
-		if( is_nav_menu_item( $post_id ) ) {
+		if ( is_nav_menu_item( $post_id ) ) {
 			delete_post_meta( $post_id, '_menu_item_visibility' );
 		}
 	}

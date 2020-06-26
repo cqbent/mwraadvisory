@@ -2,7 +2,7 @@
 Contributors: andy7629, alexknowshtml, mgibbs189, jptoto, atheken, prileygraham
 Tags: postmark, email, smtp, notifications, wp_mail, wildbit
 Requires at least: 4.0
-Tested up to: 5.3
+Tested up to: 5.4
 Stable tag: trunk
 
 The *officially-supported* Postmark plugin for Wordpress.
@@ -90,6 +90,21 @@ And save the changes to the file.
 1. Postmark WP Plugin Settings screen.
 
 == Changelog ==
+= v1.12.4 =
+* Fixes potential collation mismatch errors from date comparisons during old sending logs deletion.
+
+= v1.12.3 =
+* Uses count() for check of logs query result count.
+
+= v1.12.2 =
+* Corrects SQL for deletion of log entries older than 7 days.
+
+= v1.12.1 =
+* Checks if stream_name is set in settings before determining which stream to use.
+
+= v1.12 =
+* Adds support for message streams.
+
 = v1.11.6 =
 * Updates server API token location hint in plugin settings.
 

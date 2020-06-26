@@ -1061,6 +1061,8 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
                         }
                         var json = JSON.parse(data);
 
+                        console.log(json);
+
                         // water rate
 
                         var water_frequency = json[50];
@@ -1993,7 +1995,7 @@ $rampant_deer_good = plugin_dir_url(__FILE__) . 'img/rampant_deer_good.jpg';
 
 
             var max_range_part1 = water_usage_part1;
-            var max_range_part2 = water_usages_part2
+            var max_range_part2 = water_usages_part2;
 
             var water_rate_type = jQuery('#rate_calculation_way_water').val();
             var sewer_rate_type = jQuery('#rate_calculation_way_water').val();

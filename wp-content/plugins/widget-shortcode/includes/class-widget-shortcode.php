@@ -128,6 +128,7 @@ class Widget_Shortcode {
 
 		extract( shortcode_atts( array(
 			'id' => '',
+			'css_class' => '',
 			'title' => true, /* whether to display the widget title */
 			'container_tag' => 'div',
 			'container_class' => 'widget %2$s',
@@ -141,7 +142,7 @@ class Widget_Shortcode {
 		 * @note: for backward compatibility: allow overriding widget args through the shortcode parameters
 		 */
 		$widget_args = shortcode_atts( array(
-			'before_widget' => '<' . $container_tag . ' id="' . $container_id . '" class="' . $container_class . '">',
+			'before_widget' => '<' . $container_tag . ' id="' . $container_id . '" class="' . $container_class . ' ' . $css_class . '">',
 			'before_title' => '<' . $title_tag . ' class="' . $title_class . '">',
 			'after_title' => '</' . $title_tag . '>',
 			'after_widget' => '</' . $container_tag . '>',

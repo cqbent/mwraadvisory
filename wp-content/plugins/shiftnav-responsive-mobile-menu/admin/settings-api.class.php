@@ -118,7 +118,9 @@ class ShiftNav_Settings_API {
 
 			if ( isset($section['desc']) && !empty($section['desc']) ) {
 				$section['desc'] = '<div class="inside">'.$section['desc'].'</div>';
-				$callback = create_function('', 'echo "'.str_replace('"', '\"', $section['desc']).'";');
+				$callback = function() use ( $section ){
+					echo str_replace('"', '\"', $section['desc']);
+				};
 			} else {
 				$callback = '__return_false';
 			}
@@ -141,6 +143,7 @@ class ShiftNav_Settings_API {
 					'options' => isset( $option['options'] ) ? $option['options'] : '',
 					'std' => isset( $option['default'] ) ? $option['default'] : '',
 					'sanitize_callback' => isset( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : '',
+					'input_type' => isset( $option['input_type'] ) ? $option['input_type'] : 'text',
 				);
 				add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $this, 'callback_' . $type ), $section, $section, $args );
 			}
@@ -158,11 +161,12 @@ class ShiftNav_Settings_API {
 	 * @param array   $args settings field args
 	 */
 	function callback_text( $args ) {
-
+		
 		$value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
 		$size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
+		$input_type = isset( $args['input_type'] ) ? $args['input_type'] : 'text';
 
-		$html = sprintf( '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
+		$html = sprintf( '<input type="%5$s" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value, $input_type );
 		$html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
 
 		echo $html;
@@ -373,7 +377,7 @@ class ShiftNav_Settings_API {
 			else{
 				$src = $value;
 			}
-			$html.= '<img src="'.$src.'" />';
+			$html.= '<img width="200" src="'.$src.'" />';
 		}
 		$html.= '</span>';
 		$html.= sprintf( '<input type="hidden" class="%1$s-text image-url" id="%2$s-%3$s" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
@@ -396,8 +400,8 @@ class ShiftNav_Settings_API {
 		echo $html;
 	}
 */
-	
-	
+
+
 	/**
 	 * Sanitize callback for Settings API
 	 */
@@ -406,7 +410,7 @@ class ShiftNav_Settings_API {
 			$sanitize_callback = $this->get_sanitize_callback( $option_slug );
 
 			// If callback is set, call it
-			if ( $sanitize_callback ) { 
+			if ( $sanitize_callback ) {
 				$options[ $option_slug ] = call_user_func( $sanitize_callback, $option_value );
 				continue;
 			}
@@ -596,19 +600,19 @@ class ShiftNav_Settings_API {
 			jQuery(document).ready(function($){
 				// Uploading files
 				var file_frame;
-				 
+
 				jQuery( '.set-image-wrapper' ).on( 'click', '.button' , function( event ){
 
 					var $wrap = $( this ).parents( '.set-image-wrapper' );
-				 
+
 				    event.preventDefault();
-				 
+
 				    // If the media frame already exists, reopen it.
 				    if ( file_frame ) {
 				      file_frame.open();
 				      return;
 				    }
-				 
+
 				    // Create the media frame.
 				    file_frame = wp.media.frames.file_frame = wp.media({
 				      title: jQuery( this ).data( 'uploader_title' ),
@@ -617,17 +621,17 @@ class ShiftNav_Settings_API {
 				      },
 				      multiple: false  // Set to true to allow multiple files to be selected
 				    });
-				 
+
 				    // When an image is selected, run a callback.
 				    file_frame.on( 'select', function() {
 				      // We set multiple to false so only get one image from the uploader
 				      attachment = file_frame.state().get('selection').first().toJSON();
 
 				      // Do something with attachment.id and/or attachment.url here
-				      $wrap.find( '.image-setting-wrap' ).html( '<img src="' + attachment.url + '"/>' );
+				      $wrap.find( '.image-setting-wrap' ).html( '<img width="200" src="' + attachment.url + '"/>' );
 				      $wrap.find( 'input.image-url' ).val( attachment.id );
 				    });
-				 
+
 				    // Finally, open the modal
 				    file_frame.open();
 				});

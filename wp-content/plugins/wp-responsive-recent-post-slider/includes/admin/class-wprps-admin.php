@@ -17,10 +17,16 @@ class Wprps_Admin {
 	function __construct() {
 		
 		// Action to add admin menu
-		add_action( 'admin_menu', array($this, 'wprps_register_menu'), 12 );
+		add_action( 'admin_menu', array( $this, 'wprps_register_menu'), 12 );
 
 		// Admin init process
-		add_action( 'admin_init', array($this, 'wprps_admin_init_process') );
+		add_action( 'admin_init', array( $this, 'wprps_admin_init_process') );
+		
+		// Action to add custom column to post listing
+		add_filter('manage_edit-category_columns', array( $this, 'wppsac_category_manage_columns' ) ); 
+
+		// Action to add custom column data to post listing
+		add_filter('manage_category_custom_column', array( $this, 'wppsac_category_columns' ) , 10, 3);
 	}
 
 	/**
@@ -62,6 +68,31 @@ class Wprps_Admin {
 	    if( isset($_GET['message']) && $_GET['message'] == 'wprps-plugin-notice' ) {
 	    	set_transient( 'wprps_install_notice', true, 604800 );
 	    }
+	}
+
+	/**
+	 * Add custom column to Logo listing page
+	 * 
+	 * @package WP Responsive Recent Post Slider
+	 * @since 1.0.0
+	 */
+	function wppsac_category_manage_columns($columns) {
+	    $new_columns['wpos_shortcode'] = __( 'Category ID', 'wp-responsive-recent-post-slider' );
+		$columns = wppsac_add_array( $columns, $new_columns, 2 );
+		return $columns;
+	}
+
+	/**
+	 * Add custom column data to Logo listing page
+	 * 
+	 * @package WP Responsive Recent Post Slider
+	 * @since 1.0.0
+	 */
+	function wppsac_category_columns($ouput, $column_name, $tax_id) {
+		if( $column_name == 'wpos_shortcode' ) {
+			$ouput .= $tax_id;
+		}		
+	    return $ouput;
 	}
 }
 

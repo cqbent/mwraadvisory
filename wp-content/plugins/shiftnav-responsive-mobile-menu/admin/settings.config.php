@@ -35,9 +35,16 @@ function shiftnav_get_settings_fields(){
 			<div class="shiftnav-desc-row">
 				<span class="shiftnav-code-snippet-type">HTML</span> <code class="shiftnav-highlight-code">&lt;a class="shiftnav-toggle shiftnav-toggle-button" data-shiftnav-target="'.$menu.'"&gt;&lt;i class="fa fa-bars"&gt;&lt;/i&gt; Toggle Menu &lt;/a&gt;</code>
 			</div>
-			<p class="shiftnav-sub-desc shiftnav-desc-mini" >Click to select, then <strong><em>&#8984;+c</em></strong> or <strong><em>ctrl+c</em></strong> to copy to clipboard</p>
-			<p class="shiftnav-sub-desc shiftnav-desc-understated">Pick the appropriate code and add to your template or content where you want the toggle to appear.  The menu panel itself is loaded automatically.  You can add the toggle code as many times as you like.</p>
-		';
+			<p class="shiftnav-sub-desc shiftnav-desc-mini" >'.
+				sprintf(
+					__( 'Click to select, then %s or %s to copy to clipboard', 'shiftnav' ),
+					'<strong><em>&#8984;+c</em></strong>',
+					'<strong><em>ctrl+c</em></strong>'
+				).
+			'</p>
+			<p class="shiftnav-sub-desc shiftnav-desc-understated">'.
+				__( 'Pick the appropriate code and add to your template or content where you want the toggle to appear.  The menu panel itself is loaded automatically.  You can add the toggle code as many times as you like.', 'shiftnav' ).
+			'</p>';
 
 
 
@@ -204,6 +211,8 @@ function shiftnav_get_settings_fields(){
 				'customizer'			=> true,
 				'customizer_section' 	=> 'config',
 			),
+
+
 			50 => array(
 				'name'	=> 'toggle_content',
 				'label'	=> __( 'Toggle Content' , 'shiftnav' ),
@@ -214,6 +223,8 @@ function shiftnav_get_settings_fields(){
 				'customizer'			=> true,
 				'customizer_section' 	=> 'config',
 			),
+
+
 
 			60 => array(
 				'name'	=> 'toggle_target',
@@ -339,6 +350,14 @@ function shiftnav_get_settings_fields(){
 				'default' => 'auto',
 				'customizer'			=> true,
 				'customizer_section' 	=> 'styles',
+			),
+
+			150 => array(
+				'name' => 'aria_label',
+				'label' => __( 'Toggle Button ARIA Label', 'shiftnav' ),
+				'desc' => __( 'The value for the aria-label attribute', 'shiftnav' ),
+				'type' => 'text',
+				'default' => 'Toggle Menu',
 			),
 
 
@@ -471,12 +490,26 @@ function shiftnav_get_settings_fields(){
 
 
 		110 => array(
+			'name'		=> 'close_on_target_click',
+			'label'		=> __( 'Close panel on menu link click', 'shiftnav' ),
+			'desc'		=> __( 'Immediately close the panel when a link in the menu is clicked (prior to redirect)' ),
+			'type'		=> 'checkbox',
+			'default'	=> 'off',
+		),
+
+		120 => array(
 			'name' 		=> 'scroll_offset',
 			'label' 	=> __( 'Scroll Offset', 'shiftnav' ),
 			'desc' 		=> __( 'When using the ScrollTo functionality, this is the number of pixels to offset the scroll by, to account for the toggle bar and any spacing you want.', 'shiftnav' ),
 			'type' 		=> 'text',
+			'input_type' => 'number',
 			'default' 	=> 100,
 		),
+
+
+
+
+
 
 
 
@@ -650,6 +683,19 @@ function shiftnav_get_settings_fields(){
 
 	);
 
+	if( SHIFTNAV_PRO ){
+		$gen = SHIFTNAV_PREFIX.'general';
+		$fields[$gen][130] = array(
+			'name' 		=> 'scroll_top_boundary',
+			'label' 	=> __( 'Scroll Top Boundary', 'shiftnav' ),
+			'desc' 		=> __( '(Unrelated to ScrollTo or Scroll Offset).  Pixel distance from the top of the viewport at which the user is considered to have scrolled to the top.  Used for the Hide Toggle Bar on Scroll Down setting.', 'shiftnav' ),
+			'type' 		=> 'text',
+			'input_type' => 'number',
+			'default' 	=> 50,
+		);
+	}
+
+
 
 	// $fields = apply_filters( 'shiftnav_settings_panel_fields' , $fields );
 
@@ -678,7 +724,7 @@ function shiftnav_get_settings_sections(){
 		),*/
 		array(
 			'id' => $prefix.'shiftnav-main',
-			'title' => __( 'Main ShiftNav Settings', 'shiftnav' )
+			'title' => __( 'Main ShiftNav Settings', 'shiftnav' ),
 		),
 		array(
 			'id' => $prefix.'togglebar',

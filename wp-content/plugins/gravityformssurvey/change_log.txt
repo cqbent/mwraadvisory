@@ -1,3 +1,11 @@
+### 3.5 | 2020-05-13
+- Added security enhancements.
+- Updated Javascript files, stylesheets to use minified versions.
+- Updated Javascript events to use standard Gravity Forms events for consistency.
+- Fixed an issue where the "n of n items shown" message from the form editor can be displayed on the front-end when the Rank field choices are populated via a filter.
+- Fixed an issue with the label styles used by the field general settings in the form editor.
+
+
 ### 3.4 | 2019-08-07
 - Added security enhancements.
 - Updated Likert field entries page filters for Gravity Forms 2.4+.

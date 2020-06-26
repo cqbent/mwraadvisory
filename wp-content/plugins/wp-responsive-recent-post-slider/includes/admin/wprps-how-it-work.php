@@ -170,7 +170,7 @@ function wprps_howitwork_page() { ?>
 													<ul>
 														<li><?php _e('Step-1. This plugin create a menu "Recent Post Slider".', 'wp-responsive-recent-post-slider'); ?></li>
 														<li><?php _e('Step-2. This plugin get all the latest POST from WordPress Post section with a simple shortcode', 'wp-responsive-recent-post-slider'); ?></li>
-														<li><?php _e('Step-3. If you need a <b>Featured Post</b> OR <b>Trending/Popular Post</b> plugin then try our plugins', 'wp-responsive-recent-post-slider'); ?> <a href="https://wordpress.org/plugins/featured-post-creative/" target="_blank">Featured Post</a> and <a href="https://wordpress.org/plugins/wp-trending-post-slider-and-widget/" target="_blank">Trending/Popular Post</a></li>
+														<li><?php _e('Step-3. If you need a <b>Featured Post</b> OR <b>Trending/Popular Post</b> plugin then try our plugins', 'wp-responsive-recent-post-slider'); ?> <a href="https://wordpress.org/plugins/featured-post-creative/" target="_blank"><?php _e( 'Featured Post', 'wp-responsive-recent-post-slider' ); ?></a> and <a href="https://wordpress.org/plugins/wp-trending-post-slider-and-widget/" target="_blank"><?php _e( 'Trending/Popular Post', 'wp-responsive-recent-post-slider' ); ?></a></li>
 														
 													</ul>
 												</td>
@@ -227,21 +227,21 @@ function wprps_howitwork_page() { ?>
 								</h3>
 								<div class="inside">										
 									<ul class="wpos-list">
-										<li>60+ designs</li>
-										<li>Recent Post Slider with 25 designs</li>
-										<li>Recent Post Carousel with 30 designs</li>
-										<li>Recent gridbox slider with 8 designs</li>
-										<li>3 Widgets (Post slider, Post List/Slider-1, Post List/Slider-2)</li>
-										<li>Drag & Drop order change</li>
-										<li>Custom CSS option</li>
-										<li>Gutenberg Block Supports</li>
-										<li>Visual Composer Support</li>
-										<li>WP Templating Features</li>
-										<li>Slider RTL support</li>
-										<li>Fully responsive</li>
-										<li>100% Multi language</li>
+										<li><?php _e('60+ designs', 'wp-responsive-recent-post-slider' ); ?></li>
+										<li><?php _e('Recent Post Slider with 25 designs', 'wp-responsive-recent-post-slider' ); ?></li>
+										<li><?php _e('Recent Post Carousel with 30 designs', 'wp-responsive-recent-post-slider' ); ?></li>
+										<li><?php _e('Recent gridbox slider with 8 designs', 'wp-responsive-recent-post-slider' ); ?></li>
+										<li><?php _e('3 Widgets (Post slider, Post List/Slider-1, Post List/Slider-2)', 'wp-responsive-recent-post-slider' ); ?></li>
+										<li><?php _e('Drag & Drop order change', 'wp-responsive-recent-post-slider' ); ?></li>
+										<li><?php _e('Custom CSS option', 'wp-responsive-recent-post-slider' ); ?></li>
+										<li><?php _e('Gutenberg Block Supports', 'wp-responsive-recent-post-slider' ); ?></li>
+										<li><?php _e('Visual Composer Support', 'wp-responsive-recent-post-slider' ); ?></li>
+										<li><?php _e('WP Templating Features', 'wp-responsive-recent-post-slider' ); ?></li>
+										<li><?php _e('Slider RTL support', 'wp-responsive-recent-post-slider' ); ?></li>
+										<li><?php _e('Fully responsive', 'wp-responsive-recent-post-slider' ); ?></li>
+										<li><?php _e('100% Multi language', 'wp-responsive-recent-post-slider' ); ?></li>
 									</ul>
-									<div class="upgrade-to-pro">Gain access to <strong>Responsive Recent Post Slider</strong> included in <br /><strong>Essential Plugin Bundle</div>
+									<div class="upgrade-to-pro"><?php echo __( 'Gain access to <strong>Responsive Recent Post Slider</strong> included in <br /><strong>Essential Plugin Bundle', 'wp-responsive-recent-post-slider' ); ?></div>
 									<a class="button button-primary wpos-button-full" href="https://www.wponlinesupport.com/wp-plugin/wp-responsive-recent-post-slider/?ref=WposPratik&utm_source=WP&utm_medium=WP-Plugins&utm_campaign=Upgrade-PRO" target="_blank"><?php _e('Go Premium ', 'wp-responsive-recent-post-slider'); ?></a>	
 									<p><a class="button button-primary wpos-button-full" href="http://demo.wponlinesupport.com/prodemo/post-slider-pro/" target="_blank"><?php _e('View PRO Demo ', 'wp-responsive-recent-post-slider'); ?></a>			</p>								
 								</div><!-- .inside -->
@@ -257,7 +257,7 @@ function wprps_howitwork_page() { ?>
 										<span><?php _e( 'Help to improve this plugin!', 'wp-responsive-recent-post-slider' ); ?></span>
 									</h3>									
 									<div class="inside">										
-										<p>Enjoyed this plugin? You can help by rate this plugin <a href="https://wordpress.org/support/plugin/wp-responsive-recent-post-slider/reviews/" target="_blank">5 stars!</a></p>
+										<p><?php _e( 'Enjoyed this plugin? You can help by rate this plugin ', 'wp-responsive-recent-post-slider' ); ?><a href="https://wordpress.org/support/plugin/wp-responsive-recent-post-slider/reviews/" target="_blank"><?php _e( '5 stars!', 'wp-responsive-recent-post-slider' ); ?></a></p>
 									</div><!-- .inside -->
 							</div><!-- #general -->
 						</div><!-- .meta-box-sortables ui-sortable -->

@@ -45,7 +45,7 @@
 	border-bottom:1px solid #fff;
 }
 .shiftnav-loading .shiftnav-loading-message{
-	
+
 	color:#fff;
 	max-height:0;
 	overflow:hidden;
@@ -76,4 +76,33 @@
 .ie7 .shiftnav,
 .ie7 .shiftnav-toggle{
 	display:none !important;
+}
+
+
+.shiftnav-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+.shiftnav-sr-only-focusable:active,
+.shiftnav-sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+}
+.shiftnav .shiftnav-sr-close{
+  background:white;
+	color:#222;
+  width:100%;
+  padding:15px;
+  text-align:center;
+	font-size:16px;
 }

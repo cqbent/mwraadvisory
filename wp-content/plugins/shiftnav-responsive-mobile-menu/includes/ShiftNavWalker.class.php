@@ -68,7 +68,7 @@ class ShiftNavWalker extends Walker_Nav_Menu {
 		$back_text = $back_text ? $back_text : __( 'Back' , 'shiftnav' );
 
 		//Make Content Customizable
-		$html = '<li class="shiftnav-retract"><'.$back_tag.' class="shiftnav-target"><i class="fa fa-chevron-left"></i> '.$back_text.'</'.$back_tag.'></li>';
+		$html = '<li class="shiftnav-retract"><'.$back_tag.' tabindex="0" class="shiftnav-target"><i class="fa fa-chevron-left"></i> '.$back_text.'</'.$back_tag.'></li>';
 
 		return $html;
 	}
@@ -311,13 +311,13 @@ class ShiftNavWalker extends Walker_Nav_Menu {
 		if( $has_sub ){
 			switch( $submenu_type ){
 				case 'shift':
-					$item_output.= '<span class="shiftnav-submenu-activation"><i class="fa fa-chevron-right"></i></span>';
+					$item_output.= '<span tabindex="0" class="shiftnav-submenu-activation"><i class="fa fa-chevron-right"></i></span>';
 					break;
 				case 'accordion':
 					$open_icon = shiftnav_op( 'accordion_toggle_icon_open' , '__current_instance__' );
 					$close_icon = shiftnav_op( 'accordion_toggle_icon_close' , '__current_instance__' );
-					$item_output.= '<span class="shiftnav-submenu-activation shiftnav-submenu-activation-open"><i class="fa fa-'.$open_icon.'"></i></span>';
-					$item_output.= '<span class="shiftnav-submenu-activation shiftnav-submenu-activation-close"><i class="fa fa-'.$close_icon.'"></i></span>';
+					$item_output.= '<span tabindex="0" class="shiftnav-submenu-activation shiftnav-submenu-activation-open"><i class="fa fa-'.$open_icon.'"></i></span>';
+					$item_output.= '<span tabindex="0" class="shiftnav-submenu-activation shiftnav-submenu-activation-close"><i class="fa fa-'.$close_icon.'"></i></span>';
 					break;
 			}
 		}

@@ -17,10 +17,10 @@ if ( !defined( 'ABSPATH' ) ) {
 	<div class="support-data">
 	<h3 style="margin-bottom:5px;"><?php _e( 'Highlight of Hiring:', 'wp-responsive-recent-post-slider' ); ?></h3>
 		<ul>
-		 	<li>Hire once, get unlimited jobs done</li>
-		 	<li>Quick ticket support, quick solution</li>
-		 	<li>Any sort of WP work with no extra cost</li>
-		 	<li>Dedicated expert working only for you!</li>
+		 	<li><?php _e( 'Hire once, get unlimited jobs done', 'wp-responsive-recent-post-slider'); ?></li>
+		 	<li><?php _e( 'Quick ticket support, quick solution', 'wp-responsive-recent-post-slider'); ?></li>
+		 	<li><?php _e( 'Any sort of WP work with no extra cost', 'wp-responsive-recent-post-slider'); ?></li>
+		 	<li><?php _e( 'Dedicated expert working only for you!', 'wp-responsive-recent-post-slider'); ?></li>
 		</ul>
 	</div>
 
@@ -60,20 +60,20 @@ if ( !defined( 'ABSPATH' ) ) {
 	    <thead>
 	    	<tr>
 	    		<th>
-	    			<h2>Hire us for 1 Hr</h2>
+	    			<h2><?php _e( 'Hire us for 1 Hr', 'wp-responsive-recent-post-slider'); ?></h2>
 	    			<p>$20 USD</p>
 	    		</th>
 	    		<th>
-	    			<h2>Hire us for 5 Hrs</h2>
+	    			<h2><?php _e( 'Hire us for 5 Hrs', 'wp-responsive-recent-post-slider'); ?></h2>
 	    			<p>$99 USD</p>
 	    		</th>
 	    		<th>
-	    			<h2>Hire us for 30 Hrs</h2>
+	    			<h2><?php _e( 'Hire us for 30 Hrs', 'wp-responsive-recent-post-slider'); ?></h2>
 	    			<p>$499 USD</p>
-	    			<p class="promo">Our most valuable package!</p>
+	    			<p class="promo"><?php _e( 'Our most valuable package!', 'wp-responsive-recent-post-slider'); ?></p>
 	    		</th>
 				<th>
-	    			<h2>Hire us for 70 Hrs</h2>
+	    			<h2><?php _e( 'Hire us for 70 Hrs', 'wp-responsive-recent-post-slider'); ?></h2>
 	    			<p>$999 USD</p>
 	    		</th>	
 	    	</tr>
@@ -81,10 +81,10 @@ if ( !defined( 'ABSPATH' ) ) {
 
 	    <tfoot>
 	    	<tr>
-	    		<td><a href="https://www.wponlinesupport.com/checkout/?edd_action=add_to_cart&download_id=6044&edd_options[price_id]=6&ref=wposthemeplugin" target="_blank">Hire Us</a></td>
-	    		<td><a href="https://www.wponlinesupport.com/checkout/?edd_action=add_to_cart&download_id=6044&edd_options[price_id]=3&ref=wposthemeplugin" target="_blank">Hire Us</a></td>
-	    		<td><a href="https://www.wponlinesupport.com/checkout/?edd_action=add_to_cart&download_id=6044&edd_options[price_id]=4&ref=wposthemeplugin" target="_blank">Hire Us</a></td>
-				<td><a href="https://www.wponlinesupport.com/checkout/?edd_action=add_to_cart&download_id=6044&edd_options[price_id]=5&ref=wposthemeplugin" target="_blank">Hire Us</a></td>
+	    		<td><a href="https://www.wponlinesupport.com/checkout/?edd_action=add_to_cart&download_id=6044&edd_options[price_id]=6&ref=wposthemeplugin" target="_blank"><?php _e( 'Hire Us', 'wp-responsive-recent-post-slider'); ?></a></td>
+	    		<td><a href="https://www.wponlinesupport.com/checkout/?edd_action=add_to_cart&download_id=6044&edd_options[price_id]=3&ref=wposthemeplugin" target="_blank"><?php _e( 'Hire Us', 'wp-responsive-recent-post-slider'); ?></a></td>
+	    		<td><a href="https://www.wponlinesupport.com/checkout/?edd_action=add_to_cart&download_id=6044&edd_options[price_id]=4&ref=wposthemeplugin" target="_blank"><?php _e( 'Hire Us', 'wp-responsive-recent-post-slider'); ?></a></td>
+				<td><a href="https://www.wponlinesupport.com/checkout/?edd_action=add_to_cart&download_id=6044&edd_options[price_id]=5&ref=wposthemeplugin" target="_blank"><?php _e( 'Hire Us', 'wp-responsive-recent-post-slider'); ?></a></td>
 			</tr>
 	    </tfoot>
 	</table>

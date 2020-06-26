@@ -71,7 +71,7 @@ class CleantalkSFW extends Cleantalk\Antispam\SFW
 			$sfw_die_page = str_replace('{SFW_DIE_NOTICE_IP}',              __('SpamFireWall is activated for your IP ', 'cleantalk'), $sfw_die_page);
 			$sfw_die_page = str_replace('{SFW_DIE_MAKE_SURE_JS_ENABLED}',   __('To continue working with web site, please make sure that you have enabled JavaScript.', 'cleantalk'), $sfw_die_page);
 			$sfw_die_page = str_replace('{SFW_DIE_CLICK_TO_PASS}',          __('Please click below to pass protection,', 'cleantalk'), $sfw_die_page);
-			$sfw_die_page = str_replace('{SFW_DIE_YOU_WILL_BE_REDIRECTED}', sprintf(__('Or you will be automatically redirected to the requested page after %d seconds.', 'cleantalk'), 1), $sfw_die_page);
+			$sfw_die_page = str_replace('{SFW_DIE_YOU_WILL_BE_REDIRECTED}', sprintf(__('Or you will be automatically redirected to the requested page after %d seconds.', 'cleantalk'), 3), $sfw_die_page);
 			$sfw_die_page = str_replace('{CLEANTALK_TITLE}',                __('Antispam by CleanTalk', 'cleantalk'), $sfw_die_page);
 			$sfw_die_page = str_replace('{TEST_TITLE}',                     ($this->test ? __('This is the testing page for SpamFireWall', 'cleantalk') : ''), $sfw_die_page);
 	
@@ -112,9 +112,9 @@ class CleantalkSFW extends Cleantalk\Antispam\SFW
 				$debug = '<h1>IP and Networks</h1>'
 					. var_export($this->all_ips, true)
 					.'<h1>Blocked IPs</h1>'
-			        . var_export($this->passed_ips, true)
-			        .'<h1>Passed IPs</h1>'
 			        . var_export($this->blocked_ips, true)
+			        .'<h1>Passed IPs</h1>'
+			        . var_export($this->passed_ips, true)
 					. '<h1>Headers</h1>'
 					. var_export(apache_request_headers(), true)
 					. '<h1>REMOTE_ADDR</h1>'

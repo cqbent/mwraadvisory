@@ -34,6 +34,10 @@
 	right:0;
 }
 
+.shiftnav-target:focus{
+	outline-offset:-2px;
+}
+
 /* Shift the menu */
 .shiftnav.shiftnav-left-edge/*add transition class*/{
 	-webkit-transform: translateX(-290px);
@@ -112,7 +116,10 @@
 	padding:15px 20px;
 	background:rgba(0,0,0,.2);
 	z-index: 20;
-    cursor: pointer;
+  cursor: pointer;
+	border:none;
+	color:inherit;
+	font-size:inherit;
 }
 
 

@@ -5538,7 +5538,9 @@ li#field_38_53 {
 #gform_62 {
   max-width: 991px;
   margin: 40px auto;
+
 }
+/*
 li#field_62_32 {
   &:before {
     content: "(select one)" !important;
@@ -5843,6 +5845,7 @@ li#field_62_101 {
     top: 32px;
   }
 }
+ */
 .library-list {
   li {
     a {
@@ -8221,3 +8224,19 @@ img.animation {
   color: #ffffff !important;
 }
 
+.gfmc-column {
+  ul {
+    padding: 0 !important;
+    li {
+      padding: 0 !important;
+    }
+  }
+  @media all and (min-width: 641px) {
+    &.col-sm-4 {
+      width: 33.3333%;
+    }
+    &.col-sm-6 {
+      width: 50%;
+    }
+  }
+}
