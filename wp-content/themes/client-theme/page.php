@@ -19,8 +19,8 @@ get_header(); ?>
 
 			<?php
 				//Duplicate remove 
-				session_start(); 				
-				unset($_SESSION['do_not_duplicate']);
+				//session_start();
+				//unset($_SESSION['do_not_duplicate']);
 				
 				// Start the Loop.
 				while ( have_posts() ) : the_post();

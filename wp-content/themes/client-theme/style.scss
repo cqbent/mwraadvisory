@@ -4958,6 +4958,11 @@ ul.videotab {
     color: #000 !important;
     border: 1px solid #ADADAD !important;
   }
+  .gform_fieldset, .gfield {
+    &.hidden {
+      display: none;
+    }
+  }
 }
 .gform_footer {
   .gform_button {

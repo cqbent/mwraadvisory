@@ -4430,6 +4430,9 @@ ul.videotab li a:before {
   color: #000 !important;
   border: 1px solid #ADADAD !important;
 }
+.gform_fields .gform_fieldset.hidden, .gform_fields .gfield.hidden {
+  display: none;
+}
 
 .gform_footer .gform_button {
   width: 100px !important;
