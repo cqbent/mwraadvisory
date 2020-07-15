@@ -17,6 +17,7 @@ class RCSurveyForm {
 	 * load asset files, etc.
 	 */
 	function load_assets() {
+		wp_enqueue_style('rc-style', plugin_dir_url(dirname(__FILE__)) . 'assets/css/rc-survey-form.css');
 		wp_enqueue_script('rc-survey-form', plugin_dir_url(dirname(__FILE__)) . 'assets/js/rc_survey_form.js');
 	}
 

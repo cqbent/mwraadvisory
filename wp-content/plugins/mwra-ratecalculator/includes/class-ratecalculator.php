@@ -26,7 +26,7 @@ class RateCalculatorDisplay {
 	function load_assets() {
 		// load styles, custom js, ????
 
-		wp_enqueue_style('rc-style', plugin_dir_url(dirname(__FILE__)) . 'assets/css/style.css');
+		wp_enqueue_style('rc-style', plugin_dir_url(dirname(__FILE__)) . 'assets/css/rc.css');
 		wp_enqueue_script('rc-script', plugin_dir_url(dirname(__FILE__)) . 'assets/js/rc.js', array('jquery'), '', 'true');
 		wp_localize_script('rc-script', 'rc_ajax_obj', array(
 			'ajax_url' => admin_url( 'admin-ajax.php' )
