@@ -52,7 +52,9 @@ class RCSurveyForm {
 			$args = array(
 				'post_type' => 'cpt-community',
 				'numberposts' => -1,
-				'post_status' => 'publish'
+				'post_status' => 'publish',
+				'orderby' => 'title',
+				'order' => 'ASC'
 			);
 			$posts = get_posts( $args );
 			$choices = array();

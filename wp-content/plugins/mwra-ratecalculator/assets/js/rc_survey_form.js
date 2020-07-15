@@ -1,8 +1,8 @@
 (function($) {
-	console.log('this script was loaded');
-	if ($('form.mwra-rate-survey').length) {
-		$(document).on('gform_page_loaded', function(event, form_id, current_page) {
-			// hide sewer (or water) fields throughout if "does your cummunity offer..." is negative
+	console.log('this script was loaded 2');
+	$(document).on('gform_page_loaded', function(event, form_id, current_page) {
+		// hide sewer (or water) fields throughout if "does your cummunity offer..." is negative
+		if ($('form').hasClass('mwra-rate-survey')) {
 			var water_offered = $('[name="input_157"]:checked').val();
 			var sewer_offered = $('[name="input_158"]:checked').val();
 			if (water_offered === '0') {
@@ -133,6 +133,6 @@
 					$('.commercial-sewer-rate-structure-fieldset').addClass('hidden');
 				}
 			}
-		})
-	}
+		}
+	})
 })(jQuery);
