@@ -9,6 +9,14 @@
 			var sewer_unit_type = $('[name="input_275"]');
 			var water_unit_type_val = water_unit_type.val();
 			var sewer_unit_type_val = sewer_unit_type.val();
+			var water_unit_type_label = water_unit_type.find('option:selected').text();
+			var sewer_unit_type_label = sewer_unit_type.find('option:selected').text();
+			var water_in_fee_includes = $('.water-min-fee-includes');
+			var sewer_in_fee_includes = $('.sewer-min-fee-includes')
+			//water_in_fee_includes.find('.gfield_description').text(water_unit_type_label);
+			//sewer_in_fee_includes.find('.gfield_description').text(sewer_unit_type_label);
+			water_in_fee_includes.find('.ginput_container').append('<span>'+water_unit_type_label+'</span>')
+			sewer_in_fee_includes.find('.ginput_container').append('<span>'+sewer_unit_type_label+'</span>')
 			if (water_offered === '0') {
 				$('fieldset.fieldset-water').addClass('hidden');
 			}
@@ -16,13 +24,20 @@
 				$('fieldset.fieldset-sewer').addClass('hidden');
 			}
 			if (current_page === '3') {
-				console.log('page 3!')
+				console.log('page 3!');
+				$('.water-min-fee-includes .gfield_description')
 				water_unit_type.change(function() {
 					water_unit_type_val = $(this).val();
-					console.log('changed: ' + water_unit_type_val);
+					water_unit_type_label = $(this).find('option:selected').text();
+					//water_in_fee_includes.find('.gfield_description').text(water_unit_type_label);
+					water_in_fee_includes.find('.ginput_container span').text(water_unit_type_label);
+
 				});
 				sewer_unit_type.change(function() {
 					sewer_unit_type_val = $(this).val();
+					sewer_unit_type_label = $(this).find('option:selected').text();
+					//sewer_in_fee_includes.find('.gfield_description').text(sewer_unit_type_label);
+					sewer_in_fee_includes.find('.ginput_container span').text(sewer_unit_type_label);
 				});
 				gform.addAction('gform_post_conditional_logic_field_action', function (formId, action, targetId, defaultValues, isInit) {
 					if (action === 'show') {
@@ -36,7 +51,6 @@
 				});
 			}
 			else if (current_page === '4') {
-
 				/*
 				Pre fill water/sewer rate table based on _unit_type, _min_fee and _min_fee_usage fields from prev page
 				 */
@@ -56,7 +70,8 @@
 									wtarget.find('tr:first-child td:nth-child(4) input').val(water_min_fee);
 								}
 								if (water_unit_type) {
-									wtarget.find('tr:first-child td:nth-child(3) select option[value='+water_unit_type_val+']').prop('selected',  true);
+									wtarget.find('tr td:nth-child(3) input').val(water_unit_type_label).attr('readonly', true);
+									//wtarget.find('tr:first-child td:nth-child(3) select option[value='+water_unit_type_val+']').prop('selected',  true);
 								}
 							}
 						}
@@ -74,7 +89,8 @@
 									starget.find('tr:first-child td:nth-child(4) input').val(sewer_min_fee);
 								}
 								if (sewer_unit_type) {
-									starget.find('tr:first-child td:nth-child(3) select option[value='+sewer_unit_type_val+']').prop('selected',  true);
+									starget.find('tr td:nth-child(3) input').val(sewer_unit_type_label).attr('readonly', true);
+									//starget.find('tr:first-child td:nth-child(3) select option[value='+sewer_unit_type_val+']').prop('selected',  true);
 								}
 							}
 						}
@@ -92,11 +108,14 @@
 					var parentfield = container.parent().parent();
 					//container.find('tbody tr:nth-child('+ listrowcount +') td:nth-child(1) input').val(newval);
 					item.find('td:nth-child(1) input').val(newval);
+					item.find('td:nth-child(3) input').val(water_unit_type_label).attr('readonly', true);
+					/*
 					if (parentfield.hasClass('water-rate-table') && water_unit_type) {
 						var remove_unit_type = water_unit_type === '1' ? '2' : '1';
 						item.find( 'select option[value="'+remove_unit_type+'"]').remove();
 						console.log('selected x')
 					}
+					 */
 					console.log(item);
 				} );
 

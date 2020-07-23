@@ -16,7 +16,7 @@ class RateCalculatorDisplay {
 	function __construct()
 	{
 		add_action('wp_ajax_get_communities', array($this, 'get_communities'));
-		add_action('wp_ajax_no_priv_get_communities', array($this, 'get_communities'));
+		add_action('wp_ajax_nopriv_get_communities', array($this, 'get_communities'));
 		//add_action('wp_ajax_calculate_data', array($this, 'calculate_data'));
 		//add_action('wp_ajax_no_priv_calculate_data', array($this, 'calculate_data'));
 		add_shortcode('rate_calculator', array($this, 'ratecalculator_load'));
@@ -29,7 +29,8 @@ class RateCalculatorDisplay {
 		wp_enqueue_style('rc-style', plugin_dir_url(dirname(__FILE__)) . 'assets/css/rc.css');
 		wp_enqueue_script('rc-script', plugin_dir_url(dirname(__FILE__)) . 'assets/js/rc.js', array('jquery'), '', 'true');
 		wp_localize_script('rc-script', 'rc_ajax_obj', array(
-			'ajax_url' => admin_url( 'admin-ajax.php' )
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'option_value' => 'this val'
 		));
 	}
 
@@ -53,7 +54,9 @@ class RateCalculatorDisplay {
 		$args = array(
 			'post_type' => 'cpt-community',
 			'numberposts' => -1,
-			'post_status' => 'publish'
+			'post_status' => 'publish',
+			'orderby' => 'title',
+			'order' => 'ASC'
 		);
 		$posts = get_posts( $args );
 		$choices = array();

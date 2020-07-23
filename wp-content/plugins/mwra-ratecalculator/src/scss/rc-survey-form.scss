@@ -1,7 +1,6 @@
 //@import "../../node_modules/bootstrap/scss/bootstrap";
 .gform_wrapper {
 	.gform_page {
-
 		.gform_page_fields {
 			display: flex;
 			flex-wrap: wrap;
@@ -29,12 +28,48 @@
 				&.top_label {
 					flex: 0 0 100%;
 					max-width: 100%;
+					.gfield.description-on-right {
+						.ginput_container {
+							width: auto !important;
+						}
+					}
 				}
 				.gfield_html {
 					&.page-header {
 						font-weight: 700;
 					}
 				}
+				.gfield {
+					&.gf_right_half, &.gf_left_half {
+						.ginput_container {
+							width: auto !important;
+						}
+					}
+					&.water-min-fee-includes, &.sewer-min-fee-includes {
+						.ginput_container span {
+							padding-left: 10px;
+						}
+					}
+					&.description-on-right {
+						&::after {
+							content: "";
+							display: block;
+							clear: both;
+						}
+						.gfield_label {
+							display: block;
+						}
+						.ginput_container, .gfield_description {
+							float: left;
+							clear: none;
+							width: auto;
+						}
+						.gfield_description {
+							padding-left: 10px;
+						}
+					}
+				}
+
 			}
 		}
 	}

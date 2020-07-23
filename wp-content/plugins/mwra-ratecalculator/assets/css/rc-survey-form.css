@@ -19,8 +19,26 @@
   .gform_wrapper .gform_page .gform_page_fields .gform_fields.top_label {
     flex: 0 0 100%;
     max-width: 100%; }
+    .gform_wrapper .gform_page .gform_page_fields .gform_fields.top_label .gfield.description-on-right .ginput_container {
+      width: auto !important; }
   .gform_wrapper .gform_page .gform_page_fields .gform_fields .gfield_html.page-header {
     font-weight: 700; }
+  .gform_wrapper .gform_page .gform_page_fields .gform_fields .gfield.gf_right_half .ginput_container, .gform_wrapper .gform_page .gform_page_fields .gform_fields .gfield.gf_left_half .ginput_container {
+    width: auto !important; }
+  .gform_wrapper .gform_page .gform_page_fields .gform_fields .gfield.water-min-fee-includes .ginput_container span, .gform_wrapper .gform_page .gform_page_fields .gform_fields .gfield.sewer-min-fee-includes .ginput_container span {
+    padding-left: 10px; }
+  .gform_wrapper .gform_page .gform_page_fields .gform_fields .gfield.description-on-right::after {
+    content: "";
+    display: block;
+    clear: both; }
+  .gform_wrapper .gform_page .gform_page_fields .gform_fields .gfield.description-on-right .gfield_label {
+    display: block; }
+  .gform_wrapper .gform_page .gform_page_fields .gform_fields .gfield.description-on-right .ginput_container, .gform_wrapper .gform_page .gform_page_fields .gform_fields .gfield.description-on-right .gfield_description {
+    float: left;
+    clear: none;
+    width: auto; }
+  .gform_wrapper .gform_page .gform_page_fields .gform_fields .gfield.description-on-right .gfield_description {
+    padding-left: 10px; }
 
 /*
 #gform_62 {

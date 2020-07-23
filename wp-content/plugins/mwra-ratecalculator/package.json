@@ -6,15 +6,20 @@
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-wp-i18n": "~0.5.0",
-    "grunt-wp-readme-to-markdown": "~1.0.0"
+    "grunt-wp-readme-to-markdown": "~1.0.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
   },
   "dependencies": {
     "bootstrap": "v4.3.1",
-    "jquery": "^3.3.1",
     "font-awesome": "^4.7.0",
-    "node-sass": "^4.14.1"
+    "jquery": "^3.3.1",
+    "node-sass": "^4.14.1",
+    "rangeslider.js": "^2.3.3"
   },
   "scripts": {
-    "scss": "node-sass -w src/scss -o assets/css"
+    "scss": "node-sass src/scss -o assets/css",
+    "develop": "webpack --mode development",
+    "build": "webpack --mode production"
   }
 }
