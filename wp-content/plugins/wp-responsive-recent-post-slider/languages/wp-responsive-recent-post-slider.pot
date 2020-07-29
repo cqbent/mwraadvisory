@@ -1,0 +1,324 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Responsive Recent Post Slider/Carousel\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-07-14 11:52+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.4.0; wp-5.3.4"
+
+#: includes/admin/wprps-how-it-work.php:242
+msgid "100% Multi language"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:234
+msgid "3 Widgets (Post slider, Post List/Slider-1, Post List/Slider-2)"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:260
+msgid "5 stars!"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:230
+msgid "60+ designs"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Add and display Responsive WordPresss Recent Post Slider and Carousel on "
+"your website with 4 designs (Slider) and 1 designs (Carousel) using a "
+"shortcode. Also added Gutenberg block support."
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:193
+msgid "All Shortcodes"
+msgstr ""
+
+#: includes/admin/settings/hire-us.php:22
+msgid "Any sort of WP work with no extra cost"
+msgstr ""
+
+#: templates/carousel/design-1.php:31 templates/slider/design-1.php:25
+#: templates/slider/design-2.php:27 templates/slider/design-3.php:33
+#: templates/slider/design-4.php:35
+msgid "By"
+msgstr ""
+
+#: includes/admin/class-wprps-admin.php:80
+msgid "Category ID"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:206
+msgid "Check plugin document for shortcode parameters and demo for designs."
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:236
+msgid "Custom CSS option"
+msgstr ""
+
+#: includes/admin/settings/hire-us.php:23
+msgid "Dedicated expert working only for you!"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:208
+msgid "Demo for Designs"
+msgstr ""
+
+#: includes/wppsac-function.php:93 includes/wppsac-function.php:109
+msgid "Design 1"
+msgstr ""
+
+#: includes/wppsac-function.php:94
+msgid "Design 2"
+msgstr ""
+
+#: includes/wppsac-function.php:95
+msgid "Design 3"
+msgstr ""
+
+#: includes/wppsac-function.php:96
+msgid "Design 4"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:207
+msgid "Documentation"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:235
+msgid "Drag & Drop order change"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:260
+msgid "Enjoyed this plugin? You can help by rate this plugin "
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:173
+msgid "Featured Post"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:241
+msgid "Fully responsive"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:244
+msgid ""
+"Gain access to <strong>Responsive Recent Post Slider</strong> included in "
+"<br /><strong>Essential Plugin Bundle"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:167
+msgid "Geeting Started with Post Slider"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:245
+msgid "Go Premium "
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:237
+msgid "Gutenberg Block Supports"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:257
+msgid "Help to improve this plugin!"
+msgstr ""
+
+#: includes/admin/settings/hire-us.php:18
+msgid "Highlight of Hiring:"
+msgstr ""
+
+#: includes/admin/settings/hire-us.php:20
+msgid "Hire once, get unlimited jobs done"
+msgstr ""
+
+#: includes/admin/class-wprps-admin.php:43
+#: includes/admin/settings/hire-us.php:84
+#: includes/admin/settings/hire-us.php:85
+#: includes/admin/settings/hire-us.php:86
+#: includes/admin/settings/hire-us.php:87
+msgid "Hire Us"
+msgstr ""
+
+#: includes/admin/settings/hire-us.php:15
+msgid "Hire Us - Get unlimited expert WordPress Support and Development"
+msgstr ""
+
+#: includes/admin/settings/hire-us.php:63
+msgid "Hire us for 1 Hr"
+msgstr ""
+
+#: includes/admin/settings/hire-us.php:71
+msgid "Hire us for 30 Hrs"
+msgstr ""
+
+#: includes/admin/settings/hire-us.php:67
+msgid "Hire us for 5 Hrs"
+msgstr ""
+
+#: includes/admin/settings/hire-us.php:76
+msgid "Hire us for 70 Hrs"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:119
+msgid "How It Works"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:159
+msgid "How It Works - Display and Shortcode"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:181
+msgid "How Shortcode Works"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.wponlinesupport.com/"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://www.wponlinesupport.com/plugins/"
+msgstr ""
+
+#: wp-recent-post-slider.php:137
+#, php-format
+msgid ""
+"It looks like you had PRO version %s of this plugin activated. To avoid "
+"conflicts the extra version has been deactivated and we recommend you delete "
+"it."
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:203
+msgid "Need Support?"
+msgstr ""
+
+#: includes/admin/settings/hire-us.php:73
+msgid "Our most valuable package!"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:122
+msgid "Our Plugins"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:197
+msgid "Post carousel Shortcode. Where you can use 1 designs."
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:196
+msgid "Post slider Shortcode. Where you can use 4 designs."
+msgstr ""
+
+#: includes/admin/settings/hire-us.php:21
+msgid "Quick ticket support, quick solution"
+msgstr ""
+
+#: templates/carousel/design-1.php:50 templates/slider/design-1.php:45
+#: templates/slider/design-2.php:46 templates/slider/design-3.php:53
+#: templates/slider/design-4.php:54
+msgid "Read More"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:233
+msgid "Recent gridbox slider with 8 designs"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:232
+msgid "Recent Post Carousel with 30 designs"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:23
+msgid "Recent Post Slider"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:231
+msgid "Recent Post Slider with 25 designs"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:240
+msgid "Slider RTL support"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:185
+msgid "Step-1. Create a page like Latet Post OR add the shortcode in a page."
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:171
+msgid "Step-1. This plugin create a menu \"Recent Post Slider\"."
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:186
+msgid "Step-2. Put below shortcode as per your need."
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:172
+msgid ""
+"Step-2. This plugin get all the latest POST from WordPress Post section with "
+"a simple shortcode"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:173
+msgid ""
+"Step-3. If you need a <b>Featured Post</b> OR <b>Trending/Popular Post</b> "
+"plugin then try our plugins"
+msgstr ""
+
+#: wp-recent-post-slider.php:136
+#, php-format
+msgid "Thank you for activating %s"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:104
+msgid ""
+"There was an error retrieving the data from the server. Please try again "
+"later."
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:173
+msgid "Trending/Popular Post"
+msgstr ""
+
+#: includes/admin/class-wprps-admin.php:41
+msgid "Upgrade to PRO"
+msgstr ""
+
+#: includes/admin/class-wprps-admin.php:41
+msgid "Upgrade to PRO - Recent Post Slider"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:226
+msgid "Upgrate to Pro"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:246
+msgid "View PRO Demo "
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:238
+msgid "Visual Composer Support"
+msgstr ""
+
+#. Author of the plugin
+msgid "WP OnlineSupport"
+msgstr ""
+
+#: includes/admin/settings/premium.php:15
+msgid "WP Responsive Recent Post Slider - Features"
+msgstr ""
+
+#. Name of the plugin
+msgid "WP Responsive Recent Post Slider/Carousel"
+msgstr ""
+
+#: includes/admin/wprps-how-it-work.php:239
+msgid "WP Templating Features"
+msgstr ""
+
+#: includes/admin/supports/gutenberg-block.php:277
+msgid "WPOS Blocks"
+msgstr ""

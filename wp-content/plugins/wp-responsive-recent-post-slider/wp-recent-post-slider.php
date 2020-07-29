@@ -6,7 +6,7 @@
  * Domain Path: /languages/
  * Description: Add and display Responsive WordPresss Recent Post Slider and Carousel on your website with 4 designs (Slider) and 1 designs (Carousel) using a shortcode. Also added Gutenberg block support. 
  * Author: WP OnlineSupport
- * Version: 2.3.1
+ * Version: 2.3.3
  * Author URI: https://www.wponlinesupport.com/
  *
  * @package WordPress
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 if( !defined( 'WPRPS_VERSION' ) ) {
-	define( 'WPRPS_VERSION', '2.3.1' ); // Version of plugin
+	define( 'WPRPS_VERSION', '2.3.3' ); // Version of plugin
 }
 if( !defined( 'WPRPS_DIR' ) ) {
 	define( 'WPRPS_DIR', dirname( __FILE__ ) ); // Plugin dir
@@ -36,7 +36,7 @@ if( !defined( 'WPRPS_POST_TYPE' ) ) {
 	define( 'WPRPS_POST_TYPE', 'post' ); // Plugin post type
 }
 if(!defined( 'WPRPS_PLUGIN_LINK' ) ) {
-	define( 'WPRPS_PLUGIN_LINK', 'https://www.wponlinesupport.com/wp-plugin/wp-responsive-recent-post-slider/?utm_source=WP&utm_medium=WP-Plugins&utm_campaign=Features-PRO#fndtn-lifetime' ); // Plugin link
+	define( 'WPRPS_PLUGIN_LINK', 'https://www.wponlinesupport.com/wp-plugin/wp-responsive-recent-post-slider/?utm_source=WP&utm_medium=Post-Slider&utm_campaign=Features-PRO' ); // Plugin link
 }
 
 /**
@@ -180,20 +180,6 @@ function wpos_analytics_anl18_load() {
 							'type'          => 'plugin',
 							'menu'          => 'wprps-about',
 							'text_domain'   => 'wp-responsive-recent-post-slider',
-							'promotion'		=> array(
-													'bundle' => array(
-															'name'	=> 'Download FREE 50+ Plugins, 10+ Themes and Dashboard Plugin',
-															'desc'	=> 'Download FREE 50+ Plugins, 10+ Themes and Dashboard Plugin',
-															'file'	=> 'https://www.wponlinesupport.com/latest/wpos-free-50-plugins-plus-12-themes.zip'
-														)
-													),
-							'offers'		=> array(
-													'trial_premium' => array(
-														'image'	=> 'http://analytics.wponlinesupport.com/?anylc_img=18',
-														'link'	=> 'http://analytics.wponlinesupport.com/?anylc_redirect=18',
-														'desc'	=> 'Or start using the plugin from admin menu',
-													)
-												),
 						));
 
 	return $wpos_analytics;

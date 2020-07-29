@@ -1,18 +1,40 @@
 === WordPress prettyPhoto ===
-Contributors: ibabar
+Contributors: ibabar, litonice13
 Donate link: http://donate.ibabar.com
-Tags: prettyPhoto, thickbox, lightbox, WordPress likghtbox, fancybox, popup, pop up, pop up box
+Tags: prettyPhoto, thickbox, lightbox, WordPress likghtbox, fancybox, popup, pop up, pop up box, slick, slider, video popup, gallery popup
 Requires at least: 3.1
-Tested Up to: 4.2
-Stable Tag: 1.2
-License: GPLv2
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tested Up to: 5.4.2
+Stable Tag: 1.2.2
+License: GPLv3 or later
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 
-An easy to use lightbox/thickbox clone for WordPress.
+An easy to use lightbox/thickbox clone for WordPress. Prettyphoto Elementor Addon supports
 
 
 == Description ==
+
+[Master Addons](https://master-addons.com) is Collection of Exclusive & Unique Addons for Elementor Page Builder. This Plugin that gives you full control over Images to show in your website.
+
+> ## Master Addons for Elementor
+> Don't forget to check our Exclusive & Essential Elementor Addons
+> [Master Addons for Elementor](https://wordpress.org/plugins/master-addons/)
+> Includes 40+ Addons, 10+ Extensions & 100+ Landing Pages.
+>[All Addons](https://master-addons.com/all-widgets/) | [Support](https://master-addons.com/contact-us/) | [Docs](https://master-addons.com/docs/) | [Tutorials](https://www.youtube.com/watch?v=wXPEl93_UBw&list=PLqpMw0NsHXV9V6UwRniXTUkabCJtOhyIf) | [Upgrade Pro](http://bit.ly/32n5dXS)
+
+
+Installation Video Tutorial:
+
+[youtube https://www.youtube.com/watch?v=dr7su8U88Yo]
+
+
+Elementor Tutorial:
+
+[youtube https://www.youtube.com/watch?v=c18zDqpnCWE]
+
+
+
+
 
 **WordPress prettyPhoto** is a jQuery lightbox clone. Not only does it support images, it also support for videos, flash, YouTube, iframes and ajax. It’s a full blown media lightbox.   
 
@@ -36,17 +58,44 @@ Go to your WordPress Dashboard plugin section, upload and install. or another wa
 Now go to yor dashboard plugin section and active Snap A Site. Isn't it simple!?
 
 
+== Screenshots ==
+1. Enable/Disable prettyPhoto
+2. Image Popup
+3. Elementor Addon
+
+
 
 == Frequently Asked Questions ==
-Do you have any question, I actually don't have anything in mind.
+= Can I use "WordPress prettyPhoto" Plugin without Elementor Plugin? =
+Yes, this is standalone plugin integrated with Media Popup Checkbox. It's not essential if you're not using Elementor Plugin.
 
-== Upgrade Notice ==
-Nothing for now.
+= How to Install this Plugin ? =
+Installation Process has been discussed on "Installation" Section. Video Tutorial will help you about Installation
+Process. Learn from our Tutorials on [Youtube Channel](https://www.youtube.com/channel/UCAPfTXvzbNebKsB322Iz6HQ)
 
-== Screenshots ==
-Will add later.
+= How to Configure this Plugin? =
+You just need to selected Image "Enable" for PrettyPhoto on Media Library Popup. This is the only thing you need to do.
+
+= Is is work on on Page/Post or Custom Post Types? =
+Yes, since it's integrated with Media Library there's nothing need to worry. It will work everywhere on your website.
+
+= "WordPress prettyPhoto" Installed but Not Working !
+We love to hear from you about your problem. First check deactive other plugins to which is conflicting. If you don't find anything then [Contact Us](https://master-addons.com/contact-us/)
+
+
+= How can I get faster Support? =
+We've two ways to give Supports for "WordPress prettyPhoto" Plugin - 1. [WordPress Support Forum](https://wordpress.org/support/plugin/prettyphoto/) and 2. [Master Addons Support](https://master-addons.com/contact-us/). Since, this is a Free Plugin, support reply may delay for answer but we're Dedicated on our Website [Support Forum](https://master-addons.com/contact-us/)
+
+
 
 == Changelog ==
+
+Date: 28-06-2020
+Release version: 1.2.2
++ Updated: Updated the library to latest version.
++ Added: Enable/Disable Checkbox given on Media Popup for easily apply prettyPhoto on your website.
++ Added: WordPress prettyPhoto Elementor Addon added
++ Fine Tuned: Added Title for Image popup
 
 Date: 20-05-2015
 Release version: 1.2
@@ -59,3 +108,8 @@ Release Note: Implemented wp_enqueue_scripts.
 Date: 26-01-2013
 Released Version: 1.0
 Release Note: Initial Release.
+
+
+
+== Upgrade Notice ==
+Nothing for now.

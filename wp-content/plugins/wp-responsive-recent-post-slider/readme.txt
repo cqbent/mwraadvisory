@@ -1,8 +1,8 @@
 === WP Responsive Recent Post Slider/Carousel  ===
 Contributors: wponlinesupport, anoopranawat, pratik-jain
-Tags: wponlinesupport, post slider, posts slider, recent post slider, recent posts slider, slider, responsive post slider, responsive posts slider, responsive recent post slider, responsive recent posts slider, wordpress posts slider, post slideshow, posts slideshow, recent posts slideshow, shortcodes
+Tags: post slider, posts slider, recent post slider, recent posts slider, slider, responsive post slider, responsive posts slider, responsive recent post slider, responsive recent posts slider, wordpress posts slider, post slideshow, posts slideshow, recent posts slideshow, shortcodes, wponlinesupport
 Requires at least: 4.0
-Tested up to: 5.4.1
+Tested up to: 5.4.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -136,6 +136,9 @@ Where designs are : design-1, design-2, design-3, design-4. You can use same par
 * Custom post type support.
 * Exclude Post with their ID's that you do not want to display.
 
+= Features : =
+[youtube https://www.youtube.com/watch?v=BmCpbC9lXd4] 
+
 = How to install : =
 [youtube https://www.youtube.com/watch?v=Bpi8f1JEBzc] 
 
@@ -164,6 +167,12 @@ Where designs are : design-1, design-2, design-3, design-4. You can use same par
 8. Gutenberg Block Support
 
 == Changelog ==
+
+= 2.3.3 (14-07-2020) =
+* [*] Follow WordPress Detailed Plugin Guidelines for Offload Media and Analytics Code.
+
+= 2.3.2 (06, July 2020) =
+* [*] Regular pluign maintenance. Updated readme file. Tested plugin with some more populor themes. 
 
 = 2.3.1 (08, May 2020) =
 * [+] New - Added 'lazyload' shortcode parameter for all slider shortcodes. Now you can able to set lazy loading in two different method lazyload="ondemand" OR lazyload="progressive".

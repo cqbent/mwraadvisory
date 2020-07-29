@@ -258,7 +258,7 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 	// Get current_user and set it globaly
 	apbct_wp_set_current_user($current_user instanceof WP_User ? $current_user	: apbct_wp_get_current_user() );
 	
-    // Go out because of not spam data
+    // $_REQUEST['action'] to skip. Go out because of not spam data
     $skip_post = array(
         'apbct_js_keys__get',  // Our service code
         'gmaps_display_info_window',  // Geo My WP pop-up windows.
@@ -305,6 +305,7 @@ function ct_ajax_hook($message_obj = false, $additional = false)
         'bookly_save_customer', //bookly
         'postmark_test', //Avocet
         'postmark_save', //Avocet
+        'ck_get_subscriber', //ConvertKit checking the subscriber
     );
     
     // Skip test if
@@ -383,10 +384,10 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 		$post_info['comment_type'] = 'order';
 	}
 	//Easy Forms for Mailchimp
-	if( \Cleantalk\Common\Post::get('action') == 'process_form_submission' ){
+	if( \Cleantalk\Variables\Post::get('action') == 'process_form_submission' ){
 		$post_info['comment_type'] = 'contact_enquire_wordpress_easy_forms_for_mailchimp';
-		if( \Cleantalk\Common\Post::get('form_data') ) {
-			$form_data = explode( '&', urldecode( \Cleantalk\Common\Post::get('form_data') ) );
+		if( \Cleantalk\Variables\Post::get('form_data') ) {
+			$form_data = explode( '&', urldecode( \Cleantalk\Variables\Post::get('form_data') ) );
 			$form_data_arr = array();
 			foreach ( $form_data as $val ) {
 				$form_data_element = explode( '=', $val );
@@ -755,11 +756,10 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 		}
 		else
 		{
-			http_response_code( 403 );
 			die(json_encode(array( 'apbct' => array(
 					'blocked' => true,
 					'comment' => $ct_result->comment,
-					'stop_script' => \Cleantalk\Common\Post::has_string('action', 'tve_leads_ajax_')
+					'stop_script' => \Cleantalk\Variables\Post::has_string('action', 'tve_leads_ajax_')
 						? 1
 						: 0
 			))));
@@ -770,6 +770,13 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 		//QAEngine Theme answers
 		if ( !empty($message_obj) && isset($message_obj['post_type'], $message_obj['post_content']) ){
 			return $message_obj;
+		}
+		// Force AJAX check
+		if( \Cleantalk\Variables\Post::get('action') == 'cleantalk_force_ajax_check' ){
+			die(json_encode(array( 'apbct' => array(
+				'blocked' => false,
+				'allow' => true,
+			))));
 		}
 	}
 }

@@ -242,7 +242,7 @@ function wprps_howitwork_page() { ?>
 										<li><?php _e('100% Multi language', 'wp-responsive-recent-post-slider' ); ?></li>
 									</ul>
 									<div class="upgrade-to-pro"><?php echo __( 'Gain access to <strong>Responsive Recent Post Slider</strong> included in <br /><strong>Essential Plugin Bundle', 'wp-responsive-recent-post-slider' ); ?></div>
-									<a class="button button-primary wpos-button-full" href="https://www.wponlinesupport.com/wp-plugin/wp-responsive-recent-post-slider/?ref=WposPratik&utm_source=WP&utm_medium=WP-Plugins&utm_campaign=Upgrade-PRO" target="_blank"><?php _e('Go Premium ', 'wp-responsive-recent-post-slider'); ?></a>	
+									<a class="button button-primary wpos-button-full" href="https://www.wponlinesupport.com/wp-plugin/wp-responsive-recent-post-slider/?ref=WposPratik&utm_source=WP&utm_medium=Post-Slider&utm_campaign=Upgrade-PRO" target="_blank"><?php _e('Go Premium ', 'wp-responsive-recent-post-slider'); ?></a>	
 									<p><a class="button button-primary wpos-button-full" href="http://demo.wponlinesupport.com/prodemo/post-slider-pro/" target="_blank"><?php _e('View PRO Demo ', 'wp-responsive-recent-post-slider'); ?></a>			</p>								
 								</div><!-- .inside -->
 							</div><!-- #general -->
