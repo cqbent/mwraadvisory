@@ -146,6 +146,11 @@ $cleantalk_hooked_actions[] = 'fue_wc_set_cart_email';  // Don't check email via
 /* The Fluent Form have the direct integration */
 $cleantalk_hooked_actions[] = 'fluentform_submit';
 
+/* Estimation Forms have the direct integration */
+if( class_exists('LFB_Core') ) {
+    $cleantalk_hooked_actions[] = 'send_email';
+}
+
 function ct_validate_email_ajaxlogin($email=null, $is_ajax=true){
 	
 	$email = is_null( $email ) ? $email : $_POST['email'];
@@ -306,6 +311,8 @@ function ct_ajax_hook($message_obj = false, $additional = false)
         'postmark_test', //Avocet
         'postmark_save', //Avocet
         'ck_get_subscriber', //ConvertKit checking the subscriber
+        'metorik_send_cart', //Metorik skip
+	    'ppom_ajax_validation', // PPOM add to cart validation
     );
     
     // Skip test if
@@ -380,8 +387,12 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 		$ct_post_temp['comment'] = $_POST['comment'];
 	}
 	//Woocommerce checkout
-	if(isset($_POST['action']) && $_POST['action']=='woocommerce_checkout'){
+	if( \Cleantalk\Variables\Post::get( 'action' ) == 'woocommerce_checkout' || \Cleantalk\Variables\Post::get( 'action' ) == 'save_data' ){
 		$post_info['comment_type'] = 'order';
+		if( empty( $apbct->settings['wc_checkout_test'] ) ){
+			do_action( 'apbct_skipped_request', __FILE__ . ' -> ' . __FUNCTION__ . '():' . __LINE__, $_POST );
+			return false;
+		}
 	}
 	//Easy Forms for Mailchimp
 	if( \Cleantalk\Variables\Post::get('action') == 'process_form_submission' ){
@@ -400,6 +411,7 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 		}
 	}
 	if (isset($_POST['action']) && $_POST['action'] == 'ufbl_front_form_action'){
+		$ct_post_temp = $_POST;
 		foreach ($ct_post_temp as $key => $value) {
 			if (preg_match('/form_data_\d_name/', $key)) 
 				unset($ct_post_temp[$key]);

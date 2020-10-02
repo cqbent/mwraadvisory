@@ -132,7 +132,7 @@ function apbct_init() {
         if ($apbct->settings['wc_checkout_test'] == 1) {
 	        add_filter('woocommerce_checkout_process', 'ct_woocommerce_checkout_check', 1, 3);
         }
-        if( isset($_REQUEST['wc-ajax']) && $_REQUEST['wc-ajax'] == 'checkout' && $apbct->settings['wc_checkout_test'] == 0 && $apbct->settings['wc_register_from_order'] == 0 ){
+        if( isset($_REQUEST['wc-ajax']) && $_REQUEST['wc-ajax'] == 'checkout' && empty( $apbct->settings['wc_register_from_order'] ) ){
             remove_filter( 'woocommerce_registration_errors', 'ct_registration_errors', 1 );
         }
     }
@@ -573,16 +573,17 @@ function apbct_integration__buddyPres__activityWall( $is_spam, $activity_obj = n
 
 	global $apbct;
 
-	if( $activity_obj === null ||
-	    !isset($_POST['action']) ||
+	$allowed_post_actions = array('post_update', 'new_activity_comment');
+
+	if( ! in_array(\Cleantalk\Variables\Post::get('action'), $allowed_post_actions) ||
+		$activity_obj === null ||
+	    ! \Cleantalk\Variables\Post::get('action') ||
 	    $activity_obj->privacy == 'media' ||
-	    ( ! empty( $_POST['action'] ) && $_POST['action'] !== 'post_update' ) ||
 	    apbct_exclusions_check()
 	) {
         do_action( 'apbct_skipped_request', __FILE__ . ' -> ' . __FUNCTION__ . '():' . __LINE__, $_POST );
         return false;
     }
-
 
   	$curr_user = get_user_by('id', $activity_obj->user_id);
 
@@ -951,11 +952,11 @@ function ct_add_hidden_fields($field_name = 'ct_checkjs', $return_string = false
     	$field_id = $field_name . '_' . $field_id_hash;
 		$html = "<input type='hidden' id='{$field_id}' name='{$field_name}' value='{$ct_checkjs_def}' />
 		<script type='text/javascript'>
-			window.addEventListener('load', function () {
+			window.addEventListener('DOMContentLoaded', function () {
 				setTimeout(function(){
                     apbct_public_sendAJAX(
                         {action: 'apbct_js_keys__get'},
-                        {callback: apbct_js_keys__set_input_value, input_name: '{$field_id}'}
+                        {callback: apbct_js_keys__set_input_value, input_name: '{$field_id}',silent: true, no_nonce: true}
                     );
                 }, 1000);
 			});
@@ -1277,7 +1278,7 @@ function ct_preprocess_comment($comment) {
         return $comment;
     }
 
-    $local_blacklists = wp_blacklist_check(
+    $local_blacklists = apbct_wp_blacklist_check(
         $comment['comment_author'],
         $comment['comment_author_email'],
         $comment['comment_author_url'],
@@ -1735,9 +1736,17 @@ function ct_register_form() {
 }
 
 function apbct_login__scripts(){
-	global $apbct;
-	echo '<script src="'.APBCT_URL_PATH.'/js/apbct-public.min.js"></script>';
-	$apbct->public_script_loaded = true;
+    global $apbct;
+
+    // Differnt JS params
+    wp_enqueue_script( 'ct_public', APBCT_URL_PATH . '/js/apbct-public.min.js', array( 'jquery' ), APBCT_VERSION, false /*in header*/ );
+
+    wp_localize_script('ct_public', 'ctPublic', array(
+        '_ajax_nonce' => wp_create_nonce('ct_secret_stuff'),
+        '_ajax_url'   => admin_url('admin-ajax.php'),
+    ));
+
+    $apbct->public_script_loaded = true;
 }
 
 /**
@@ -1747,9 +1756,7 @@ function apbct_login__scripts(){
 function ct_login_message($message) {
 
     global $errors, $apbct, $apbct_cookie_register_ok_label;
-
-
-
+    
     if ($apbct->settings['registrations_test'] != 0){
         if( isset($_GET['checkemail']) && 'registered' == $_GET['checkemail'] ){
 			if (isset($_COOKIE[$apbct_cookie_register_ok_label])){
@@ -2438,12 +2445,19 @@ function apbct_form__contactForm7__changeMailNotification($component){
  */
 function apbct_form__ninjaForms__testSpam() {
 
-    global $apbct;
+    global $apbct, $cleantalk_executed;
 
+    if( $cleantalk_executed ){
+	    do_action( 'apbct_skipped_request', __FILE__ . ' -> ' . __FUNCTION__ . '():' . __LINE__, $_POST );
+	    return;
+    }
+	
+	$cleantalk_executed = true;
+ 
 	if(
 			$apbct->settings['contact_forms_test'] == 0
 		|| ($apbct->settings['protect_logged_in'] != 1 && is_user_logged_in()) // Skip processing for logged in users.
-			|| apbct_exclusions_check__url()
+		|| apbct_exclusions_check__url()
 	){
         do_action( 'apbct_skipped_request', __FILE__ . ' -> ' . __FUNCTION__ . '():' . __LINE__, $_POST );
 		return;
@@ -3277,7 +3291,7 @@ function ct_contact_form_validate() {
         apbct_is_in_uri('/wc-api/') ||
         isset($_POST['log']) && isset($_POST['pwd']) && isset($_POST['wp-submit']) ||
         isset($_POST[$ct_checkjs_frm]) && $apbct->settings['contact_forms_test'] == 1 ||// Formidable forms
-        isset($_POST['comment_post_ID']) || // The comment form
+        ( isset($_POST['comment_post_ID']) && ! isset($_POST['comment-submit'] ) ) || // The comment form && ! DW Question & Answer
         isset($_GET['for']) ||
 		(isset($_POST['log'], $_POST['pwd'])) || //WooCommerce Sensei login form fix
 		(isset($_POST['wc_reset_password'], $_POST['_wpnonce'], $_POST['_wp_http_referer'])) || // WooCommerce recovery password form
@@ -3321,17 +3335,34 @@ function ct_contact_form_validate() {
         apbct_is_in_uri('recuperacao-de-senha-2') || //Skip form reset password
         apbct_is_in_uri('membermouse/api/request.php') && isset($_POST['membership_level_id'],$_POST['apikey'],$_POST['apisecret']) || // Membermouse API
         ( isset( $_POST['AppKey'] ) && ( isset( $_POST['cbAP'] ) && $_POST['cbAP'] == 'Caspio' ) ) ||  // Caspio exclusion (ticket #16444)
-        isset($_POST['wpforms_id'], $_POST['wpforms_author']) //Skip wpforms
+        isset($_POST['wpforms_id'], $_POST['wpforms_author']) || //Skip wpforms
+        ( isset( $_POST['somfrp_action'], $_POST['submitted'] ) && $_POST['somfrp_action'] == 'somfrp_lost_pass' ) || // Frontend Reset Password exclusion
+        ( isset( $_POST['action'] ) && $_POST['action'] == 'dokan_save_account_details' ) ||
+        \Cleantalk\Variables\Post::get('action') === 'frm_get_lookup_text_value' // Exception for Formidable multilevel form
 		) {
         do_action( 'apbct_skipped_request', __FILE__ . ' -> ' . __FUNCTION__ . '():' . __LINE__, $_POST );
         return null;
     }
 
     //Skip woocommerce checkout
-    if (apbct_is_in_uri('wc-ajax=update_order_review') || apbct_is_in_uri('wc-ajax=checkout') || !empty($_POST['woocommerce_checkout_place_order']) || apbct_is_in_uri('wc-ajax=wc_ppec_start_checkout') || apbct_is_in_referer('wc-ajax=update_order_review')) {
+    if (apbct_is_in_uri('wc-ajax=update_order_review') ||
+        apbct_is_in_uri('wc-ajax=checkout') ||
+        !empty($_POST['woocommerce_checkout_place_order']) ||
+        apbct_is_in_uri('wc-ajax=wc_ppec_start_checkout') ||
+        apbct_is_in_referer('wc-ajax=update_order_review')
+    )
+    {
         do_action( 'apbct_skipped_request', __FILE__ . ' -> ' . __FUNCTION__ . '():' . __LINE__, $_POST );
     	return null;
     }
+    
+    //Skip woocommerce add_to_cart
+	if( ! empty( $_POST['add-to-cart'] ) )
+    {
+        do_action( 'apbct_skipped_request', __FILE__ . ' -> ' . __FUNCTION__ . '():' . __LINE__, $_POST );
+    	return null;
+    }
+	
     // Do not execute anti-spam test for logged in users.
     if (isset($_COOKIE[LOGGED_IN_COOKIE]) && $apbct->settings['protect_logged_in'] != 1) {
         do_action( 'apbct_skipped_request', __FILE__ . ' -> ' . __FUNCTION__ . '():' . __LINE__, $_POST );
@@ -3348,7 +3379,7 @@ function ct_contact_form_validate() {
         }
     }
     //Skip system fields for divi
-	if (strpos($param, 'et_pb_contactform_submit') === 0) {
+	if (strpos( \Cleantalk\Variables\Post::get('action'), 'et_pb_contactform_submit') === 0) {
 		foreach ($_POST as $key => $value) {
 			if (strpos($key, 'et_pb_contact_email_fields') === 0) {
 				unset($_POST[$key]);
@@ -3632,23 +3663,38 @@ function ct_send_error_notice ($comment = '') {
     return null;
 }
 
-function ct_print_form($arr, $k)
-{
-	foreach($arr as $key => $value){
-		if(!is_array($value)){
-			if($k == ''){
-				print '<textarea name="' . $key . '" style="display:none;">' . htmlspecialchars($value) . '</textarea>';
-			}else{
-				print '<textarea name="' . $k . '[' . $key . ']" style="display:none;">' . htmlspecialchars($value) . '</textarea>';
-			}
-		}else{
-			if($k == ''){
-				ct_print_form($value, $key);
-			}else{
-				ct_print_form($value, $k . '[' . $key . ']');
-			}
+/**
+ * Prints form for "protect externals
+ *
+ * @param $arr
+ * @param $k
+ */
+function ct_print_form( $arr, $k ){
+	
+	// Fix for pages04.net forms
+	if( isset( $arr['formSourceName'] ) ){
+		$tmp = array();
+		foreach( $arr as $key => $val ){
+			$tmp_key = str_replace( '_', '+', $key );
+			$tmp[$tmp_key] = $val;
 		}
+		$arr = $tmp;
+		unset( $tmp, $key, $tmp_key, $val );
 	}
+	
+	foreach( $arr as $key => $value ){
+		
+		if( ! is_array( $value ) ){
+			print '<textarea
+				name="' . ( $k == '' ? $key : $k . '[' . $key . ']' ) . '"
+				style="display:none;">' . htmlspecialchars( $value )
+	        . '</textarea>';
+		}else{
+			ct_print_form( $value, $k == '' ? $key : $k . '[' . $key . ']' );
+		}
+		
+	}
+	
 }
 
 /**

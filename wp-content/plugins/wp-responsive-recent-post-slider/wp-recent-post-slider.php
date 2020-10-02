@@ -6,7 +6,7 @@
  * Domain Path: /languages/
  * Description: Add and display Responsive WordPresss Recent Post Slider and Carousel on your website with 4 designs (Slider) and 1 designs (Carousel) using a shortcode. Also added Gutenberg block support. 
  * Author: WP OnlineSupport
- * Version: 2.3.3
+ * Version: 2.4
  * Author URI: https://www.wponlinesupport.com/
  *
  * @package WordPress
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 if( !defined( 'WPRPS_VERSION' ) ) {
-	define( 'WPRPS_VERSION', '2.3.3' ); // Version of plugin
+	define( 'WPRPS_VERSION', '2.4' ); // Version of plugin
 }
 if( !defined( 'WPRPS_DIR' ) ) {
 	define( 'WPRPS_DIR', dirname( __FILE__ ) ); // Plugin dir

@@ -22,6 +22,15 @@ class GFSurvey extends GFAddOn {
 	protected $_enable_rg_autoupgrade = true;
 
 	/**
+	 * Whether this add-on has access to the Gravity Forms settings renderer.
+	 *
+	 * @since 3.5
+	 *
+	 * @var bool
+	 */
+	protected $_has_settings_renderer;
+
+	/**
 	 * Members plugin integration
 	 */
 	protected $_capabilities = array( 'gravityforms_survey', 'gravityforms_survey_uninstall', 'gravityforms_survey_results' );
@@ -71,6 +80,7 @@ class GFSurvey extends GFAddOn {
 	 * Handles hooks and loading of language files.
 	 */
 	public function init() {
+		$this->_has_settings_renderer = $this->is_gravityforms_supported( '2.5-beta' );
 
 		// Integration with the feed add-ons as of GF 1.9.15.12; for add-ons which don't override get_field_value().
 		add_filter( 'gform_addon_field_value', array( $this, 'addon_field_value' ), 10, 5 );
@@ -242,6 +252,7 @@ class GFSurvey extends GFAddOn {
 
 		//localize strings for the js file
 		$strings = array(
+			'isLegacy'         => ! $this->_has_settings_renderer ? 'true' : 'false',
 			'firstChoice'      => wp_strip_all_tags( __( 'First row', 'gravityformssurvey' ) ),
 			'secondChoice'     => wp_strip_all_tags( __( 'Second row', 'gravityformssurvey' ) ),
 			'thirdChoice'      => wp_strip_all_tags( __( 'Third row', 'gravityformssurvey' ) ),
@@ -257,7 +268,6 @@ class GFSurvey extends GFAddOn {
 			'columnLabel3'     => wp_strip_all_tags( __( 'Neutral', 'gravityformssurvey' ) ),
 			'columnLabel4'     => wp_strip_all_tags( __( 'Agree', 'gravityformssurvey' ) ),
 			'columnLabel5'     => wp_strip_all_tags( __( 'Strongly agree', 'gravityformssurvey' ) ),
-
 		);
 		wp_localize_script( 'gsurvey_form_editor_js', 'gsurveyLikertStrings', $strings );
 
@@ -970,7 +980,7 @@ class GFSurvey extends GFAddOn {
 			</li>
 			<li class="gsurvey-likert-setting-enable-multiple-rows field_setting">
 				<input type="checkbox" id="gsurvey-likert-enable-multiple-rows"
-					   onclick="field = GetSelectedField(); var value = jQuery(this).is(':checked'); SetFieldProperty('gsurveyLikertEnableMultipleRows', value); gsurveyLikertUpdateInputs(field); gsurveyLikertUpdatePreview(); jQuery('.gsurvey-likert-setting-rows').toggle('slow');" />
+					   onclick="field = GetSelectedField(); var value = jQuery(this).is(':checked'); SetFieldProperty('gsurveyLikertEnableMultipleRows', value); gsurveyLikertUpdateInputs(field); gsurveyLikertUpdatePreview(); jQuery('.gsurvey-likert-setting-rows').toggle();" />
 				<label for="gsurvey-likert-enable-multiple-rows" class="inline">
 					<?php esc_html_e( 'Enable Multiple Rows', 'gravityformssurvey' ); ?>
 					<?php gform_tooltip( 'gsurvey_likert_enable_multiple_rows' ) ?>

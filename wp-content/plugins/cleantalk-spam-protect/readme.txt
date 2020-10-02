@@ -4,7 +4,7 @@ Tags: spam, antispam, woocommerce, comments, firewall
 Requires at least: 3.0
 Tested up to: 5.5
 Requires PHP: 5.4
-Stable tag: 5.142.2
+Stable tag: 5.146.1
 License: GPLv2
 
 Spam protection, anti-spam, firewall, premium plugin. No spam comments & users, no spam contact form & WooCommerce anti-spam.
@@ -34,6 +34,8 @@ No CAPTCHA, no questions, no animal counting, no puzzles, no math and no spam bo
 16. Mobile friendly Anti Spam & FireWall.
 17. Stops spam in Search Form.
 18. Disable comments.
+19. Spam FireWall: Anti-Flood
+20. Spam FireWall: Anti-Crawler
 
 = Public reviews =
 > CleanTalk - Cloud-Based Anti-Spam Service to Keep Your Site Bot-Free.
@@ -107,12 +109,13 @@ This plugin uses multiple anti-spam tests to filter spam bots having as low fals
 = How effective is CleanTalk? =
 Accurately blocking spam is not an easy thing to do, but CleanTalk has a very low proven False/Positive rate. Here is actual statistics on false positives for all customers.
 
-* Registrations - 0.007%
-* Comments - 0.001%
-* Contact forms - 0.001%
-* Orders (WooCommerce) - 0.008%
+* Registrations - 0.004%
+* Comments - 0.004%
+* Contact forms - 0.006%
+* Orders (WooCommerce) - 0.016%
+* Site search - 0.001%
 
-The statistic was calculated on November 10 2017 for 1 million requests.
+The statistic was calculated on August 28 2020 for 2.5 million requests.
 
 = How CleanTalk improves SEO for your website? =
 So, you already know that the speed of the site has a direct impact on SEO.
@@ -157,6 +160,9 @@ All the CleanTalk Spam FireWall activity is being logged in the process of filte
 Spam FireWall can mitigate HTTP/HTTPS DDoS attacks. When an intruder makes GET requests to attack your website, Spam FireWall blocks all requests from bad IP addresses. Your website gives the intruder a special page with the description of DDoS rejection instead of the website pages. Therefore Spam FireWall helps to reduce CPU usage of your server.
 [youtube https://www.youtube.com/watch?v=Eu5Zqryvj4k]
 
+= Spam FireWall: Anti-Flood & Anti-Crawler = 
+Spam FireWall: Anti-Flood and Anti-Crawler options are intended for blocking unwanted bots, content parsing, shop goods prices parsing or aggressive website scanning bots. Learn more https://cleantalk.org/help/anti-flood-and-anti-crawler
+
 = XML-RPC brute force protection =
 Spam FireWall can mitigate XML-RPC brute force attacks. It blocks XML-RPC attacks from bad IP addresses. This helps to prevent bruteforce attacks by a Remote Procedure Call.
 
@@ -188,7 +194,6 @@ our own CleanTalk Cloud Service. Anti Spam by CleanTalk offers a free trial, you
 
 = Additional features =
 * Daily and weekly detailed anti-spam reports: traffic VS spam.
-* Apps for iPhone, Android to control anti-spam service, comments, signups, contacts, traffic and spam stats for the last 7 days.
 * AntiSpam apps for most popular CMS on cleantalk.org.
 
 = How to protect sites from spam bots without CAPTCHA? =
@@ -310,11 +315,6 @@ In WordPress multisite version you can switch the plugin to use Global Access ke
 
 **Make it before you activated the plugin. If the plugin already activated, deactivate it and add the code and active it again.**
 Now, all subsites will have this access key.
-
-= Manage and control spam protection =
-
-Go to <a href="https://cleantalk.org/my" target="_blank">Dashboard</a> at the cleantalk.org or use <a href="https://play.google.com/store/apps/details?id=org.cleantalk.app">Android</a>, <a href="https://itunes.apple.com/us/app/cleantalk/id825479913?mt=8">iPhone</a> anti-spam app to manage and control spam protection.
-
 
 == Frequently Asked Questions ==
 
@@ -573,6 +573,94 @@ If your website has forms that send data to external sources, you can enable opt
 10. Website's options.
 
 == Changelog ==
+
+= 5.146.1 Sep 23 2020 =
+ * Fix: URL exclusions setting.
+ * Fix: Login scripts output fixed.
+ * Fix: Updater function name fixed.
+ * New: Debug mode for Anti-Crawler.
+ * Fix: Pass AC check if 301 HTTP response code received.
+ * Fix: Antibot cookie value fixed.
+
+= 5.146 Sep 17 2020 =
+ * Fix: Deprecated function wp_blacklist_check() fixed.
+ * Fix: Roles exclusion fixed.
+ * Mod: Namespace import in \Cleantalk\ApbctWP\Firewall\SFW.
+ * Fix: Comments checking fixed.
+ * Fix: Spam scan tabs layout fixed.
+ * New: Countdown timer implemented for the AntiCrawler page.
+ * Mod: User-agent signature added to the AC checking.
+ * Mod: Find-spam classes for comments and users refactored
+ * Upd: Spam scan - scanning users/comments updated.
+ * Fix: Double requests for Ninja Forms.
+ * New: 'wpms' flag in sender_info.
+ * Fix: Visible params gathering.
+ * Fix: WooCommerce AJAX order call 2.
+ * Fix: Block page grammar fixed.
+ * Fix: Users/comments list - unnecessary button removed.
+ * Upd: Skiping AC blocking after 3 sec for real users.
+ * New: Countdown timer for AF block page implemented.
+ * New: Countdown timer for SFW block page implemented.
+
+= 5.145.2 Sep 03 2020 =
+ * Fix: WooCommerce AJAX order call.
+ * Fix: AJAX error while getting JS key.
+ * Fix: Using the version parameter when attaching cleantalk-public.js on wp-login page.
+ * Fix: Showing support link in console when AJAX error occurs.
+ * Fix: apbct_public_sendAJAX. Silent mode doesn't write errors to console.
+
+= 5.145.1 Aug 31 2020 =
+ * New: Silent mode for AJAX requests.
+ * Fix: No nonce check for AJAX JS check.
+ * Fix: AJAX JS check using "DOMContentLoaded" event instead of "load".
+ * New: Extended error text for failed AJAX requests.
+ * Fix: Exclusion for the Frontend Reset Password plugin.
+ * Fix: Accept 501 response code for SFW datafiles.
+ * Fix: SFW update. The internal array pointer handling.
+ * Fix: Exception for the WooCommerce edit profile form.
+ * Fix: SFW updating via plugin activation fixed.
+
+= 5.145 Aug 27 2020 =
+ * Fix: Blocking pages names fixed.
+ * Fix: Logs id modified to prevent the overwriting.
+ * Fix: FireWall checking flow fixed.
+ * Mod: New SpamFirewall, Anti-Crawler, Anti-Flood modules priority.
+ * Upd: Block message updated.
+ * Fix: "The sender has been blacklisted" message removed.
+ * Fix: "The sender has been whitelisted" message removed.
+ * Fix: Integration DW Question & Answer plugin.
+ * Fix: Dashboard widget layout fixed.
+ * Fix: AC & AD skipping checking by roles.
+ * Integration: Estimation Form integration implemented.
+ * Fix: External contact forms check.
+ * Fix: URL, IP and Role exclusions for all requests.
+ * Fix: Exception for WooCommerce adding to cart.
+ * Fix: Exception for PPOM for WooCommerce plugin.
+
+= 5.144 Aug 13 2020 =
+ * Fix: WPMS setting updating fixed.
+ * Fix: Text domain added for some options name.
+ * Fix: AntiCrowler die page fixed.
+ * Fix: Pause button for comments check fixed.
+ * Fix: Delete Anti-Flood table when subsite is deleted.
+ * New: Clear Anti-Flood table each 10 minutes.
+ * Fix: FW checking for whitelisted skipped.
+ * Fix: WP 5.5 JS errors fixed.
+ * New: Debug message for auto updating error.
+ * Fix: Array declaration fixed.
+ * Fix: Skip anti-flood checking for authorized users.
+ * Fix: Is whitelisted checking fixed.
+
+= 5.143.1 Aug 06 2020 =
+ * Fix: Recursion fixed.
+ * Fix: Rebuild url for SFW updating process.
+
+= 5.143 Aug 05 2020 =
+ * New: Synchronize button. New way of synchronize with the Cleantalk Cloud.
+ * Fix: SpamFireWall (firewall against spam) update, storing system.
+ * Fix: Skip Woocomerce metorik send cart.
+ * Spam protection improved.
+ * Minor fixes.
 
 = 5.142.2 Jul 29 2020 =
  * Fix: Issue with SpamFireWall logs.

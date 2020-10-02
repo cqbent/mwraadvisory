@@ -188,7 +188,7 @@ if ( ! class_exists( 'All_in_One_SEO_Pack_Sitemap' ) ) {
 				),
 				'max_posts'   => array(
 					'name'     => __( 'Maximum Posts Per Sitemap Page', 'all-in-one-seo-pack' ),
-					'type'     => 'text',
+					'type'     => 'number',
 					'default'  => 1000,
 					'condshow' => array(
 						"{$this->prefix}indexes" => 'on',
@@ -814,6 +814,9 @@ if ( ! class_exists( 'All_in_One_SEO_Pack_Sitemap' ) ) {
 
 				$taxonomy_terms_tmp = get_terms( apply_filters( 'aioseop_sitemap_add_post_types_taxonomy_terms_args', $args_terms ) );
 				foreach ( $taxonomy_terms_tmp as $k2_id => $v2_term ) {
+					if ( ! is_string( $v2_term ) ) {
+						continue;
+					}
 					$excl_terms_init_opts[ $v1_taxonomy . '-' . $k2_id ] = $v2_term . ' (' . $v1_taxonomy . ')';
 				}
 			}
@@ -1054,13 +1057,16 @@ if ( ! class_exists( 'All_in_One_SEO_Pack_Sitemap' ) ) {
 						$url = aioseop_home_url( '/' . 'video-sitemap.xml' );
 						break;
 					}
+					default:
+						break;
 				}
-				
-				$rule  = $this->get_rewrite_url( $url );
-				$rules = $this->get_rewrite_rules();
-				// TODO Add `true` in 3rd argument with in_array(); which changes it to a strict comparison.
-				if ( ! in_array( $rule, $rules ) ) {
-					$options[ $this->prefix . 'link' ] .= '<strong>' . __( 'Dynamic sitemap generation does not appear to be using the correct rewrite rules; please disable any other sitemap plugins or functionality on your site and reset your permalinks.', 'all-in-one-seo-pack' ) . '</strong>';
+
+				if ( $url ) {
+					$rule  = $this->get_rewrite_url( $url );
+					$rules = $this->get_rewrite_rules();
+					if ( ! in_array( $rule, $rules, true ) ) {
+						$options[ $this->prefix . 'link' ] .= '<strong>' . __( 'Dynamic sitemap generation does not appear to be using the correct rewrite rules; please disable any other sitemap plugins or functionality on your site and reset your permalinks.', 'all-in-one-seo-pack' ) . '</strong>';
+					}
 				}
 			}
 			if ( ! get_option( 'blog_public' ) ) {
@@ -1682,12 +1688,16 @@ if ( ! class_exists( 'All_in_One_SEO_Pack_Sitemap' ) ) {
 				// if the sitemap has no content, it's probabaly invalid and is being called directly.
 				// @issue ( https://github.com/awesomemotive/all-in-one-seo-pack/issues/2190 ).
 				if ( empty( $content ) ) {
-					$query->set_404();
-					status_header( 404 );
-					header( "Content-Type: text/html; charset=$blog_charset", true );
-					nocache_headers();
-					include( get_404_template() );
-					exit();
+					return add_action( 'template_redirect', function() {
+						global $wp_query;
+						$wp_query->set_404();
+						status_header( 404 );
+						$blog_charset = get_option( 'blog_charset' );
+						header( "Content-Type: text/html; charset=$blog_charset", true );
+						nocache_headers();
+						include( get_404_template() );
+						exit();
+					});
 				}
 
 				echo $content;
@@ -3558,7 +3568,7 @@ if ( ! class_exists( 'All_in_One_SEO_Pack_Sitemap' ) ) {
 				$args['numberposts']
 			);
 
-			$key          = md5( $sql_query );
+			$key          = hash( 'sha256', $sql_query );
 			$last_changed = wp_cache_get_last_changed( 'posts' );
 			$key          = "aioseop_get_date_archive_data:$key:$last_changed";
 			$date_results      = wp_cache_get( $key, 'posts' );
@@ -3665,8 +3675,7 @@ if ( ! class_exists( 'All_in_One_SEO_Pack_Sitemap' ) ) {
 					continue;
 				}
 
-				$post_types = array( $post_type );
-				if ( ! in_array( $post_type, apply_filters( "{$this->prefix}include_post_types_archives", $post_types ) ) ) {
+				if ( ! in_array( $post_type, apply_filters( "{$this->prefix}include_post_types_archives", array( $post_type ) ) ) ) {
 					continue;
 				}
 
@@ -4043,7 +4052,10 @@ if ( ! class_exists( 'All_in_One_SEO_Pack_Sitemap' ) ) {
 			if ( is_null( $post_thumbnails ) || defined( 'AIOSEOP_UNIT_TESTING' ) ) {
 				global $wpdb;
 
-				$post_thumbnails = $wpdb->get_results( "SELECT post_ID, meta_value FROM $wpdb->postmeta WHERE meta_key = '_thumbnail_id'", ARRAY_A );
+				$post_thumbnails = $wpdb->get_results(
+					"SELECT post_ID, meta_value FROM {$wpdb->postmeta} WHERE meta_key = '_thumbnail_id'",
+					ARRAY_A
+				);
 
 				if ( $post_thumbnails ) {
 					$post_thumbnails = array_combine(

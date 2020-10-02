@@ -1,3 +1,8 @@
+### 3.6
+- Added support for Gravity Forms 2.5.
+- Fixed an issue where survey dropdown field was not displayed properly if the field type was single line text with a mask before it was changed to dropdown.
+
+
 ### 3.5 | 2020-05-13
 - Added security enhancements.
 - Updated Javascript files, stylesheets to use minified versions.

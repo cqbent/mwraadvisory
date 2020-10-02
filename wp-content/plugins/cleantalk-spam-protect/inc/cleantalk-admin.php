@@ -14,7 +14,7 @@ add_action( 'admin_head','apbct_admin_set_cookie_for_anti_bot' );
 
 function apbct_admin_set_cookie_for_anti_bot(){
 	global $apbct;
-	echo '<script>document.cookie = "apbct_antibot=' . md5( $apbct->api_key . \Cleantalk\ApbctWP\Helper::ip__get(array('real'), true ) ) . '; path=/; expires=0; samesite=lax";</script>';
+	echo '<script>document.cookie = "apbct_antibot=' . hash( 'sha256', $apbct->api_key . $apbct->data['salt'] ) . '; path=/; expires=0; samesite=lax";</script>';
 }
 
 function apbct_add_buttons_to_comments_and_users( $unused_argument ) {
@@ -24,11 +24,9 @@ function apbct_add_buttons_to_comments_and_users( $unused_argument ) {
 
     if( 'users' == $current_screen->base ) {
         $button_url__check = $current_screen->base . '.php?page=ct_check_users';
-	    $button_url__results = $current_screen->base . '.php?page=ct_check_users_total';
         $button_description = 'users';
     } elseif ( 'edit-comments' == $current_screen->base ) {
         $button_url__check = $current_screen->base . '.php?page=ct_check_spam';
-	    $button_url__results = $current_screen->base . '.php?page=ct_check_spam_total';
         $button_description = 'comments';
     } else {
         return;
@@ -38,10 +36,6 @@ function apbct_add_buttons_to_comments_and_users( $unused_argument ) {
     <a href="' . $button_url__check . '" class="button" style="margin:1px 0 0 0; display: inline-block;">
         <img src="' . $apbct->logo__small__colored . '" alt="Cleantalk Antispam logo"  height="" style="width: 17px; vertical-align: text-bottom;" />
         ' . sprintf(__( 'Find spam %s', 'cleantalk-spam-protect'), $button_description ) . '
-    </a>
-    <a href="' . $button_url__results . '" class="button" style="margin:1px 0 0 0; display: inline-block;">
-        <img src="' . $apbct->logo__small__colored . '" alt="Cleantalk Antispam logo"  height="" style="width: 17px; vertical-align: text-bottom;" />
-        ' . sprintf(__( 'View spam %s', 'cleantalk-spam-protect'), $button_description ) . '
     </a>
     <a href="https://cleantalk.org/my/show_requests?service_id=' . $apbct->data['service_id'] . '&int=week" target="_blank" class="button" style="margin:1px 0 0 0; display: inline-block;">
         <img src="' . $apbct->logo__small__colored . '" alt="Cleantalk Antispam logo"  height="" style="width: 17px; vertical-align: text-bottom;" />
@@ -53,7 +47,7 @@ function apbct_add_buttons_to_comments_and_users( $unused_argument ) {
 
 add_action( 'admin_bar_menu', 'apbct_admin__admin_bar__add', 999 );
 
-//Adding widjet
+//Adding widget
 function ct_dashboard_statistics_widget() {
 	
 	global $apbct;
@@ -61,25 +55,25 @@ function ct_dashboard_statistics_widget() {
 	if(apbct_is_user_role_in(array('administrator'))){
 		wp_add_dashboard_widget(
 			'ct_dashboard_statistics_widget',
-			$apbct->plugin_name
-			."<div class='ct_widget_top_links'>"
-				."<img src='".plugins_url('/cleantalk-spam-protect/inc/images/preloader.gif')."' class='ct_preloader'>"
-				.sprintf(__("%sRefresh%s", 'cleantalk-spam-protect'),    "<a href='#ct_widget' class='ct_widget_refresh_link'>", "</a>")
-				.sprintf(__("%sConfigure%s", 'cleantalk-spam-protect'), "<a href='{$apbct->settings_link}' class='ct_widget_settings_link'>", "</a>")
-			."</div>",
+			$apbct->plugin_name,
 			'ct_dashboard_statistics_widget_output'
 		);
 	}
 }
 
 // Outputs statistics widget content
-function ct_dashboard_statistics_widget_output( $post, $callback_args ) {	
+function ct_dashboard_statistics_widget_output( $post, $callback_args ) {
 
 	global $apbct, $current_user;
 	
 	echo "<div id='ct_widget_wrapper'>";
 ?>
-		<form id='ct_refresh_form' method='POST' action='#ct_widget'>
+        <div class='ct_widget_top_links'>
+            <img src="<?php echo plugins_url('/cleantalk-spam-protect/inc/images/preloader.gif'); ?>" class='ct_preloader'>
+            <?php echo sprintf(__("%sRefresh%s", 'cleantalk-spam-protect'),    "<a href='#ct_widget' class='ct_widget_refresh_link'>", "</a>"); ?>
+            <?php echo sprintf(__("%sConfigure%s", 'cleantalk-spam-protect'), "<a href='{$apbct->settings_link}' class='ct_widget_settings_link'>", "</a>"); ?>
+        </div>
+        <form id='ct_refresh_form' method='POST' action='#ct_widget'>
 			<input type='hidden' name='ct_brief_refresh' value='1'>
 		</form>
 		<h4 class='ct_widget_block_header' style='margin-left: 12px;'><?php _e('7 days anti-spam stats', 'cleantalk-spam-protect'); ?></h4>
@@ -198,11 +192,14 @@ function apbct_admin__init(){
 		unset($_POST['submit']);
 		
 	}
-	
-	// AJAX actions
+}
+
+function apbct_admin__init___ajax_actions(){
  
 	// Settings
 	add_action('wp_ajax_apbct_settings__get__long_description', 'apbct_settings__get__long_description'); // Long description
+ 
+	add_action( 'wp_ajax_apbct_sync', 'apbct_settings__sync' );
 }
 
 /**
@@ -269,7 +266,7 @@ function apbct_admin__enqueue_scripts($hook){
 	wp_enqueue_script('ct_admin_js_notices', plugins_url('/cleantalk-spam-protect/js/cleantalk-admin.min.js'),   array(), APBCT_VERSION);
 	wp_enqueue_style ('ct_admin_css',        plugins_url('/cleantalk-spam-protect/css/cleantalk-admin.min.css'), array(), APBCT_VERSION, 'all');
 
-	wp_localize_script( 'jquery', 'ctAdminCommon', array(
+	wp_localize_script( 'ct_admin_js_notices', 'ctAdminCommon', array(
 		'_ajax_nonce'         => wp_create_nonce( 'ct_secret_nonce' ),
 		'_ajax_url'           => admin_url( 'admin-ajax.php' ),
 		'plugin_name'        => $apbct->plugin_name,
@@ -299,7 +296,7 @@ function apbct_admin__enqueue_scripts($hook){
 			$to_chart[] = array( $key, $value );
 		} unset( $key, $value );
 		
-		wp_localize_script( 'jquery', 'apbctDashboardWidget', array(
+		wp_localize_script( 'ct_admin_js_widget_dashboard', 'apbctDashboardWidget', array(
 			'data' => $to_chart,
 		));
 	}
@@ -315,16 +312,17 @@ function apbct_admin__enqueue_scripts($hook){
 		wp_enqueue_style('cleantalk_admin_css_settings_page', plugins_url('/cleantalk-spam-protect/css/cleantalk-admin-settings-page.min.css'), array(),     APBCT_VERSION, 'all');
 	    wp_enqueue_style ('ct_icons',                         plugins_url('/cleantalk-spam-protect/css/cleantalk-icons.min.css'), array(),                   APBCT_VERSION, 'all');
 		
-		wp_localize_script( 'jquery', 'ctSettingsPage', array(
+		wp_localize_script( 'cleantalk_admin_js_settings_page', 'ctSettingsPage', array(
 			'ct_subtitle'   => $apbct->ip_license ? __('Hosting AntiSpam', 'cleantalk-spam-protect') : '',
 			'ip_license'    => $apbct->ip_license ? true : false,
+            'key_changed'   => ! empty( $apbct->data['key_changed'] ) ? true : false,
 		));
 	}
 
     // COMMENTS page JavaScript
     if($hook == 'edit-comments.php'){
         wp_enqueue_script('ct_comments_editscreen', plugins_url('/cleantalk-spam-protect/js/cleantalk-comments-editscreen.min.js'), array(), APBCT_VERSION);
-        wp_localize_script( 'jquery', 'ctCommentsScreen', array(
+        wp_localize_script( 'ct_comments_editscreen', 'ctCommentsScreen', array(
             'ct_ajax_nonce'               => wp_create_nonce('ct_secret_nonce'),
             'spambutton_text'             => __("Find spam comments", 'cleantalk-spam-protect'),
             'ct_feedback_msg_whitelisted' => __("The sender has been whitelisted.", 'cleantalk-spam-protect'),
@@ -339,7 +337,7 @@ function apbct_admin__enqueue_scripts($hook){
     if($hook == 'users.php'){
         wp_enqueue_style ('ct_icons',                plugins_url('/cleantalk-spam-protect/css/cleantalk-icons.min.css'),          array(), APBCT_VERSION, 'all');
         wp_enqueue_script('ct_users_editscreen',     plugins_url('/cleantalk-spam-protect/js/cleantalk-users-editscreen.min.js'), array(), APBCT_VERSION);
-        wp_localize_script( 'jquery', 'ctUsersScreen', array(
+        wp_localize_script( 'ct_users_editscreen', 'ctUsersScreen', array(
             'spambutton_text'             => __("Find spam-users", 'cleantalk-spam-protect'),
             'ct_show_check_links'		  => (bool)$apbct->settings['show_check_links'],
             'ct_img_src_new_tab'          => plugin_dir_url(__FILE__)."images/new_window.gif"

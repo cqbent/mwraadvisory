@@ -2,7 +2,7 @@
 
 namespace Cleantalk\ApbctWP\Firewall;
 
-use Cleantalk\Common\Helper as Helper;
+use Cleantalk\ApbctWP\Helper;
 use Cleantalk\Variables\Cookie;
 use Cleantalk\Variables\Get;
 use Cleantalk\Variables\Server;
@@ -53,7 +53,7 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 	 */
 	public function ip__append_additional( &$ips ){
 		
-		$this->real_ip = $ips['real'];
+		$this->real_ip = isset($ips['real']) ? $ips['real'] : null;
 		
 		if( Get::get( 'sfw_test_ip' ) ){
 			if( Helper::ip__validate( Get::get( 'sfw_test_ip' ) ) !== false ){
@@ -74,28 +74,39 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 	public function check(){
 		
 		$results = array();
+        $status = 0;
 		
 		// Skip by cookie
 		foreach( $this->ip_array as $current_ip ){
-			
-			if( Cookie::get( 'ct_sfw_pass_key' ) == md5( $current_ip . $this->api_key ) ){
-				
-					if( Cookie::get( 'ct_sfw_passed' ) ){
-						
-						if( ! headers_sent() ){
-							\Cleantalk\Common\Helper::apbct_cookie__set( 'ct_sfw_passed', '0', time() + 86400 * 3, '/', null, false, true, 'Lax' );
-						}
-						
-						$results[] = array( 'ip' => $current_ip, 'is_personal' => false, 'status' => 'PASS_SFW__BY_COOKIE', );
-						
-						if( $this->sfw_counter ){
-							$this->apbct->data['sfw_counter']['all'] ++;
-							$this->apbct->saveData();
-						}
-						
-					}
+
+			if( substr( Cookie::get( 'ct_sfw_pass_key' ), 0, 32 ) == md5( $current_ip . $this->api_key ) ){
+
+                if( Cookie::get( 'ct_sfw_passed' ) ){
+
+                    if( ! headers_sent() ){
+                        \Cleantalk\Common\Helper::apbct_cookie__set( 'ct_sfw_passed', '0', time() + 86400 * 3, '/', null, false, true, 'Lax' );
+                    }
+
+                     else {
+                        $results[] = array( 'ip' => $current_ip, 'is_personal' => false, 'status' => 'PASS_SFW__BY_COOKIE', );
+                    }
+
+                    if( $this->sfw_counter ){
+                        $this->apbct->data['sfw_counter']['all'] ++;
+                        $this->apbct->saveData();
+                    }
+
+                }
+
+                if( strlen( Cookie::get( 'ct_sfw_pass_key' ) ) > 32 ) {
+                    $status = substr( Cookie::get( 'ct_sfw_pass_key' ), -1 );
+                }
+
+                if( $status ) {
+                    $results[] = array('ip' => $current_ip, 'is_personal' => false, 'status' => 'PASS_SFW__BY_WHITELIST',);
+                }
 					
-					return $results;
+				return $results;
 			}
 		}
 		
@@ -145,11 +156,11 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 	 */
 	public function update_log( $ip, $status ) {
 		
-		if( in_array( $status, array( 'PASS_SFW__BY_WHITELIST', 'PASS_SFW' ) ) ){
+		if( in_array( $status, array( 'PASS_SFW__BY_WHITELIST', 'PASS_SFW', 'PASS_ANTIFLOOD', 'PASS_ANTICRAWLER' ) ) ){
 			return;
 		}
 
-		$id   = md5( $ip );
+		$id   = md5( $ip . $this->module_name );
 		$time = time();
 		
 		$query = "INSERT INTO " . $this->db__table__logs . "
@@ -180,8 +191,11 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 	}
 	
 	public function actions_for_passed( $result ){
-		if( $this->set_cookies &&  ! headers_sent() )
-			\Cleantalk\ApbctWP\Helper::apbct_cookie__set( 'ct_sfw_pass_key', md5( $result['ip'] . $this->api_key ), time() + 86400 * 30, '/', null, false );
+		if( $this->set_cookies &&  ! headers_sent() ) {
+		    $status = $result['status'] == 'PASS_SFW__BY_WHITELIST' ? '1' : '0';
+            $cookie_val = md5( $result['ip'] . $this->api_key ) . $status;
+            \Cleantalk\ApbctWP\Helper::apbct_cookie__set( 'ct_sfw_pass_key', $cookie_val, time() + 86400 * 30, '/', null, false );
+        }
 	}
 	
 	/**
@@ -191,6 +205,8 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 	 * @param $result
 	 */
 	public function _die( $result ){
+		
+		global $apbct;
 		
 		parent::_die( $result );
 		
@@ -203,14 +219,17 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 		}
 		
 		// File exists?
-		if(file_exists(CLEANTALK_PLUGIN_DIR . "lib/Cleantalk/ApbctWP/Firewall/die_page__SFW.html")){
+		if(file_exists(CLEANTALK_PLUGIN_DIR . "lib/Cleantalk/ApbctWP/Firewall/die_page_sfw.html")){
 			
-			$sfw_die_page = file_get_contents(CLEANTALK_PLUGIN_DIR . "lib/Cleantalk/ApbctWP/Firewall/die_page__SFW.html");
-			
+			$sfw_die_page = file_get_contents(CLEANTALK_PLUGIN_DIR . "lib/Cleantalk/ApbctWP/Firewall/die_page_sfw.html");
+
+            $status = $result['status'] == 'PASS_SFW__BY_WHITELIST' ? '1' : '0';
+            $cookie_val = md5( $result['ip'] . $this->api_key ) . $status;
+
 			// Translation
 			$replaces = array(
 				'{SFW_DIE_NOTICE_IP}'              => __('SpamFireWall is activated for your IP ', 'cleantalk-spam-protect'),
-				'{SFW_DIE_MAKE_SURE_JS_ENABLED}'   => __( 'To continue working with web site, please make sure that you have enabled JavaScript.', 'cleantalk-spam-protect' ),
+				'{SFW_DIE_MAKE_SURE_JS_ENABLED}'   => __( 'To continue working with the web site, please make sure that you have enabled JavaScript.', 'cleantalk-spam-protect' ),
 				'{SFW_DIE_CLICK_TO_PASS}'          => __('Please click the link below to pass the protection,', 'cleantalk-spam-protect'),
 				'{SFW_DIE_YOU_WILL_BE_REDIRECTED}' => sprintf(__('Or you will be automatically redirected to the requested page after %d seconds.', 'cleantalk-spam-protect'), 3),
 				'{CLEANTALK_TITLE}'                => ($this->test ? __('This is the testing page for SpamFireWall', 'cleantalk-spam-protect') : ''),
@@ -223,8 +242,8 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 				// Cookie
 				'{COOKIE_PREFIX}'      => '',
 				'{COOKIE_DOMAIN}'      => $this->cookie_domain,
-				'{COOKIE_SFW}'         => $this->test ? $this->test_ip : md5( $result['ip'] . $this->api_key ),
-				'{COOKIE_ANTICRAWLER}' => md5( $this->api_key . $result['ip'] ),
+				'{COOKIE_SFW}'         => $this->test ? $this->test_ip : $cookie_val,
+				'{COOKIE_ANTICRAWLER}' => hash( 'sha256', $apbct->api_key . $apbct->data['salt'] ),
 				
 				// Test
 				'{TEST_TITLE}'      => '',
@@ -265,7 +284,7 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 			wp_die($sfw_die_page, "Blacklisted", Array('response'=>403));
 			
 		}else{
-			wp_die("IP BLACKLISTED", "Blacklisted", Array('response'=>403));
+			wp_die("IP BLACKLISTED. Blocked by SFW " . $result['ip'], "Blacklisted", Array('response'=>403));
 		}
 		
 	}
@@ -353,114 +372,176 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 		// Getting remote file name
 		if(!$file_url){
 			
-			sleep(6);
-			
 			$result = \Cleantalk\Common\API::method__get_2s_blacklists_db($ct_key, 'multifiles', '2_0');
 			
-			if(empty($result['error'])){
+			sleep(4);
+			
+			if( empty( $result['error'] ) ){
 				
-				if( !empty($result['file_url']) ){
+				if( ! empty( $result['file_url'] ) ){
 					
-					if(Helper::http__request($result['file_url'], array(), 'get_code') === 200) {
+					$file_url = trim( $result['file_url'] );
+					
+					$response_code = Helper::http__request__get_response_code( $file_url );
+					
+					if( empty( $response_code['error'] ) ){
 						
-						if(ini_get('allow_url_fopen')) {
+						if( $response_code == 200 || $response_code == 501 ){
 							
-							$patterns = array();
-							$patterns[] = 'get';
+							$gz_data = Helper::http__request__get_content( $file_url );
 							
-							if(!$immediate) $patterns[] = 'async';
-							
-							// Clear SFW table
-							$db->execute("TRUNCATE TABLE {$db__table__data};");
-							$db->set_query("SELECT COUNT(network) as cnt FROM {$db__table__data};")->fetch(); // Check if it is clear
-							if($db->result['cnt'] != 0){
-								$db->execute("DELETE FROM {$db__table__data};"); // Truncate table
-								$db->set_query("SELECT COUNT(network) as cnt FROM {$db__table__data};")->fetch(); // Check if it is clear
-								if($db->result['cnt'] != 0){
-									return array('error' => 'COULD_NOT_CLEAR_SFW_TABLE'); // throw an error
-								}
-							}
-							
-							$gf = \gzopen($result['file_url'], 'rb');
-							
-							if ($gf) {
+							if( empty( $gz_data['error'] ) ){
 								
-								$file_urls = array();
-								
-								while( ! \gzeof($gf) )
-									$file_urls[] = trim( \gzgets($gf, 1024) );
-								
-								\gzclose($gf);
-								
-								return Helper::http__request(
-									get_option('siteurl'),
-									array(
-										'spbc_remote_call_token'  => md5($ct_key),
-										'spbc_remote_call_action' => 'sfw_update',
-										'plugin_name'             => 'apbct',
-										'file_urls'               => implode(',', $file_urls),
-									),
-									$patterns
-								);
+								if( Helper::get_mime_type( $gz_data, 'application/x-gzip' ) ){
+									
+									if( function_exists( 'gzdecode' ) ){
+										
+										$data = gzdecode( $gz_data );
+										
+										if( $data !== false ){
+											
+											$result__clear_db = self::clear_data_table( $db, $db__table__data );
+											
+											if( empty( $result__clear_db['error'] ) ){
+												
+												$lines = Helper::buffer__parse__csv( $data );
+												
+												/*$file_urls = array();
+												
+												while( current( $lines ) !== false ){
+													$file_urls[] = current( $lines )[0];
+													next( $lines );
+												}*/
+												
+												$patterns   = array();
+												$patterns[] = 'get';
+												
+												if( ! $immediate ){
+													$patterns[] = 'async';
+												}
+												
+												return Helper::http__request(
+													get_option( 'siteurl' ),
+													array(
+														'spbc_remote_call_token'  => md5( $ct_key ),
+														'spbc_remote_call_action' => 'sfw_update',
+														'plugin_name'             => 'apbct',
+														'file_urls'               => $file_url,
+                                                        'url_count'               => count( $lines ),
+                                                        'current_url'             => 0,
+													),
+													$patterns
+												);
+												
+											}else
+												return $result__clear_db;
+										}else
+											return array('error' => 'COULD_DECODE_MULTIFILE');
+									}else
+										return array('error' => 'FUNCTION_GZ_DECODE_DOES_NOT_EXIST');
+								}else
+									return array('error' => 'WRONG_MULTIFILE_MIME_TYPE');
 							}else
-								return array('error' => 'COULD_NOT_OPEN_REMOTE_FILE_SFW');
+								return array('error' => 'COULD_NOT_GET_MULTIFILE: ' . $gz_data['error'] );
 						}else
-							return array('error' => 'ERROR_ALLOW_URL_FOPEN_DISABLED');
+							return array('error' => 'MULTIFILE_BAD_RESPONSE_CODE: '. (int) $response_code );
 					}else
-						return array('error' => 'NO_FILE_URL_PROVIDED');
+						return array('error' => 'MULTIFILE_COULD_NOT_GET_RESPONSE_CODE: '. $response_code['error'] );
 				}else
-					return array('error' => 'BAD_RESPONSE');
+					return array('error' => 'NO_REMOTE_MULTIFILE_FOUND: ' . $result['file_url'] );
 			}else
 				return $result;
 		}else{
 			
-			if(Helper::http__request($file_url, array(), 'get_code') === 200){ // Check if it's there
-				
-				$gf = \gzopen($file_url, 'rb');
-				
-				if($gf){
+			$response_code = Helper::http__request($file_url, array(), 'get_code');
+			
+			if( empty( $response_code['error'] ) ){
+			
+				if( $response_code == 200 || $response_code == 501 ){ // Check if it's there
 					
-					if( ! \gzeof($gf) ){
+					$gz_data = Helper::http__request__get_content( $file_url );
+					
+					if( empty( $gz_data['error'] ) ){
 						
-						for( $count_result = 0; ! \gzeof($gf); ){
+						if( Helper::get_mime_type( $gz_data, 'application/x-gzip' ) ){
 							
-							$query = "INSERT INTO ".$db__table__data." VALUES %s";
+							if( function_exists( 'gzdecode' ) ){
+								
+								$data = gzdecode( $gz_data );
+								
+								if( $data !== false ){
+									
+									$lines = Helper::buffer__parse__csv( $data );
+									
+								}else
+									return array('error' => 'COULD_DECODE_FILE');
+							}else
+								return array('error' => 'FUNCTION_GZ_DECODE_DOES_NOT_EXIST');
+						}else
+							return array('error' => 'WRONG_FILE_MIME_TYPE');
+						
+						reset( $lines );
+						
+						for( $count_result = 0; current($lines) !== false; ) {
 							
-							for($i=0, $values = array(); APBCT_WRITE_LIMIT !== $i && ! \gzeof($gf); $i++, $count_result++){
+							$query = "INSERT INTO ".$db__table__data." VALUES ";
+							
+							for( $i = 0, $values = array(); APBCT_WRITE_LIMIT !== $i && current( $lines ) !== false; $i ++, $count_result ++, next( $lines ) ){
 								
-								$entry = trim( \gzgets($gf, 1024) );
+								$entry = current($lines);
 								
-								if(empty($entry)) continue;
+								if(empty($entry))
+									continue;
 								
-								$entry = explode(',', $entry);
+								if ( APBCT_WRITE_LIMIT !== $i ) {
 								
-								// Cast result to int
-								$ip   = preg_replace('/[^\d]*/', '', $entry[0]);
-								$mask = preg_replace('/[^\d]*/', '', $entry[1]);
-								$private = isset($entry[2]) ? $entry[2] : 0;
-								
-								if(!$ip || !$mask) continue;
+									// Cast result to int
+									$ip   = preg_replace('/[^\d]*/', '', $entry[0]);
+									$mask = preg_replace('/[^\d]*/', '', $entry[1]);
+									$private = isset($entry[2]) ? $entry[2] : 0;
+									
+								}
 								
 								$values[] = '('. $ip .','. $mask .','. $private .')';
 								
 							}
 							
-							if(!empty($values)){
-								$query = sprintf($query, implode(',', $values).';');
-								$db->execute($query);
+							if( ! empty( $values ) ){
+								$query = $query . implode( ',', $values ) . ';';
+								$db->execute( $query );
 							}
 							
 						}
 						
-						\gzclose($gf);
 						return $count_result;
 						
 					}else
-						return array('error' => 'ERROR_GZ_EMPTY');
+						return array('error' => 'COULD_NOT_GET_FILE: ' . $gz_data['error'] );
 				}else
-					return array('error' => 'ERROR_OPEN_GZ_FILE');
+					return array('error' => 'FILE_BAD_RESPONSE_CODE: '. (int) $response_code );
 			}else
-				return array('error' => 'NO_REMOTE_FILE_FOUND');
+				return array('error' => 'FILE_COULD_NOT_GET_RESPONSE_CODE: '. $response_code['error'] );
+		}
+	}
+	
+	/**
+	 * Clear SFW table
+	 *
+	 * @param $db
+	 * @param $db__table__data
+	 *
+	 * @return string[]
+	 */
+	public static function clear_data_table( $db, $db__table__data ) {
+		
+		$db->execute( "TRUNCATE TABLE {$db__table__data};" );
+		$db->set_query( "SELECT COUNT(network) as cnt FROM {$db__table__data};" )->fetch(); // Check if it is clear
+		if( $db->result['cnt'] != 0 ){
+			$db->execute( "DELETE FROM {$db__table__data};" ); // Truncate table
+			$db->set_query( "SELECT COUNT(network) as cnt FROM {$db__table__data};" )->fetch(); // Check if it is clear
+			if( $db->result['cnt'] != 0 ){
+				return array( 'error' => 'COULD_NOT_CLEAR_SFW_TABLE' ); // throw an error
+			}
 		}
 	}
 }

@@ -17,7 +17,9 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 	private $apbct = array();
 	private $store_interval  = 60;
 	private $block_period    = 30;
-	private $chance_to_clean = 200;
+	private $chance_to_clean = 20;
+
+    public $isExcluded = false;
 	
 	/**
 	 * AntiCrawler constructor.
@@ -34,6 +36,8 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 		foreach( $params as $param_name => $param ){
 			$this->$param_name = isset( $this->$param_name ) ? $param : false;
 		}
+
+        $this->isExcluded = $this->check_exclusions();
 	}
 	
 	/**
@@ -111,9 +115,9 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 		
 	}
 	
-	private function clear_table() {
+	public function clear_table() {
 		
-		if( rand( 0, 1000 ) < $this->chance_to_clean ){
+		if( rand( 0, 100 ) < $this->chance_to_clean ){
 			$interval_start = \Cleantalk\ApbctWP\Helper::time__get_interval_start( $this->store_interval );
 			$this->db->execute(
 				'DELETE
@@ -133,7 +137,7 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 	 */
 	public function update_log( $ip, $status ) {
 		
-		$id = md5( $ip );
+		$id = md5( $ip . $this->module_name );
 		$time    = time();
 		
 		$query = "INSERT INTO " . $this->db__table__logs . "
@@ -159,14 +163,14 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 		parent::_die( $result );
 		
 		// File exists?
-		if( file_exists( CLEANTALK_PLUGIN_DIR . 'lib/Cleantalk/ApbctWP/Firewall/die_page__AntiFlood.html' ) ){
+		if( file_exists( CLEANTALK_PLUGIN_DIR . 'lib/Cleantalk/ApbctWP/Firewall/die_page_antiflood.html' ) ){
 			
-			$sfw_die_page = file_get_contents( CLEANTALK_PLUGIN_DIR . 'lib/Cleantalk/ApbctWP/Firewall/die_page__AntiFlood.html' );
+			$sfw_die_page = file_get_contents( CLEANTALK_PLUGIN_DIR . 'lib/Cleantalk/ApbctWP/Firewall/die_page_antiflood.html' );
 			
 			// Translation
 			$replaces = array(
 				'{SFW_DIE_NOTICE_IP}'              => __( 'Anti-Flood is activated for your IP', 'cleantalk-spam-protect' ),
-				'{SFW_DIE_MAKE_SURE_JS_ENABLED}'   => __( 'To continue working with web site, please make sure that you have enabled JavaScript.', 'cleantalk-spam-protect' ),
+				'{SFW_DIE_MAKE_SURE_JS_ENABLED}'   => __( 'To continue working with the web site, please make sure that you have enabled JavaScript.', 'cleantalk-spam-protect' ),
 				'{SFW_DIE_YOU_WILL_BE_REDIRECTED}' => sprintf( __( 'You will be automatically redirected to the requested page after %d seconds.', 'cleantalk-spam-protect' ), 30 ),
 				'{CLEANTALK_TITLE}'                => __( 'Antispam by CleanTalk', 'cleantalk-spam-protect' ),
 				'{REMOTE_ADDRESS}'                 => $result['ip'],
@@ -184,8 +188,27 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 			wp_die( $sfw_die_page, 'Blacklisted', array( 'response' => 403 ) );
 			
 		} else{
-			wp_die( 'IP BLACKLISTED', 'Blacklisted', array( 'response' => 403 ) );
+			wp_die( "IP BLACKLISTED. Blocked by AntiFlood " . $result['ip'], 'Blacklisted', array( 'response' => 403 ) );
 		}
 		
 	}
+
+    private function check_exclusions() {
+
+        $allowed_roles = array( 'administrator', 'editor' );
+        $user = apbct_wp_get_current_user();
+
+        if( ! $user ) {
+            return false;
+        }
+
+        foreach( $allowed_roles as $role ) {
+            if( in_array( $role, (array) $user->roles ) ) {
+                return true;
+            }
+        }
+
+        return false;
+
+    }
 }

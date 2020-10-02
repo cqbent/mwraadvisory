@@ -86,6 +86,12 @@ function apbct_base_call($params = array(), $reg_flag = false){
 
 	global $apbct, $cleantalk_executed;
 
+    // URL, IP, Role exclusions
+    if( ! $cleantalk_executed && apbct_exclusions_check() ){
+        do_action( 'apbct_skipped_request', __FILE__ . ' -> ' . __FUNCTION__ . '():' . __LINE__, $_POST );
+        return array( 'ct_result' => new CleantalkResponse() );
+    }
+
 	$cleantalk_executed = true;
 
 	$sender_info = !empty($params['sender_info'])
@@ -99,7 +105,7 @@ function apbct_base_call($params = array(), $reg_flag = false){
 			->get_keys( $apbct->settings['exclusions__fields'], $apbct->settings['exclusions__fields__use_regexp'] )
 			->delete();
 	}
-
+	
 	// Reversed url exclusions. Pass everything except one.
 	if( ! apbct_exclusions_check__url__reversed() ){
 		return array(
@@ -267,11 +273,11 @@ function apbct_exclusions_check__url() {
 		// Fix for AJAX forms
 		$haystack = apbct_get_server_variable( 'REQUEST_URI' ) == '/wp-admin/admin-ajax.php' && ! apbct_get_server_variable( 'HTTP_REFERER' )
 			? apbct_get_server_variable( 'HTTP_REFERER' )
-			: apbct_get_server_variable( 'REQUEST_URI' );
-		
+			: \Cleantalk\Variables\Server::get('HTTP_HOST') . apbct_get_server_variable( 'REQUEST_URI' );
+
 		foreach ( $exclusions as $exclusion ) {
 			if (
-				($apbct->settings['exclusions__urls__use_regexp'] && preg_match( '/' . $exclusion . '/', $haystack ) === 1) ||
+				($apbct->settings['exclusions__urls__use_regexp'] && preg_match( '@' . $exclusion . '@', $haystack ) === 1) ||
 				stripos( $haystack, $exclusion ) !== false
 			){
 				return true;
@@ -356,6 +362,7 @@ function apbct_get_sender_info() {
 			: (array)json_decode(filter_input(INPUT_COOKIE, 'apbct_urls'), true);
 	
 	return array(
+ 		'wpms'                   => is_multisite() ? 'yes' : 'no',
 		'remote_addr'            => \Cleantalk\ApbctWP\Helper::ip__get(array('remote_addr'), false),
         'REFFERRER'              => apbct_get_server_variable( 'HTTP_REFERER' ),
         'USER_AGENT'             => apbct_get_server_variable( 'HTTP_USER_AGENT' ),
@@ -424,24 +431,7 @@ function apbct_visibile_fields__process($visible_fields) {
  * Outputs JS key for AJAX-use only. Stops script.
  */
 function apbct_js_keys__get__ajax( $direct_call = false ){
-
-    global $apbct;
-
-	if( ! $direct_call && $apbct->settings['use_static_js_key'] != 1 ){
-
-		if(isset($_POST['_ajax_nonce'])){
-			if(!wp_verify_nonce($_POST['_ajax_nonce'], 'ct_secret_stuff')){
-				wp_doing_ajax()
-					? wp_die( -1, 403 )
-					: die( '-1' );
-			}
-		}else{
-			wp_doing_ajax()
-				? wp_die( -1, 403 )
-				: die( '-1' );
-		}
-	}
-
+	
 	die(json_encode(array(
 		'js_key' => ct_get_checkjs_value()
 	)));

@@ -1,4 +1,6 @@
-jQuery(document).ready(function($) {
+( function( $ ) {
+
+	"use strict";
 
 	// For Slider
 	$( '.wppsac-post-slider' ).each(function( index ) {
@@ -74,4 +76,4 @@ jQuery(document).ready(function($) {
 			}); 
 		}
 	});	
-});
+})( jQuery );
