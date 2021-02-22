@@ -6,16 +6,17 @@
  * @since 1.0.0
  */
 
-// Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 ?>
- 
+
 <div class="wppsac-post-slides">
 	<div class="wppsac-post-overlay">
 		<div class="wppsac-post-image-bg">
 			<a href="<?php the_permalink(); ?>">
 				<?php if( has_post_thumbnail()  ) { ?>
-					<img <?php if($lazyload) { ?>data-lazy="<?php echo esc_url($feat_image); ?>" <?php } ?> src="<?php if(empty($lazyload)) { echo esc_url($feat_image); } ?>" alt="<?php the_title_attribute(); ?>" />
+					<img <?php if( $lazyload ) { ?>data-lazy="<?php echo esc_url($feat_image); ?>" <?php } ?> src="<?php if(empty($lazyload)) { echo esc_url($feat_image); } ?>" alt="<?php the_title_attribute(); ?>" />
 				<?php  } ?>
 			</a>
 		</div>
@@ -29,7 +30,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 				</h2>
 				<?php if( $showDate || $showAuthor ) { ?>
 				<div class="wppsac-post-date">
-					<?php if($showAuthor) { ?> 
+					<?php if( $showAuthor ) { ?> 
 						<span><?php esc_html_e( 'By', 'wp-responsive-recent-post-slider' ); ?> <?php the_author(); ?></span>
 					<?php }
 					$authorPar = ( $showAuthor && $showDate ) ? '&nbsp;/&nbsp;' : '';

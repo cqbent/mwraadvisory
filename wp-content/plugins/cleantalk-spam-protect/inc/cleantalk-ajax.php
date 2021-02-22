@@ -7,6 +7,8 @@ AJAX functions
 
 //$cleantalk_ajax_actions_to_check - array for POST 'actions' we should check.
 
+use Cleantalk\Variables\Post;
+
 $cleantalk_ajax_actions_to_check[] = 'qcf_validate_form';			//Quick Contact Form
 $cleantalk_ajax_actions_to_check[] = 'amoforms_submit';			//amoForms
 
@@ -313,6 +315,18 @@ function ct_ajax_hook($message_obj = false, $additional = false)
         'ck_get_subscriber', //ConvertKit checking the subscriber
         'metorik_send_cart', //Metorik skip
 	    'ppom_ajax_validation', // PPOM add to cart validation
+	    'wpforms_form_abandonment', // WPForms. Quiting without submitting
+	    'post_woo_ml_email_cookie', //Woocommerce system
+	    'ig_es_draft_broadcast', //Icegram broadcast ajax
+	    'simplefilelistpro_edit_job', //Simple File List editing current job
+	    'wfu_ajax_action_ask_server', //WFU skip ask server
+	    'wcap_save_guest_data', //WooCommerce skip
+	    'ajaxlogin', //Skip ajax login redirect
+	    'heartbeat', //Gravity multipage
+	    'erforms_field_change_command', //ERForms internal request
+	    'wl_out_of_stock_notify', // Sumo Waitlist
+	    'rac_preadd_guest', //Rac internal request
+        /* !! Do not add actions here. Use apbct_is_skip_request() function below !! */
     );
     
     // Skip test if
@@ -325,24 +339,34 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 	    (isset($_GET['action'])  && in_array($_GET['action'], $skip_post)) ||  // Special params
 		isset($_POST['quform_submit']) || //QForms multi-paged form skip
         // QAEngine Theme fix
-        ( strval(current_action()) != 'et_pre_insert_answer' &&
+        ( strval(current_filter()) != 'et_pre_insert_answer' &&
 	        (
 		        (isset($message_obj['author']) && intval($message_obj['author']) == 0) ||
 		        (isset($message_obj['post_author']) && intval($message_obj['post_author']) == 0)
 	        )
         ) ||
-        (isset($_POST['action'], $_POST['arm_action']) && $_POST['action'] == 'arm_shortcode_form_ajax_action' && $_POST['arm_action'] == 'please-login') //arm forms skip login
+        (isset($_POST['action'], $_POST['arm_action']) && $_POST['action'] == 'arm_shortcode_form_ajax_action' && $_POST['arm_action'] == 'please-login') || //arm forms skip login
+        ( isset($_POST['action']) && $_POST['action'] == 'erf_login_user' && in_array( 'easy-registration-forms/erforms.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) || //Easy Registration Forms login form skip
+        (isset($_POST['action'], $_POST['endpoint'], $_POST['method']) && $_POST['action'] == 'mailpoet' && $_POST['endpoint'] == 'ImportExport' && $_POST['method'] == 'processImport') //Mailpoet import
     )
     {
 	    do_action( 'apbct_skipped_request', __FILE__ . ' -> ' . __FUNCTION__ . '():' . __LINE__, $_POST );
         return false;
     }
 
+    if( apbct_is_skip_request( true ) ) {
+        do_action( 'apbct_skipped_request', __FILE__ . ' -> ' . __FUNCTION__ . '():' . __LINE__ . '(' . apbct_is_skip_request() . ')', $_POST );
+        return false;
+    }
+    
     //General post_info for all ajax calls
 	$post_info = array(
 	    'comment_type' => 'feedback_ajax',
         'post_url' => apbct_get_server_variable( 'HTTP_REFERER' ), // Page URL must be an previous page
     );
+    if( \Cleantalk\Variables\Post::get('action') == 'cleantalk_force_ajax_check' ) {
+        $post_info['comment_type'] = 'feedback_ajax_external_form';
+    }
 
 	$checkjs = apbct_js_test('ct_checkjs', $_COOKIE);
 		
@@ -378,6 +402,11 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 	if(isset($_POST['action'], $_POST['template']) && $_POST['action']=='userpro_process_form' && $_POST['template']=='register'){
 		$ct_post_temp = $_POST;
 		$ct_post_temp['shortcode'] = '';
+	}
+	//Pre-filled form 426869223
+	if (isset($_POST['action'], $_POST['response-email-address'], $_POST['response-email-sender-address']) && $_POST['action'] == 'contact-owner:send') {
+		unset($_POST['response-email-address']);
+		unset($_POST['response-email-sender-address']);
 	}
 	//Reviewer fix
 	if(isset($_POST['action']) && $_POST['action'] == 'rwp_ajax_action_rating')
@@ -766,6 +795,10 @@ function ct_ajax_hook($message_obj = false, $additional = false)
 				)
 			);
 		}
+		// Easy Registration Form
+        elseif( isset( $_POST['action'] ) && strpos($_POST['action'], 'erf_submit_form') !== false ) {
+            wp_send_json_error( array( 0 => array( 'username_error', $ct_result->comment ) ) );
+        }
 		else
 		{
 			die(json_encode(array( 'apbct' => array(

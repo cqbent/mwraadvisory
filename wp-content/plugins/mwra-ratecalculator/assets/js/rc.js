@@ -8,7 +8,7 @@ import 'rangeslider.js';
 		}, function(response) {
 				// do something here
 				var list = response;
-				console.log(response  );
+				console.log(response);
 				$('#ratecalculator_form #rc_community').html(list);
 			}
 		)

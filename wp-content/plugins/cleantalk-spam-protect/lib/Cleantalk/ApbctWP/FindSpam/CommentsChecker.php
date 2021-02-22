@@ -24,7 +24,8 @@ class CommentsChecker extends Checker
             'ct_prev_from'                => !empty($prev_check['from'])     ? $prev_check['from'] : false,
             'ct_prev_till'                => !empty($prev_check['till'])     ? $prev_check['till'] : false,
             'ct_timeout_confirm'          => __('Failed from timeout. Going to check comments again.', 'cleantalk-spam-protect'),
-            'ct_confirm_deletion_all'     => __('Delete all spam comments?', 'cleantalk-spam-protect'),
+            'ct_confirm_trash_all'        => __('Trash all spam comments from the list?', 'cleantalk-spam-protect'),
+            'ct_confirm_spam_all'         => __('Mark as spam all comments from the list?', 'cleantalk-spam-protect'),
             'ct_comments_added_after'     => __('comments', 'cleantalk-spam-protect'),
             'ct_status_string'            => __('Checked %s, found %s spam comments and %s bad comments (without IP or email).', 'cleantalk-spam-protect'),
             'ct_status_string_warning'    => '<p>'.__('Please do backup of WordPress database before delete any accounts!', 'cleantalk-spam-protect').'</p>',
@@ -41,6 +42,7 @@ class CommentsChecker extends Checker
         echo '<form action="" method="POST">';
         $this->list_table->display();
         echo '</form>';
+        $this->getFooter();
 
     }
 
@@ -250,10 +252,10 @@ class CommentsChecker extends Checker
                     $uip=$c[$i]->comment_author_IP;
                     $uim=$c[$i]->comment_author_email;
 
-                    if(isset($result[$uip]) && $result[$uip]['appears'] == 1)
+                    if(isset($result[$uip]) && isset( $result[$uim]['appears'] ) && $result[$uip]['appears'] == 1)
                         $mark_spam_ip = true;
 
-                    if(isset($result[$uim]) && $result[$uim]['appears'] == 1)
+                    if(isset($result[$uim]) && isset( $result[$uim]['appears'] ) && $result[$uim]['appears'] == 1)
                         $mark_spam_email = true;
 
                     if ($mark_spam_ip || $mark_spam_email){
@@ -368,10 +370,12 @@ class CommentsChecker extends Checker
         }
 
         $backup_notice = '&nbsp;';
-        if ($cnt_spam > 0){
-            $backup_notice = __("Please do backup of WordPress database before delete any comments!", 'cleantalk-spam-protect');
+        $spam_system_notice = '&nbsp;';
+        if ($cnt_spam > 0) {
+            $backup_notice = __("Please do backup of WordPress database before delete any accounts!", 'cleantalk-spam-protect');
+            $spam_system_notice = __("Results are based on the decision of our spam checking system and do not give a complete guarantee that these comments are spam.", 'cleantalk-spam-protect');
         }
-        $return['message'] .= "<p>$backup_notice</p>";
+        $return['message'] .= "<p>$backup_notice</p><p>$spam_system_notice</p>";
 
         if($direct_call){
             return $return['message'];
@@ -461,7 +465,7 @@ class CommentsChecker extends Checker
 
     }
 
-    public static function ct_ajax_delete_all(){
+    public static function ct_ajax_trash_all(){
 
         check_ajax_referer( 'ct_secret_nonce', 'security' );
 
@@ -490,7 +494,43 @@ class CommentsChecker extends Checker
         $cnt_all = get_comments($args_spam);
 
         for( $i=0; $i < sizeof( $c_spam ); $i++ ){
-            wp_delete_comment( $c_spam[$i]->comment_ID, false );
+            wp_trash_comment( $c_spam[$i]->comment_ID );
+            usleep(10000);
+        }
+        print $cnt_all;
+        die();
+    }
+
+    public static function ct_ajax_spam_all(){
+
+        check_ajax_referer( 'ct_secret_nonce', 'security' );
+
+        $args_spam = array(
+            'number'=>100,
+            'meta_query' => array(
+                array(
+                    'key' => 'ct_marked_as_spam',
+                    'value' => '1',
+                    'compare' => 'NUMERIC'
+                )
+            )
+        );
+        $c_spam = get_comments( $args_spam );
+
+        $args_spam = array(
+            'count'=>true,
+            'meta_query' => array(
+                Array(
+                    'key' => 'ct_marked_as_spam',
+                    'value' => '1',
+                    'compare' => 'NUMERIC'
+                )
+            )
+        );
+        $cnt_all = get_comments($args_spam);
+
+        for( $i=0; $i < sizeof( $c_spam ); $i++ ){
+            wp_spam_comment( $c_spam[$i]->comment_ID );
             usleep(10000);
         }
         print $cnt_all;

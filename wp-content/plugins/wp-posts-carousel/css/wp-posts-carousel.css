@@ -161,9 +161,3 @@ select.wp-posts-carousel-field {
 .widget-content .wp-posts-carousel-form fieldset p {
      margin-top: 0;
 }
-.owl-item {
-	height: 250px ! important;
-}
-.owl-item active {
-	height: 250px ! important;
-}

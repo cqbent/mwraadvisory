@@ -3,8 +3,8 @@ Contributors: ibabar, litonice13
 Donate link: http://donate.ibabar.com
 Tags: prettyPhoto, thickbox, lightbox, WordPress likghtbox, fancybox, popup, pop up, pop up box, slick, slider, video popup, gallery popup
 Requires at least: 3.1
-Tested Up to: 5.4.2
-Stable Tag: 1.2.2
+Tested Up to: 5.6
+Stable tag: trunk
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -16,14 +16,14 @@ An easy to use lightbox/thickbox clone for WordPress. Prettyphoto Elementor Addo
 
 [Master Addons](https://master-addons.com) is Collection of Exclusive & Unique Addons for Elementor Page Builder. This Plugin that gives you full control over Images to show in your website.
 
-> ## Master Addons for Elementor
-> Don't forget to check our Exclusive & Essential Elementor Addons
-> [Master Addons for Elementor](https://wordpress.org/plugins/master-addons/)
-> Includes 40+ Addons, 10+ Extensions & 100+ Landing Pages.
->[All Addons](https://master-addons.com/all-widgets/) | [Support](https://master-addons.com/contact-us/) | [Docs](https://master-addons.com/docs/) | [Tutorials](https://www.youtube.com/watch?v=wXPEl93_UBw&list=PLqpMw0NsHXV9V6UwRniXTUkabCJtOhyIf) | [Upgrade Pro](http://bit.ly/32n5dXS)
+> Don't forget to check [Master Addons for Elementor](https://wordpress.org/plugins/master-addons/)
+> Includes 50+ Addons, 15+ Extensions & 1000+ Landing Pages.
+>[All Addons](https://master-addons.com/all-widgets/) | [Support](https://master-addons.com/contact-us/) | [Docs](https://master-addons.com/docs/) | [Tutorials](https://www.youtube.com/watch?v=wXPEl93_UBw&list=PLqpMw0NsHXV9V6UwRniXTUkabCJtOhyIf) | [Upgrade Pro](https://master-addons.com/go/upgrade-pro/)
+>
+> Get 20% Discount now, Coupon Code: ENJOY20  [Purchase Now](https://master-addons.com/go/upgrade-pro/)
 
 
-Installation Video Tutorial:
+== Installation Video Tutorial: ==
 
 [youtube https://www.youtube.com/watch?v=dr7su8U88Yo]
 

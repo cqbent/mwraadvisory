@@ -2,7 +2,9 @@
 
 namespace Cleantalk\ApbctWP\Firewall;
 
+use Cleantalk\ApbctWP\API;
 use Cleantalk\ApbctWP\Helper;
+use Cleantalk\Common\Schema;
 use Cleantalk\Variables\Cookie;
 use Cleantalk\Variables\Get;
 use Cleantalk\Variables\Server;
@@ -85,11 +87,12 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 
                     if( ! headers_sent() ){
                         \Cleantalk\Common\Helper::apbct_cookie__set( 'ct_sfw_passed', '0', time() + 86400 * 3, '/', null, false, true, 'Lax' );
-                    }
-
-                     else {
+                    } else {
                         $results[] = array( 'ip' => $current_ip, 'is_personal' => false, 'status' => 'PASS_SFW__BY_COOKIE', );
                     }
+
+                    // Do logging an one passed request
+                    $this->update_log( $current_ip, 'PASS_SFW' );
 
                     if( $this->sfw_counter ){
                         $this->apbct->data['sfw_counter']['all'] ++;
@@ -115,8 +118,9 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 			
 			$current_ip_v4 = sprintf("%u", ip2long($current_ip));
 			for ( $needles = array(), $m = 6; $m <= 32; $m ++ ) {
-				$mask      = sprintf( "%u", ip2long( long2ip( - 1 << ( 32 - (int) $m ) ) ) );
-				$needles[] = bindec( decbin( $mask ) & decbin( $current_ip_v4 ) );
+				$mask      = str_repeat( '1', $m );
+				$mask      = str_pad( $mask, 32, '0' );
+				$needles[] = sprintf( "%u", bindec( $mask & base_convert( $current_ip_v4, 10, 2 ) ) );
 			}
 			$needles = array_unique( $needles );
 			
@@ -124,14 +128,18 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 				network, mask, status
 				FROM " . $this->db__table__data . "
 				WHERE network IN (". implode( ',', $needles ) .")
-				AND	network = " . $current_ip_v4 . " & mask");
+				AND	network = " . $current_ip_v4 . " & mask 
+				AND " . rand( 1, 100000 ) . "  
+				ORDER BY status DESC");
 			
 			if( ! empty( $db_results ) ){
 				
 				foreach( $db_results as $db_result ){
 					
-					if( $db_result['status'] == 1 )
-						$results[] = array('ip' => $current_ip, 'is_personal' => false, 'status' => 'PASS_SFW__BY_WHITELIST',);
+					if( $db_result['status'] == 1 ) {
+                        $results[] = array('ip' => $current_ip, 'is_personal' => false, 'status' => 'PASS_SFW__BY_WHITELIST',);
+                        break;
+                    }
 					else
 						$results[] = array('ip' => $current_ip, 'is_personal' => false, 'status' => 'DENY_SFW',);
 					
@@ -155,10 +163,6 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 	 * @param $status
 	 */
 	public function update_log( $ip, $status ) {
-		
-		if( in_array( $status, array( 'PASS_SFW__BY_WHITELIST', 'PASS_SFW', 'PASS_ANTIFLOOD', 'PASS_ANTICRAWLER' ) ) ){
-			return;
-		}
 
 		$id   = md5( $ip . $this->module_name );
 		$time = time();
@@ -169,14 +173,16 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 			ip = '$ip',
 			status = '$status',
 			all_entries = 1,
-			blocked_entries = 1,
-			entries_timestamp = '" . $time . "'
+			blocked_entries = " . ( strpos( $status, 'DENY' ) !== false ? 1 : 0 ) . ",
+			entries_timestamp = '" . $time . "',
+			ua_name = '" . Server::get('HTTP_USER_AGENT') . "'
 		ON DUPLICATE KEY
 		UPDATE
 			status = '$status',
 			all_entries = all_entries + 1,
 			blocked_entries = blocked_entries" . ( strpos( $status, 'DENY' ) !== false ? ' + 1' : '' ) . ",
-			entries_timestamp = '" . intval( $time ) . "'";
+			entries_timestamp = '" . intval( $time ) . "',
+			ua_name = '" . Server::get('HTTP_USER_AGENT') . "'";
 		
 		$this->db->execute( $query );
 	}
@@ -206,7 +212,7 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 	 */
 	public function _die( $result ){
 		
-		global $apbct;
+		global $apbct, $wpdb;
 		
 		parent::_die( $result );
 		
@@ -223,6 +229,8 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 			
 			$sfw_die_page = file_get_contents(CLEANTALK_PLUGIN_DIR . "lib/Cleantalk/ApbctWP/Firewall/die_page_sfw.html");
 
+            $net_count = $wpdb->get_var('SELECT COUNT(*) FROM ' . APBCT_TBL_FIREWALL_DATA );
+
             $status = $result['status'] == 'PASS_SFW__BY_WHITELIST' ? '1' : '0';
             $cookie_val = md5( $result['ip'] . $this->api_key ) . $status;
 
@@ -234,8 +242,8 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 				'{SFW_DIE_YOU_WILL_BE_REDIRECTED}' => sprintf(__('Or you will be automatically redirected to the requested page after %d seconds.', 'cleantalk-spam-protect'), 3),
 				'{CLEANTALK_TITLE}'                => ($this->test ? __('This is the testing page for SpamFireWall', 'cleantalk-spam-protect') : ''),
 				'{REMOTE_ADDRESS}'                 => $result['ip'],
-				'{SERVICE_ID}'                     => $this->apbct->data['service_id'],
-				'{HOST}'                           => Server::get( 'HTTP_HOST' ),
+				'{SERVICE_ID}'                     => $this->apbct->data['service_id'] . ', ' . $net_count,
+				'{HOST}'                           => get_home_url() . ', ' . APBCT_VERSION,
 				'{GENERATED}'                      => '<p>The page was generated at&nbsp;' . date( 'D, d M Y H:i:s' ) . "</p>",
 				'{REQUEST_URI}'                    => Server::get( 'REQUEST_URI' ),
 				
@@ -313,30 +321,31 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 				// Converting statuses to API format
 				$value['status'] = $value['status'] === 'DENY_ANTICRAWLER'    ? 'BOT_PROTECTION'   : $value['status'];
 				$value['status'] = $value['status'] === 'PASS_ANTICRAWLER'    ? 'BOT_PROTECTION'   : $value['status'];
+                $value['status'] = $value['status'] === 'DENY_ANTICRAWLER_UA' ? 'BOT_PROTECTION'   : $value['status'];
+                $value['status'] = $value['status'] === 'PASS_ANTICRAWLER_UA' ? 'BOT_PROTECTION'   : $value['status'];
 				
 				$value['status'] = $value['status'] === 'DENY_ANTIFLOOD'      ? 'FLOOD_PROTECTION' : $value['status'];
 				$value['status'] = $value['status'] === 'PASS_ANTIFLOOD'      ? 'FLOOD_PROTECTION' : $value['status'];
 				
 				$value['status'] = $value['status'] === 'PASS_SFW__BY_COOKIE' ? null               : $value['status'];
+                $value['status'] = $value['status'] === 'PASS_SFW'            ? null               : $value['status'];
 				$value['status'] = $value['status'] === 'DENY_SFW'            ? null               : $value['status'];
-				
-				$row = array(
-					trim( $value['ip'] ),
-					$value['all_entries'],
-					$value['all_entries'] - $value['blocked_entries'],
-					$value['entries_timestamp'],
+
+                $data[] = array(
+					trim( $value['ip'] ),                                      // IP
+                    $value['blocked_entries'],                                 // Count showing of block pages
+					$value['all_entries'] - $value['blocked_entries'],         // Count passed requests after block pages
+					$value['entries_timestamp'],                               // Last timestamp
+                    $value['status'],                                          // Status
+                    $value['ua_name'],                                         // User-Agent name
+                    $value['ua_id'],                                           // User-Agent ID
 				);
-				
-				if( $value['status'] )
-					$row[] = $value['status'];
-				
-				$data[] = $row;
 				
 			}
 			unset( $key, $value );
 			
 			//Sending the request
-			$result = \Cleantalk\Common\API::method__sfw_logs( $ct_key, $data );
+			$result = API::method__sfw_logs( $ct_key, $data );
 			//Checking answer and deleting all lines from the table
 			if( empty( $result['error'] ) ){
 				if( $result['rows'] == count( $data ) ){
@@ -368,16 +377,26 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 	 * @return array|bool array('error' => STRING)
 	 */
 	public static function update( $db, $db__table__data, $ct_key, $file_url = null, $immediate = false){
-		
+
+	    global $apbct;
+
 		// Getting remote file name
-		if(!$file_url){
+		if( ! $file_url ){
 			
-			$result = \Cleantalk\Common\API::method__get_2s_blacklists_db($ct_key, 'multifiles', '2_0');
+			$result = API::method__get_2s_blacklists_db($ct_key, 'multifiles', '3_0');
 			
 			sleep(4);
 			
 			if( empty( $result['error'] ) ){
-				
+
+			    // User-Agents blacklist
+                if( ! empty( $result['file_ua_url'] ) && $apbct->settings['sfw__anti_crawler'] ){
+                    $ua_bl_res = AntiCrawler::update( trim( $result['file_ua_url'] ) );
+                    if( ! empty( $ua_bl_res['error'] ) )
+                        $apbct->error_add( 'sfw_update', $ua_bl_res['error'] );
+                }
+
+                // Common blacklist
 				if( ! empty( $result['file_url'] ) ){
 					
 					$file_url = trim( $result['file_url'] );
@@ -399,42 +418,31 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 										$data = gzdecode( $gz_data );
 										
 										if( $data !== false ){
-											
-											$result__clear_db = self::clear_data_table( $db, $db__table__data );
-											
-											if( empty( $result__clear_db['error'] ) ){
-												
-												$lines = Helper::buffer__parse__csv( $data );
-												
-												/*$file_urls = array();
-												
-												while( current( $lines ) !== false ){
-													$file_urls[] = current( $lines )[0];
-													next( $lines );
-												}*/
-												
-												$patterns   = array();
-												$patterns[] = 'get';
-												
-												if( ! $immediate ){
-													$patterns[] = 'async';
-												}
-												
-												return Helper::http__request(
-													get_option( 'siteurl' ),
-													array(
-														'spbc_remote_call_token'  => md5( $ct_key ),
-														'spbc_remote_call_action' => 'sfw_update',
-														'plugin_name'             => 'apbct',
-														'file_urls'               => $file_url,
-                                                        'url_count'               => count( $lines ),
-                                                        'current_url'             => 0,
-													),
-													$patterns
-												);
-												
-											}else
-												return $result__clear_db;
+
+                                            $lines = Helper::buffer__parse__csv( $data );
+
+                                            $patterns   = array();
+                                            $patterns[] = 'get';
+
+                                            if( ! $immediate ){
+                                                $patterns[] = 'async';
+                                            }
+
+                                            return Helper::http__request__rc_to_host(
+                                                get_option( 'siteurl' ),
+                                                array(
+                                                    'spbc_remote_call_token'  => md5( $ct_key ),
+                                                    'spbc_remote_call_action' => 'sfw_update',
+                                                    'plugin_name'             => 'apbct',
+                                                    'file_urls'               => str_replace( array( 'http://', 'https://' ), '', $file_url ),
+                                                    'url_count'               => count( $lines ),
+                                                    'current_url'             => 0,
+                                                    // Additional params
+                                                    'firewall_updating_id'    => $apbct->fw_stats['firewall_updating_id'],
+                                                ),
+                                                $patterns
+                                            );
+
 										}else
 											return array('error' => 'COULD_DECODE_MULTIFILE');
 									}else
@@ -453,7 +461,7 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 				return $result;
 		}else{
 			
-			$response_code = Helper::http__request($file_url, array(), 'get_code');
+			$response_code = Helper::http__request( 'https://' . $file_url, array(), 'get_code' );
 			
 			if( empty( $response_code['error'] ) ){
 			
@@ -484,7 +492,7 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 						
 						for( $count_result = 0; current($lines) !== false; ) {
 							
-							$query = "INSERT INTO ".$db__table__data." VALUES ";
+							$query = "INSERT INTO ".$db__table__data." (network, mask, status) VALUES ";
 							
 							for( $i = 0, $values = array(); APBCT_WRITE_LIMIT !== $i && current( $lines ) !== false; $i ++, $count_result ++, next( $lines ) ){
 								
@@ -523,25 +531,40 @@ class SFW extends \Cleantalk\Common\Firewall\FirewallModule {
 				return array('error' => 'FILE_COULD_NOT_GET_RESPONSE_CODE: '. $response_code['error'] );
 		}
 	}
-	
-	/**
-	 * Clear SFW table
-	 *
-	 * @param $db
-	 * @param $db__table__data
-	 *
-	 * @return string[]
-	 */
-	public static function clear_data_table( $db, $db__table__data ) {
-		
-		$db->execute( "TRUNCATE TABLE {$db__table__data};" );
-		$db->set_query( "SELECT COUNT(network) as cnt FROM {$db__table__data};" )->fetch(); // Check if it is clear
-		if( $db->result['cnt'] != 0 ){
-			$db->execute( "DELETE FROM {$db__table__data};" ); // Truncate table
-			$db->set_query( "SELECT COUNT(network) as cnt FROM {$db__table__data};" )->fetch(); // Check if it is clear
-			if( $db->result['cnt'] != 0 ){
-				return array( 'error' => 'COULD_NOT_CLEAR_SFW_TABLE' ); // throw an error
-			}
-		}
-	}
+
+    /**
+     * Creatin a temporary updating table
+     *
+     * @param \wpdb $db database handler
+     */
+    public static function create_temp_tables( $db ){
+        global $wpdb, $apbct;
+        $sql = 'SHOW TABLES LIKE "%scleantalk_sfw";';
+        $sql = sprintf( $sql, $wpdb->prefix ); // Adding current blog prefix
+        $result = $wpdb->get_var( $sql );
+        if( ! $result ){
+            apbct_activation__create_tables( Schema::getSchema('sfw'), $apbct->db_prefix );
+        }
+        $db->execute( 'CREATE TABLE IF NOT EXISTS `' . APBCT_TBL_FIREWALL_DATA . '_temp` LIKE `' . APBCT_TBL_FIREWALL_DATA . '`;' );
+        $db->execute( 'TRUNCATE TABLE `' . APBCT_TBL_FIREWALL_DATA . '_temp`;' );
+    }
+
+    /**
+     * Removing a temporary updating table
+     *
+     * @param \wpdb $db database handler
+     */
+    public static function delete_main_data_tables( $db ){
+        $db->execute( 'DROP TABLE `'. APBCT_TBL_FIREWALL_DATA .'`;' );
+    }
+
+    /**
+     * Renamin a temporary updating table into production table name
+     *
+     * @param \wpdb $db database handler
+     */
+    public static function rename_data_tables( $db ){
+        $db->execute( 'ALTER TABLE `'. APBCT_TBL_FIREWALL_DATA .'_temp` RENAME `'. APBCT_TBL_FIREWALL_DATA .'`;' );
+    }
+
 }

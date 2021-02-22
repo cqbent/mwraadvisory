@@ -3,12 +3,15 @@ Contributors: teastudio.pl
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2SQA4FL25Y73W
 Tags: carousel, slider, posts carousel, posts slider, custom post type, wordpress carousel, wordpress posts slider, wordpress owl carousel, owl carousel
 Requires at least: 3.6
-Tested up to: 4.4
+Tested up to: 5.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 WP Posts Carousel is a widget and a shortcode generator to displays posts or custom post types in Owl Carousel.
 == Description ==
+
+= This plugin is under development, unfortunately it takes a while, so sorry for missing updates. It is further developed... =
+
 
 **WP Posts Carousel** allows to view the list of selected post types in a carousel. The plugin offers rich parameters of carousel display and post information, and provides better support for mobile devices. The plugin is equipped with a code generator (allows to insert the carousel into content) and a dedicated widget.
 This plugin uses [OWL Carousel](http://www.owlcarousel.owlgraphic.com/) in new version 2.0.0-beta.2.4.
@@ -120,6 +123,9 @@ For more info visit [WordPress Function Reference/add filter](https://codex.word
 5. Example of usage
 
 == Changelog ==
+= 1.3.7 =
+* fixed problems with newest version of PHP and Wordpress (thanks to John Holt and Steckinsights)
+
 = 1.3.6 =
 * fixed problem with query
 

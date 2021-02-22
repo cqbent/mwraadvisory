@@ -6,7 +6,7 @@
  * @since 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 ?>
@@ -18,6 +18,7 @@ if ( !defined( 'ABSPATH' ) ) {
 		.wprps-notice{padding: 10px; color: #3c763d; background-color: #dff0d8; border:1px solid #d6e9c6; margin: 0 0 20px 0;}
 		.wpos-plugin-pricing-table thead th h2{font-weight: 400; font-size: 2.4em; line-height:normal; margin:0px; color: #2ECC71;}
 		.wpos-plugin-pricing-table thead th h2 + p{font-size: 1.25em; line-height: 1.4; color: #999; margin:5px 0 5px 0;}
+		.wpos-new-feature{ font-size: 10px; color: #fff; font-weight: bold; background-color: #03aa29; padding:1px 4px; font-style: normal; }
 
 		table.wpos-plugin-pricing-table{width:90%; text-align: left; border-spacing: 0; border-collapse: collapse; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;}
 
@@ -57,7 +58,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	<table class="wpos-plugin-pricing-table">
 		<colgroup></colgroup>
 		<colgroup></colgroup>
-		<colgroup></colgroup>	
+		<colgroup></colgroup>
 	    	    <thead>
 	    	<tr>
 	    		<th></th>
@@ -69,7 +70,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	    			<h2>Premium</h2>
 	    			<p>Gain access to <strong>WP Responsive Recent Post Slider</strong> included in <br /><strong>Essential Plugin Bundle</p>
 	    			<p class="promo">Our most valuable package!</p>
-	    		</th>	    		
+	    		</th>
 	    	</tr>
 	    </thead>
 
@@ -112,7 +113,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	    		<th>Widgets<span> WordPress Widgets to your sidebars.</span></th>
 	    		<td><i class="dashicons dashicons-no-alt"></i></td>
 	    		<td><i class="dashicons dashicons-yes"></i></td>
-	    	</tr>	    	
+	    	</tr>
 			<tr>
 	    		<th>Custom Post Type Support<span>Supports any custom post type</span></th>
 	    		<td>Limited</td>
@@ -129,15 +130,40 @@ if ( !defined( 'ABSPATH' ) ) {
 	    		<td><i class="dashicons dashicons-yes"></i></td>
 	    	</tr>
 	    	<tr>
-	    		<th>Visual Composer Page Builder Supports <span>Use this plugin with Visual Composer easily</span></th>
+	    		<th>Elementor Page Builder Support <em class="wpos-new-feature">New</em> <span>Use this plugin with Elementor easily</span></th>
 	    		<td><i class="dashicons dashicons-no-alt"></i></td>
 	    		<td><i class="dashicons dashicons-yes"></i></td>
-	    	</tr>	
+	    	</tr>
+	    	<tr>
+	    		<th>Bevear Builder Support <em class="wpos-new-feature">New</em> <span>Use this plugin with Bevear Builder easily</span></th>
+	    		<td><i class="dashicons dashicons-no-alt"></i></td>
+	    		<td><i class="dashicons dashicons-yes"></i></td>
+	    	</tr>
+	    	<tr>
+	    		<th>SiteOrigin Page Builder Support <em class="wpos-new-feature">New</em> <span>Use this plugin with SiteOrigin easily</span></th>
+	    		<td><i class="dashicons dashicons-no-alt"></i></td>
+	    		<td><i class="dashicons dashicons-yes"></i></td>
+	    	</tr>
+	    	<tr>
+	    		<th>Divi Page Builder Native Support <em class="wpos-new-feature">New</em> <span>Use this plugin with Divi Builder easily</span></th>
+	    		<td><i class="dashicons dashicons-yes"></i></td>
+	    		<td><i class="dashicons dashicons-yes"></i></td>
+	    	</tr>
+	    	<tr>
+	    		<th>Fusion Page Builder (Avada) native support <em class="wpos-new-feature">New</em> <span>Use this plugin with Fusion(Avada) Builder easily</span></th>
+	    		<td><i class="dashicons dashicons-yes"></i></td>
+	    		<td><i class="dashicons dashicons-yes"></i></td>
+	    	</tr>
+			<tr>
+	    		<th>WPBakery Page Builder Support <span>Use this plugin with Visual Composer easily</span></th>
+	    		<td><i class="dashicons dashicons-no-alt"></i></td>
+	    		<td><i class="dashicons dashicons-yes"></i></td>
+	    	</tr>
 			<tr>
 				<th>Image Lazyload <span>Lazyload support for the image.</span></th>
 				<td><i class="dashicons dashicons-yes"></i></td>
 				<td><i class="dashicons dashicons-yes"></i></td>
-			</tr>		
+			</tr>
 			<tr>
 				<th>Custom Read More link for Post <span>Redirect post to third party destination if any</span></th>
 				<td><i class="dashicons dashicons-no-alt"></i></td>
@@ -152,7 +178,7 @@ if ( !defined( 'ABSPATH' ) ) {
 				<th>Display Desired Post <span>Display only the post you want</span></th>
 				<td><i class="dashicons dashicons-yes"></i></td>
 				<td><i class="dashicons dashicons-yes"></i></td>
-			</tr>			
+			</tr>
 	    	<tr>
 				<th>Exclude Some Posts <span>Do not display the posts you want</span></th>
 				<td><i class="dashicons dashicons-yes"></i></td>
@@ -192,7 +218,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	    		<th>Support <span>Get support for plugin</span></th>
 	    		<td>Limited</td>
 	    		<td>1 Year</td>
-	    	</tr>    	
+	    	</tr>
 	    </tbody>
 	</table>
 </div>

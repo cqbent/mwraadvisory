@@ -3,7 +3,7 @@
 Plugin Name: PrettyPhoto
 Plugin URI: https://www.iBabar.com
 Description: The WordPress port of the jQuery library named PrettyPhoto.
-Version: 1.2.2
+Version: 1.2.3
 Author: Babar
 Author URI: https://master-addons.com/
 Requires at least: 3.0

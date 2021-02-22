@@ -34,7 +34,14 @@ function apbct_settings_add_page() {
 
 function apbct_settings__set_fileds( $fields ){
 	global $apbct;
-	
+
+    $additional_ac_title = '';
+	if( $apbct->api_key && is_null( $apbct->fw_stats['firewall_updating_id'] ) ) {
+	    if( ! $apbct->stats['sfw']['entries'] ) {
+            $additional_ac_title = ' <span style="color:red">' . esc_html__( 'The functionality was disabled because SpamFireWall database is empty. Please, do the synchronization or', 'cleantalk-spam-protect' ) . ' ' . '<a href="https://cleantalk.org/my/support/open" target="_blank" style="color:red">'. esc_html__( 'contact to our support.', 'cleantalk-spam-protect' ) .'</a></span>';
+        }
+    }
+
 	$fields =  array(
 		
 		'main' => array(
@@ -97,20 +104,14 @@ function apbct_settings__set_fileds( $fields ){
 					'description' => __("This option allows to filter spam bots before they access website. Also reduces CPU usage on hosting server and accelerates pages load time.", 'cleantalk-spam-protect'),
 					'childrens'   => array('sfw__anti_flood', 'sfw__anti_crawler'),
 				),
-				'sfw__anti_flood' => array(
-					'type'        => 'checkbox',
-					'title'       => __('Anti-Flood', 'cleantalk-spam-protect'),
-					'class'       => 'apbct_settings-field_wrapper--sub',
-					'parent'      => 'spam_firewall',
-					'childrens'   => array('sfw__anti_flood__view_limit',),
-					'description' => __('Shows SpamFireWall page for bot which are trying to scan your website. Look for the page limit setting below.', 'cleantalk-spam-protect'),
-				),
 				'sfw__anti_crawler' => array(
 					'type'        => 'checkbox',
-					'title'       => __('Anti-Crawler', 'cleantalk-spam-protect'),
+					'title'       => __('Anti-Crawler', 'cleantalk-spam-protect') . $additional_ac_title,
 					'class'       => 'apbct_settings-field_wrapper--sub',
 					'parent'      => 'spam_firewall',
-					'description' => __('Plugin shows SpamFireWall stop page for any bot, except allowed bots (Google, Yahoo and etc).', 'cleantalk-spam-protect'),
+					'description' => __('Plugin shows SpamFireWall stop page for any bot, except allowed bots (Google, Yahoo and etc).', 'cleantalk-spam-protect')
+                    . '<br>'
+                    . __( 'Anti-Crawler includes blocking bots by the User-Agent. Use Personal lists in the Dashboard to filter specific User-Agents.', 'cleantalk-spam-protect' ),
 				),
 			),
 		),
@@ -267,7 +268,7 @@ function apbct_settings__set_fileds( $fields ){
 				),
 				'use_ajax' => array(
 					'title'       => __('Use AJAX for JavaScript check', 'cleantalk-spam-protect'),
-					'description' => __('Options helps protect WordPress against spam with any caching plugins. Turn this option on to avoid issues with caching plugins.', 'cleantalk-spam-protect'),
+					'description' => __('Options helps protect WordPress against spam with any caching plugins. Turn this option on to avoid issues with caching plugins. Turn off this option and SpamFireWall to be compatible with Accelerated mobile pages (AMP).', 'cleantalk-spam-protect'),
 				),
 				'use_static_js_key' => array(
 					'title'       => __('Use static keys for JS check.', 'cleantalk-spam-protect'),
@@ -314,9 +315,9 @@ function apbct_settings__set_fileds( $fields ){
 			'title'          => __('Exclusions', 'cleantalk-spam-protect'),
 			'fields'         => array(
 				'exclusions__urls' => array(
-					'type'        => 'text',
+					'type'        => 'textarea',
 					'title'       => __('URL exclusions', 'cleantalk-spam-protect'),
-					'description' => __('You could type here URL you want to exclude. Use comma as separator.', 'cleantalk-spam-protect'),
+					'description' => __('You could type here URL you want to exclude. Use comma or new lines as separator.', 'cleantalk-spam-protect'),
 				),
 				'exclusions__urls__use_regexp' => array(
 					'type'        => 'checkbox',
@@ -434,10 +435,18 @@ function apbct_settings__set_fileds( $fields ){
 					'options_callback_params' => array(true),
 					'class'                   => 'apbct_settings-field_wrapper--sub',
 				),
+				'sfw__anti_flood' => array(
+					'type'        => 'checkbox',
+					'title'       => __('Anti-Flood', 'cleantalk-spam-protect'),
+					'class'       => 'apbct_settings-field_wrapper',
+					'parent'      => 'spam_firewall',
+					'childrens'   => array('sfw__anti_flood__view_limit',),
+					'description' => __('Shows the SpamFireWall page for bots trying to crawl your site. Look at the page limit setting below.', 'cleantalk-spam-protect'),
+				),
 				'sfw__anti_flood__view_limit' => array(
 					'type'        => 'text',
 					'title'       => __('Anti-Flood Page Views Limit', 'cleantalk-spam-protect'),
-					'class'       => 'apbct_settings-field_wrapper',
+					'class'       => 'apbct_settings-field_wrapper--sub',
 					'parent'      => 'sfw__anti_flood',
 					'description' => __('Count of page view per 1 minute before plugin shows SpamFireWall page. SpamFireWall page active for 30 second after that valid visitor (with JavaScript) passes the page to the demanded page of the site.', 'cleantalk-spam-protect'),
 				),
@@ -684,7 +693,7 @@ function apbct_settings__display() {
 			
 			// Output spam count
 			if($apbct->key_is_ok && apbct_api_key__is_correct()){
-				if(!$apbct->white_label){
+				if( ! $apbct->white_label || is_main_site() ){
 					
 					// CP button
 					echo '<a class="cleantalk_link cleantalk_link-manual" target="__blank" href="https://cleantalk.org/my?user_token='.$apbct->user_token.'&cp_mode=antispam">'
@@ -695,7 +704,7 @@ function apbct_settings__display() {
 				}
 			}
 	
-			if( apbct_api_key__is_correct() && ! $apbct->white_label ){
+			if( apbct_api_key__is_correct() && ( ! $apbct->white_label || is_main_site() ) ){
 				// Sync button
 				echo '<button type="button" class="cleantalk_link cleantalk_link-auto" id="apbct_button__sync" title="Synchronizing account status, SpamFireWall database, all kind of journals.">'
 				     . '<i class="icon-upload-cloud"></i>&nbsp;&nbsp;'
@@ -708,7 +717,7 @@ function apbct_settings__display() {
 	
 			// Output spam count
 			if($apbct->key_is_ok && apbct_api_key__is_correct()){
-				if(!$apbct->white_label){
+				if( ! $apbct->white_label || is_main_site() ){
 					
 					// Support button
 					echo '<a class="cleantalk_link cleantalk_link-auto" target="__blank" href="https://wordpress.org/support/plugin/cleantalk-spam-protect">'.__('Support', 'cleantalk-spam-protect').'</a>';
@@ -1071,12 +1080,12 @@ function apbct_settings__field__statistics() {
 		echo '<br>';
 
 		// SFW last update
-		$sfw_netwoks_amount = $wpdb->get_results("SELECT count(*) AS cnt FROM `".$wpdb->prefix."cleantalk_sfw`", ARRAY_A);
 		printf(
 			__('SpamFireWall was updated %s. Now contains %s entries.', 'cleantalk-spam-protect'),
 			$apbct->stats['sfw']['last_update_time'] ? date('M d Y H:i:s', $apbct->stats['sfw']['last_update_time']) : __('unknown', 'cleantalk-spam-protect'),
-			isset($sfw_netwoks_amount[0]['cnt']) ? $sfw_netwoks_amount[0]['cnt'] : __('unknown', 'cleantalk-spam-protect')
+			$apbct->stats['sfw']['entries']
 		);
+		echo $apbct->fw_stats['firewall_updating_id'] ? ' ' . __('Under updating now:', 'cleantalk-spam-protect') . ' ' . $apbct->fw_stats['firewall_update_percent'] . '%' : '';
 		echo '<br>';
 
 		// SFW last sent logs
@@ -1324,6 +1333,27 @@ function apbct_settings__field__draw($params = array()){
 					.$params['description']
 				.'</div>';				
 				break;
+
+            // Textarea type
+            case 'textarea':
+
+                echo '<label for="apbct_setting_'.$params['name'].'" class="apbct_setting-field_title--'.$params['type'].'">'
+                    .$params['title']
+                    .'</label></br>';
+                echo '<textarea
+					id="apbct_setting_'.$params['name'].'"
+					name="cleantalk_settings['.$params['name'].']"'
+                    ." class='apbct_setting_{$params['type']} apbct_setting---{$params['name']}'"
+                    .$disabled
+                    .($params['required'] ? ' required="required"' : '')
+                    .($params['childrens'] ? ' onchange="apbctSettingsDependencies(\'' . $childrens . '\')"' : '')
+                    .'>'. $value .'</textarea>'
+                    . '&nbsp;';
+                echo '<div class="apbct_settings-field_description">'
+                    .$params['description']
+                    .'</div>';
+                break;
+
 		}
 		
 	echo '</div>';
@@ -1365,7 +1395,7 @@ function apbct_settings__validate($settings) {
 
 	//Sanitizing sfw__anti_flood__view_limit setting
 	$settings['sfw__anti_flood__view_limit'] = floor( intval( $settings['sfw__anti_flood__view_limit'] ) );
-	$settings['sfw__anti_flood__view_limit'] = ( $settings['sfw__anti_flood__view_limit'] == 0 ? 10 : $settings['sfw__anti_flood__view_limit'] ); // Default if 0 passed
+	$settings['sfw__anti_flood__view_limit'] = ( $settings['sfw__anti_flood__view_limit'] == 0 ? 20 : $settings['sfw__anti_flood__view_limit'] ); // Default if 0 passed
 	$settings['sfw__anti_flood__view_limit'] = ( $settings['sfw__anti_flood__view_limit'] < 5 ? 5 : $settings['sfw__anti_flood__view_limit'] ); //
 	
 	// Auto getting key
@@ -1505,6 +1535,15 @@ function apbct_settings__validate($settings) {
 			$settings['apikey'] = '';
 		}
 	}
+
+	// Alt sessions table clearing
+    if( empty( $settings['set_cookies__sessions'] ) ) {
+        if( empty( $settings['store_urls__sessions'] ) ) {
+            apbct_alt_sessions__clear();
+        } else {
+            apbct_alt_sessions__clear( false );
+        }
+    }
 	
 	return $settings;
 }
@@ -1515,7 +1554,10 @@ function apbct_settings__sync( $direct_call = false ){
 		check_ajax_referer('ct_secret_nonce' );
 	
 	global $apbct;
-	
+
+	//Clearing all errors
+	$apbct->error_delete_all('and_save_data');
+
 	// Feedback with app_agent
 	ct_send_feedback('0:' . APBCT_AGENT); // 0 - request_id, agent version.
 	
@@ -1533,6 +1575,11 @@ function apbct_settings__sync( $direct_call = false ){
 		
 		// SFW actions
 		if( $apbct->settings['spam_firewall'] == 1 ){
+
+            if( get_option( 'sfw_update_first' ) ) {
+                add_option( 'sfw_sync_first', true );
+                delete_option( 'sfw_update_first' );
+            }
 			
 			$result = ct_sfw_update( $apbct->settings['apikey'] );
 			if( ! empty( $result['error'] ) )
@@ -1642,8 +1689,17 @@ function apbct_update_blogs_options ($blog_names = array(), $settings) {
  */
 function apbct_settings__sanitize__exclusions($exclusions, $regexp = false){
 	$result = array();
+	$type = 0;
 	if( ! empty( $exclusions ) ){
-		$exclusions = explode( ',', $exclusions );
+        if( strpos( $exclusions, "\r\n" ) !== false ) {
+            $exclusions = explode( "\r\n", $exclusions );
+            $type = 2;
+        } elseif( strpos( $exclusions, "\n" ) !== false ) {
+            $exclusions = explode( "\n", $exclusions );
+            $type = 1;
+        } else {
+            $exclusions = explode( ',', $exclusions );
+        }
 		foreach ( $exclusions as $exclusion ){
 			$sanitized_exclusion = trim( $exclusion, " \t\n\r\0\x0B/\/" );
 			if ( ! empty( $sanitized_exclusion ) ) {
@@ -1653,7 +1709,18 @@ function apbct_settings__sanitize__exclusions($exclusions, $regexp = false){
 			}
 		}
 	}
-	return implode( ',', $result );
+	switch ( $type ) {
+        case 0 :
+        default :
+            return implode( ',', $result );
+            break;
+        case 1 :
+            return implode( "\n", $result );
+            break;
+        case 2 :
+            return implode( "\r\n", $result );
+            break;
+    }
 }
 
 function apbct_settings_show_gdpr_text($print = false){

@@ -24,6 +24,7 @@ use ArrayObject;
  *
  * @property ArrayObject  settings
  * @property ArrayObject  data
+ * @property ArrayObject  plugin_request_ids
  *
  * @property mixed        moderate_ip
  * @property mixed|string plugin_version
@@ -35,6 +36,7 @@ use ArrayObject;
  * @property string       logo
  * @property string       plugin_name
  * @property string       base_name
+ * @property string       plugin_request_id
  * @property array|mixed  errors
  *
  * NETWORK
@@ -57,8 +59,8 @@ class State
 		
 		'spam_firewall'                 => 1,
 		'sfw__anti_flood'               => 0,
-		'sfw__anti_flood__view_limit'   => 10,
-		'sfw__anti_crawler'             => 0,
+		'sfw__anti_flood__view_limit'   => 20,
+		'sfw__anti_crawler'             => 1,
 		'apikey'                        => '',
 		'autoPubRevelantMess'           => 0,
 		
@@ -198,6 +200,7 @@ class State
 		'feedback_request' => '',
 		'key_is_ok'        => 0,
 		'salt'             => '',
+
 	);
 	
 	public $def_network_settings = array(
@@ -225,39 +228,26 @@ class State
 		'service_id'         => 0,
 		'auto_update'        => 0,
 	);
-	
-	public $def_remote_calls = array(
-		'close_renew_banner' => array(
-			'last_call' => 0,
-		),
-		'sfw_update' => array(
-			'last_call' => 0,
-		),
-		'sfw_send_logs' => array(
-			'last_call' => 0,
-		),
-		'update_plugin' => array(
-			'last_call' => 0,
-		),
-		'install_plugin' => array(
-			'last_call' => 0,
-		),
-		'activate_plugin' => array(
-			'last_call' => 0,
-		),
-		'insert_auth_key' => array(
-			'last_call' => 0,
-		),
-		'deactivate_plugin' => array(
-			'last_call' => 0,
-		),
-		'uninstall_plugin' => array(
-			'last_call' => 0,
-		),
-		'update_settings' => array(
-			'last_call' => 0,
-		),
-	);
+    
+    public $def_remote_calls = array(
+    
+        //Common
+        'close_renew_banner' => array( 'last_call' => 0, 'cooldown' => 0 ),
+        'check_website'      => array( 'last_call' => 0, 'cooldown' => 0 ),
+        'update_settings'    => array( 'last_call' => 0, 'cooldown' => 0 ),
+        
+        // Firewall
+        'sfw_update'         => array( 'last_call' => 0, 'cooldown' => 0 ),
+        'sfw_send_logs'      => array( 'last_call' => 0, 'cooldown' => 0 ),
+        
+        // Installation
+        'update_plugin'      => array( 'last_call' => 0, 'cooldown' => 0 ),
+        'install_plugin'     => array( 'last_call' => 0, 'cooldown' => 0 ),
+        'activate_plugin'    => array( 'last_call' => 0, 'cooldown' => 0 ),
+        'insert_auth_key'    => array( 'last_call' => 0, 'cooldown' => 0 ),
+        'deactivate_plugin'  => array( 'last_call' => 0, 'cooldown' => 0 ),
+        'uninstall_plugin'   => array( 'last_call' => 0, 'cooldown' => 0 ),
+    );
 	
 	public $def_stats = array(
 		'sfw' => array(
@@ -281,6 +271,13 @@ class State
 			),
 		)
 	);
+
+    private $default_fw_stats = array(
+        'firewall_updating'            => false,
+        'firewall_updating_id'         => null,
+        'firewall_update_percent'      => 0,
+        'firewall_updating_last_start' => 0,
+    );
 	
 	/**
 	 * @param string $option_prefix Database settings prefix
@@ -332,6 +329,11 @@ class State
 			if($this->option_prefix.'_'.$option_name === 'cleantalk_stats'){
 				$option = is_array($option) ? array_merge($this->def_stats, $option) : $this->def_stats;
 			}
+
+            // Default statistics
+            if($this->option_prefix.'_'.$option_name === 'cleantalk_fw_stats'){
+                $option = is_array($option) ? array_merge($this->default_fw_stats, $option) : $this->default_fw_stats;
+            }
 			
 			$this->$option_name = is_array($option) ? new ArrayObject($option) : $option;
 		}
@@ -345,6 +347,7 @@ class State
 	private function getOption($option_name)
 	{
 		$option = get_option('cleantalk_'.$option_name, null);
+		
 		$this->$option_name = gettype($option) === 'array'
 			? new ArrayObject($option)
 			: $option;
@@ -501,8 +504,25 @@ class State
 		if($save_flag)
 			$this->saveErrors();
 	}
-	
-	/**
+    
+    /**
+     * Set or deletes an error depends of the first bool parameter
+     *
+     * @param $add_error
+     * @param $error
+     * @param $type
+     * @param null $major_type
+     * @param bool $set_time
+     * @param bool $save_flag
+     */
+    public function error_toggle($add_error, $type, $error, $major_type = null, $set_time = true, $save_flag = true ){
+        if( $add_error )
+            $this->error_add( $type, $error, $major_type, $set_time );
+        else
+            $this->error_delete( $type, $save_flag, $major_type );
+    }
+    
+    /**
 	 * Magic.
 	 * Add new variables to storage[NEW_VARIABLE]
 	 * And duplicates it in storage['data'][NEW_VARIABLE]

@@ -13,7 +13,7 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 	private $db__table__ac_logs;
 
 	private $api_key = '';
-	private $view_limit = 10;
+	private $view_limit = 20;
 	private $apbct = array();
 	private $store_interval  = 60;
 	private $block_period    = 30;
@@ -60,7 +60,10 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 				if( ! headers_sent() ){
 					\Cleantalk\Common\Helper::apbct_cookie__set( 'apbct_antiflood_passed', '0', time() - 86400, '/', null, false, true, 'Lax' );
 				}
-				
+
+                // Do logging an one passed request
+                $this->update_log( $current_ip, 'PASS_ANTIFLOOD' );
+
 				$results[] = array( 'ip' => $current_ip, 'is_personal' => false, 'status' => 'PASS_ANTIFLOOD', );
 				
 				return $results;
@@ -72,7 +75,7 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 			$result = $this->db->fetch_all(
 				"SELECT SUM(entries) as total_count"
 				. ' FROM `' . $this->db__table__ac_logs . '`'
-				. " WHERE ip = '$current_ip' AND interval_start > '$time';"
+				. " WHERE ip = '$current_ip' AND interval_start > '$time' AND " . rand( 1, 100000 ) . ";"
 			);
 			
 			if( ! empty( $result ) && isset( $result[0]['total_count'] ) && $result[0]['total_count'] >= $this->view_limit ){
@@ -122,7 +125,8 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 			$this->db->execute(
 				'DELETE
 				FROM ' . $this->db__table__ac_logs . '
-				WHERE interval_start < '. $interval_start .'
+				WHERE interval_start < '. $interval_start .' 
+				AND ua = "" 
 				LIMIT 100000;'
 			);
 		}
@@ -136,7 +140,7 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 	 * @param $status
 	 */
 	public function update_log( $ip, $status ) {
-		
+
 		$id = md5( $ip . $this->module_name );
 		$time    = time();
 		
@@ -146,14 +150,16 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 			ip = '$ip',
 			status = '$status',
 			all_entries = 1,
-			blocked_entries = 1,
-			entries_timestamp = '" . intval( $time ) . "'
+			blocked_entries = " . ( strpos( $status, 'DENY' ) !== false ? 1 : 0 ) . ",
+			entries_timestamp = '" . intval( $time ) . "',
+			ua_name = '" . Server::get('HTTP_USER_AGENT') . "'
 		ON DUPLICATE KEY
 		UPDATE
 			status = '$status',
 			all_entries = all_entries + 1,
 			blocked_entries = blocked_entries" . ( strpos( $status, 'DENY' ) !== false ? ' + 1' : '' ) . ",
-			entries_timestamp = '" . intval( $time ) . "'";
+			entries_timestamp = '" . intval( $time ) . "',
+			ua_name = '" . Server::get('HTTP_USER_AGENT') . "'";
 		
 		$this->db->execute( $query );
 	}
@@ -161,11 +167,15 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 	public function _die( $result ) {
 		
 		parent::_die( $result );
-		
+
+		global $wpdb;
+
 		// File exists?
 		if( file_exists( CLEANTALK_PLUGIN_DIR . 'lib/Cleantalk/ApbctWP/Firewall/die_page_antiflood.html' ) ){
 			
 			$sfw_die_page = file_get_contents( CLEANTALK_PLUGIN_DIR . 'lib/Cleantalk/ApbctWP/Firewall/die_page_antiflood.html' );
+
+            $net_count = $wpdb->get_var('SELECT COUNT(*) FROM ' . APBCT_TBL_FIREWALL_DATA );
 			
 			// Translation
 			$replaces = array(
@@ -175,8 +185,8 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 				'{CLEANTALK_TITLE}'                => __( 'Antispam by CleanTalk', 'cleantalk-spam-protect' ),
 				'{REMOTE_ADDRESS}'                 => $result['ip'],
 				'{REQUEST_URI}'                    => Server::get( 'REQUEST_URI' ),
-				'{SERVICE_ID}'                     => $this->apbct->data['service_id'],
-				'{HOST}'                           => Server::get( 'HTTP_HOST' ),
+				'{SERVICE_ID}'                     => $this->apbct->data['service_id'] . ', ' . $net_count,
+				'{HOST}'                           => get_home_url() . ', ' . APBCT_VERSION,
 				'{GENERATED}'                      => '<p>The page was generated at&nbsp;' . date( 'D, d M Y H:i:s' ) . "</p>",
 				'{COOKIE_ANTIFLOOD_PASSED}'      => md5( $this->api_key . $result['ip'] ),
 			);

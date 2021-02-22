@@ -39,7 +39,6 @@ class WpPostsCarouselGenerator {
             'show_category'         => 'true',
             'show_tags'             => 'false',
             'show_more_button'      => 'true',
-			'blog_post'      		=> 1,
             'show_featured_image'   => 'true',
             'image_source'          => 'thumbnail',
             'image_width'           => 100,
@@ -127,29 +126,15 @@ class WpPostsCarouselGenerator {
         } else {
             $post_types = $params['post_types'];
         }
-        $args = array ('exclude'=>1,'fields'=>'ids');   
-		$exclude_uncategorized = get_terms('category',$args);
+
         $query_args = array(
             'post_type'      => $post_types,
             'post_status'    => 'publish',
             'posts_per_page' => $params['all_items'],
             'no_found_rows'  => 1,
             'post__not_in'   => explode(',', $params['exclude']),
-			'category__in' => $exclude_uncategorized,
         );
-	
-	
-		if ($params['blog_post'] == 1) {	
-			$query_args['meta_query'] = array(
-			'relation' => 'AND', 
-			       array(
-					'key'     => 'add_to_home_blog_scroll',
-					'value'   => 'no',
-					'compare' => '='
-				  )
-			);
-		}
-			
+
         $sql_i = 0;
 
         /*
@@ -158,7 +143,6 @@ class WpPostsCarouselGenerator {
         if ( $params['posts'] != "" ) {
             $query_args['post__in'] = explode(',', $params['posts'] );
         }
-			
         /*
         * excelude posts
         */
@@ -203,7 +187,6 @@ class WpPostsCarouselGenerator {
 
                 case "newest":
                     $query_args['orderby'] = 'post_date';
-                    
                     break;
 
                 case "title":
@@ -227,34 +210,20 @@ class WpPostsCarouselGenerator {
          * display popular posts from Wordrpess Popular Posts
          * period: 1 MONTH from now
         */
-        
-       
-        
         include_once (ABSPATH . 'wp-admin/includes/plugin.php');
         if ( $params['show_only'] === "popular" && is_plugin_active( 'wordpress-popular-posts/wordpress-popular-posts.php' ) ) {
             /*
              * include custom queries
             */
-            
-           
             require_once ( "includes/wp-posts-carousel-popular-posts-query.class.php" );
             $loop = new WP_Posts_Carousel_Popular_Posts_Query( apply_filters('wpc_query', $query_args, array(
                 'params' => $params,
             ) ) );
         } else {
-          
-            
             $loop = new WP_Query( apply_filters('wpc_query', $query_args, array( 
                 'params' => $params,
             ) ) );
-			
         }
-        
-        //echo '<pre>';
-        //print_r($loop);
-      
-      //exit;
-        
 
         /*
          * if random, we shuffle array
@@ -277,7 +246,7 @@ class WpPostsCarouselGenerator {
         while ( $loop->have_posts() ) {
             $loop->the_post();
 
-            $post_url = get_permalink($post->ID);
+            $post_url = apply_filters( 'wpc_item_permalink' , get_permalink( $post->ID ), $post->ID );
             $title = '';
             $featured_image = '';
             $description = '';
@@ -298,8 +267,7 @@ class WpPostsCarouselGenerator {
                     }
                 }
             }
-//$key1 = get_post_meta( $post->ID, 'add_to_home_blog_scroll' );
-//print_r($key1);
+
             $image = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID) , $params['image_source']);
 
             /*
@@ -324,7 +292,7 @@ class WpPostsCarouselGenerator {
 
                 $featured_image = '<div class="wp-posts-carousel-image">';
                     $featured_image.= '<a href="' . $post_url . '" title="' . __('Read more', 'wp-posts-carousel') . ' ' . $post->post_title . '">';
-                        $featured_image.= '<img alt="' . $post->post_title . '" style="max-width:' . $params['image_width'] . '%;height:250px;max-height:' . $params['image_height'] . 'px" ' . $data_src . $image_class . '>';
+                        $featured_image.= '<img alt="' . $post->post_title . '" style="max-width:' . $params['image_width'] . '%;max-height:' . $params['image_height'] . '%" ' . $data_src . $image_class . '>';
                     $featured_image.= '</a>';
                 $featured_image.= '</div>';
             }
@@ -478,16 +446,8 @@ class WpPostsCarouselGenerator {
         }
 
         $out = '<script type="text/javascript">
-		           
                     jQuery(window).load(function(e) {
                         var wpPostsCarousel' . $params['id'] . ' = jQuery("#wp-posts-carousel-' . $params['id'] . '");
-						
-			wpPostsCarousel' . $params['id'] . '.hover(function() {'.'
-			var owl = $(".owlCarousel");
-			owl.owlCarousel();
-			owl.trigger(stop.owl.autoplay);						
-                        });
-                        							  
                         wpPostsCarousel' . $params['id'] . '.owlCarousel({
                             loop: ' . ($params['post_count'] > 1 ? $params['loop'] : 'false') . ',
                             nav: ' . $params['nav'] . ',
@@ -496,7 +456,7 @@ class WpPostsCarouselGenerator {
                             dotsSpeed: ' . $params['dots_speed'] . ',
                             lazyLoad: ' . $params['lazy_load'] . ',
                             autoplay: ' . $params['auto_play'] . ',
-							autoplayHoverPause: ' . $params['stop_on_hover'] . ',
+                            autoplayHoverPause: ' . $params['stop_on_hover'] . ',
                             autoplayTimeout: ' . $params['auto_play_timeout'] . ',
                             autoplaySpeed:  ' . $params['auto_play_speed'] . ',
                             margin: ' . $params['margin'] . ',

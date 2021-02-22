@@ -3,7 +3,7 @@
   Plugin Name: Anti-Spam by CleanTalk
   Plugin URI: https://cleantalk.org
   Description: Max power, all-in-one, no Captcha, premium anti-spam plugin. No comment spam, no registration spam, no contact spam, protects any WordPress forms.
-  Version: 5.146.1
+  Version: 5.153.1
   Author: СleanTalk <welcome@cleantalk.org>
   Author URI: https://cleantalk.org
   Text Domain: cleantalk-spam-protect
@@ -14,6 +14,12 @@ use Cleantalk\ApbctWP\CleantalkUpgrader;
 use Cleantalk\ApbctWP\CleantalkUpgraderSkin;
 use Cleantalk\ApbctWP\CleantalkUpgraderSkin_Deprecated;
 use Cleantalk\ApbctWP\Cron;
+use Cleantalk\ApbctWP\DB;
+use Cleantalk\ApbctWP\Firewall\SFW;
+use Cleantalk\ApbctWP\Helper;
+use Cleantalk\ApbctWP\RemoteCalls;
+use Cleantalk\Common\Schema;
+use Cleantalk\Variables\Get;
 
 $cleantalk_executed = false;
 
@@ -42,7 +48,7 @@ define('APBCT_DEBUG',            'cleantalk_debug');            //Option name wi
 define('APBCT_WPMS', (is_multisite() ? true : false)); // WMPS is enabled
 
 // Sessions
-define('APBCT_SEESION__LIVE_TIME', 86400*2);
+define('APBCT_SEESION__LIVE_TIME', 86400);
 define('APBCT_SEESION__CHANCE_TO_CLEAN', 100);
 
 // Different params
@@ -63,9 +69,11 @@ if( !defined( 'CLEANTALK_PLUGIN_DIR' ) ){
     
 	// Global ArrayObject with settings and other global varables
 	global $apbct;
-	$apbct = new \Cleantalk\ApbctWP\State('cleantalk', array('settings', 'data', 'debug', 'errors', 'remote_calls', 'stats'));
+	$apbct = new \Cleantalk\ApbctWP\State('cleantalk', array('settings', 'data', 'debug', 'errors', 'remote_calls', 'stats', 'fw_stats'));
 	
 	$apbct->base_name = 'cleantalk-spam-protect/cleantalk.php';
+	
+	$apbct->plugin_request_id = md5( microtime() ); // Identify plugin execution
 	
 	$apbct->logo                 = plugin_dir_url(__FILE__) . 'inc/images/logo.png';
 	$apbct->logo__small          = plugin_dir_url(__FILE__) . 'inc/images/logo_small.png';
@@ -83,6 +91,8 @@ if( !defined( 'CLEANTALK_PLUGIN_DIR' ) ){
 	
 	$apbct->data['user_counter']['since']       = isset($apbct->data['user_counter']['since'])       ? $apbct->data['user_counter']['since'] : date('d M');
 	$apbct->data['connection_reports']['since'] = isset($apbct->data['connection_reports']['since']) ? $apbct->data['user_counter']['since'] : date('d M');
+
+    $apbct->firewall_updating = (bool) $apbct->fw_stats['firewall_updating_id'];
 	
 	$apbct->settings_link = is_network_admin() ? 'settings.php?page=cleantalk' : 'options-general.php?page=cleantalk';
 	
@@ -106,7 +116,8 @@ if( !defined( 'CLEANTALK_PLUGIN_DIR' ) ){
 	// Database constants
 	define('APBCT_TBL_FIREWALL_DATA', $apbct->db_prefix . 'cleantalk_sfw');      // Table with firewall data.
 	define('APBCT_TBL_FIREWALL_LOG',  $apbct->db_prefix . 'cleantalk_sfw_logs'); // Table with firewall logs.
-	define('APBCT_TBL_AC_LOG',        $apbct->db_prefix . 'cleantalk_ac_log'); // Table with firewall logs.
+	define('APBCT_TBL_AC_LOG',        $apbct->db_prefix . 'cleantalk_ac_log');   // Table with firewall logs.
+    define('APBCT_TBL_AC_UA_BL',      $apbct->db_prefix . 'cleantalk_ua_bl');    // Table with User-Agents blacklist.
 	define('APBCT_TBL_SESSIONS',      $apbct->db_prefix . 'cleantalk_sessions'); // Table with session data.
     define('APBCT_SPAMSCAN_LOGS',     $apbct->db_prefix . 'cleantalk_spamscan_logs'); // Table with session data.
 	define('APBCT_SELECT_LIMIT',      5000); // Select limit for logs.
@@ -118,21 +129,22 @@ if( !defined( 'CLEANTALK_PLUGIN_DIR' ) ){
 	
 	// Do update actions if version is changed
 	apbct_update_actions();
-
-	// Self cron
-	if(!defined('DOING_CRON') || (defined('DOING_CRON') && DOING_CRON !== true)){
-		
-		$ct_cron = new Cron();
-		$ct_cron->checkTasks();
-		
-		if(!empty($ct_cron->tasks_to_run)){
-			
-			define('CT_CRON', true); // Letting know functions that they are running under CT_CRON
-			$ct_cron->runTasks();
-			unset($ct_cron);
-			
-		}
-	}
+    
+    // Self cron
+    $tasks_to_run = Cron::checkTasks(); // Check for current tasks. Drop tasks inner counters.
+    if(
+        ! empty( $tasks_to_run ) && // There is tasks to run
+        ! RemoteCalls::check() && // Do not doing CRON in remote call action
+        (
+            ! defined( 'DOING_CRON' ) ||
+            ( defined( 'DOING_CRON' ) && DOING_CRON !== true )
+        )
+    ){
+        $ct_cron = new Cron();
+        $ct_cron->setTasksToRun( $tasks_to_run );
+        $ct_cron->runTasks();
+        unset( $ct_cron );
+    }
 	
 	//Delete cookie for admin trial notice
 	add_action('wp_logout', 'apbct__hook__wp_logout__delete_trial_notice_cookie');
@@ -179,6 +191,10 @@ if( !defined( 'CLEANTALK_PLUGIN_DIR' ) ){
         'ElfsightContactForm'  => array( 'hook' => 'elfsight_contact_form_mail', 'ajax' => true ),
         'SimpleMembership'     => array( 'hook' => 'swpm_front_end_registration_complete_user_data', 'ajax' => false ),
         'EstimationForm'       => array( 'hook' => 'send_email', 'ajax' => true ),
+        'LandingPageBuilder'   => array( 'hook' => 'ulpb_formBuilderEmail_ajax', 'ajax' => true ),
+        'WpMembers'            => array( 'hook' => 'wpmem_pre_register_data', 'ajax' => false ),
+        'Rafflepress'          => array( 'hook' => 'rafflepress_lite_giveaway_api', 'ajax' => true ),
+	    'Wpdiscuz'             => array( 'hook' => array( 'wpdAddComment', 'wpdAddInlineComment' ), 'ajax' => true ),
     );
     new  \Cleantalk\Antispam\Integrations( $apbct_active_integrations );
 	
@@ -208,7 +224,7 @@ if( !defined( 'CLEANTALK_PLUGIN_DIR' ) ){
 
     // Custom register form (ticket_id=13668)
     add_action('website_neotrends_signup_fields_check',function( $username, $fields ){
-        $ip = \Cleantalk\ApbctWP\Helper::ip__get( array('real'), false );
+        $ip = Helper::ip__get( array('real'), false );
         $ct_result = ct_test_registration( $username, $fields['email'], $ip );
         if( $ct_result['allow'] == 0 ) {
             ct_die_extended( $ct_result['comment'] );
@@ -222,12 +238,11 @@ if( !defined( 'CLEANTALK_PLUGIN_DIR' ) ){
     // Enfold Theme contact form
 	add_filter( 'avf_form_send', 'apbct_form__enfold_contact_form__test_spam', 4, 10 );
 
-    //Hooks for updating/adding settings
-    //add_action ('added_option', 'apbct_after_options_added', 10, 2);
-    //add_action ('updated_option', 'apbct_after_options_updated', 10, 3);
+	// Profile Builder integration
+    add_filter( 'wppb_output_field_errors_filter', 'apbct_form_profile_builder__check_register', 1, 3 );
 
 	// Public actions
-	if(!is_admin() && !apbct_is_ajax()){
+	if( ! is_admin() && ! apbct_is_ajax() && ! apbct_is_customize_preview() ){
 		
 		// Default search
 		//add_filter( 'get_search_form',  'apbct_forms__search__addField' );
@@ -235,9 +250,8 @@ if( !defined( 'CLEANTALK_PLUGIN_DIR' ) ){
         add_action( 'wp_head', 'apbct_search_add_noindex', 1 );
 		
 		// Remote calls
-		if(isset($_GET['spbc_remote_call_token'], $_GET['spbc_remote_call_action'], $_GET['plugin_name']) && in_array($_GET['plugin_name'], array('antispam','anti-spam', 'apbct'))){
-			apbct_remote_call__perform();
-		}
+		if( RemoteCalls::check() )
+            RemoteCalls::perform();
 		
 		// SpamFireWall check
 		if( $apbct->plugin_version == APBCT_VERSION && // Do not call with first start
@@ -263,7 +277,7 @@ if( !defined( 'CLEANTALK_PLUGIN_DIR' ) ){
 	add_filter('script_loader_tag', 'apbct_add_async_attribute', 10, 3);
 	
     // Redirect admin to plugin settings.
-    if(!defined('WP_ALLOW_MULTISITE') || defined('WP_ALLOW_MULTISITE') && WP_ALLOW_MULTISITE == false)
+    if( ! defined('WP_ALLOW_MULTISITE') || ( defined('WP_ALLOW_MULTISITE') && WP_ALLOW_MULTISITE == false ) )
     	add_action('admin_init', 'apbct_plugin_redirect');
 	
 	// Deleting SFW tables when deleting websites
@@ -436,147 +450,6 @@ if( !defined( 'CLEANTALK_PLUGIN_DIR' ) ){
 	
 }
 
-/**
- * Hook for updating settings
- */
-function apbct_after_options_updated( $option, $old_value, $value ) {
-    apbct_sfw_actions( $option, $value );
-}
-
-/**
- * Hook for adding settings
- */
-function apbct_after_options_added( $option, $value ) {
-    apbct_sfw_actions( $option, $value );
-}
-
-function apbct_sfw_actions( $option, $value ) {
-
-    global $apbct;
-
-    if ( $option == 'cleantalk_settings' ) {
-
-        $api_key = ! empty( $value['apikey'] ) || $apbct->moderate_ip ? $value['apikey'] : $apbct->api_key;
-
-        // SFW actions
-        if( $value['spam_firewall'] == 1 ){
-
-            $result = ct_sfw_update( true, $api_key );
-            if( ! empty( $result['error'] ) )
-                $apbct->error_add( 'sfw_update', $result['error'] );
-
-            $result = ct_sfw_send_logs( true, $api_key );
-            if( ! empty( $result['error'] ) )
-                $apbct->error_add( 'sfw_send_logs', $result['error'] );
-
-        }
-    }
-
-}
-
-/**
-* Function preforms remote call
-*/
-function apbct_remote_call__perform()
-{
-	global $apbct;
-	
-	$remote_action = $_GET['spbc_remote_call_action'];
-
-	if( isset( $apbct->remote_calls[$remote_action] ) ){
-		if(time() - $apbct->remote_calls[$remote_action]['last_call'] > APBCT_REMOTE_CALL_SLEEP || ($remote_action == 'sfw_update' && isset($_GET['file_urls']))) {
-			
-			$apbct->remote_calls[$remote_action]['last_call'] = time();
-			$apbct->save('remote_calls');
-
-			if(strtolower($_GET['spbc_remote_call_token']) == strtolower(md5($apbct->api_key))){
-				
-				// Flag to let plugin know that Remote Call is running.
-				$apbct->rc_running = true;
-				
-				switch ($remote_action) {
-					
-				// Close renew banner
-					case 'close_renew_banner':
-						$apbct->data['notice_trial'] = 0;
-						$apbct->data['notice_renew'] = 0;
-						$apbct->saveData();
-						Cron::updateTask('check_account_status', 'ct_account_status_check',  86400);
-						die('OK');	
-						break;
-					
-				// SFW update
-					case 'sfw_update':
-						$result = ct_sfw_update( $apbct->api_key, true);
-						/**
-						 * @todo CRUNCH
-						 */
-						if(is_string($result) && strpos($result, 'FAIL') !== false){
-							$result = json_decode(substr($result, 5), true);
-						}
-						die(empty($result['error']) ? 'OK' : 'FAIL '.json_encode(array('error' => $result['error'])));
-						break;
-				
-				// SFW send logs
-					case 'sfw_send_logs':
-						$result = ct_sfw_send_logs();
-						die(empty($result['error']) ? 'OK' : 'FAIL '.json_encode(array('error' => $result['error'])));
-						break;
-					
-				// Update plugin
-					case 'update_plugin':
-						add_action('wp', 'apbct_rc__update', 1);
-						break;
-					
-				// Install plugin
-					case 'install_plugin':
-						add_action('wp', 'apbct_rc__install_plugin', 1);
-						break;
-					// Activate plugin
-					case 'activate_plugin':
-						$result = apbct_rc__activate_plugin($_GET['plugin']);
-						die(empty($result['error'])
-							? 'OK'
-							: 'FAIL '.json_encode(array('error' => $result['error'])));
-						break;
-					
-					// Insert API key
-					case 'insert_auth_key':
-						$result = apbct_rc__insert_auth_key($_GET['auth_key'], $_GET['plugin']);
-						die(empty($result['error'])
-							? 'OK'
-							: 'FAIL '.json_encode(array('error' => $result['error'])));
-						break;
-					
-					// Update settins
-					case 'update_settings':
-						$result = apbct_rc__update_settings($_GET);
-						die(empty($result['error'])
-							? 'OK'
-							: 'FAIL '.json_encode(array('error' => $result['error'])));
-						break;
-					// Deactivate plugin
-					case 'deactivate_plugin':
-						add_action('plugins_loaded', 'apbct_rc__deactivate_plugin', 1);
-						break;
-					
-					// Uninstall plugin
-					case 'uninstall_plugin':
-						add_action('plugins_loaded', 'apbct_rc__uninstall_plugin', 1);
-						break;
-					// No action found
-					default:
-						die('FAIL '.json_encode(array('error' => 'UNKNOWN_ACTION_2')));
-						break;
-				}
-				
-			}else
-				die('FAIL '.json_encode(array('error' => 'WRONG_TOKEN')));
-		}else
-			die('FAIL '.json_encode(array('error' => 'TOO_MANY_ATTEMPTS')));
-	}else
-		die('FAIL '.json_encode(array('error' => 'UNKNOWN_ACTION')));
-}
 
 /**
 * Function for SpamFireWall check
@@ -611,15 +484,11 @@ function apbct_sfw__check()
 	if($apbct->rc_running || (!empty($spbc) && $spbc->rc_running))
 		return;
 	
-	$fw_init_options = array(
-		'set_cookies' => $apbct->settings['set_cookies']
-	);
-	
 	$firewall = new \Cleantalk\Common\Firewall(
-		\Cleantalk\ApbctWP\DB::getInstance()
+		DB::getInstance()
 	);
 	
-	$firewall->load_fw_module( new \Cleantalk\ApbctWP\Firewall\SFW(
+	$firewall->load_fw_module( new SFW(
 		APBCT_TBL_FIREWALL_LOG,
 		APBCT_TBL_FIREWALL_DATA,
 		array(
@@ -631,7 +500,7 @@ function apbct_sfw__check()
 		)
 	) );
 	
-	if( $apbct->settings['sfw__anti_crawler'] ){
+	if( $apbct->settings['sfw__anti_crawler'] && $apbct->stats['sfw']['entries'] > 50 ){
 		$firewall->load_fw_module( new \Cleantalk\ApbctWP\Firewall\AntiCrawler(
 			APBCT_TBL_FIREWALL_LOG,
 			APBCT_TBL_AC_LOG,
@@ -660,54 +529,13 @@ function apbct_sfw__check()
 
 /**
  * On activation, set a time, frequency and name of an action hook to be scheduled.
+ * @throws Exception
  */
 function apbct_activation( $network = false ) {
 	
 	global $wpdb;
-	
-	// SFW data
-	$sqls[] = 'CREATE TABLE IF NOT EXISTS `%scleantalk_sfw` (
-		`network` int(11) unsigned NOT NULL,
-		`mask` int(11) unsigned NOT NULL,
-		`status` TINYINT(1) NOT NULL DEFAULT 0,
-		INDEX (  `network` ,  `mask` )
-		);';
-	
-	// SFW log
-	$sqls[] = 'CREATE TABLE IF NOT EXISTS `%scleantalk_sfw_logs` (
-		`id` VARCHAR(40) NOT NULL,
-		`ip` VARCHAR(15) NOT NULL,
-		`status` ENUM(\'PASS_SFW\',\'DENY_SFW\',\'PASS_SFW__BY_WHITELIST\',\'PASS_SFW__BY_COOKIE\',\'DENY_ANTICRAWLER\',\'PASS_ANTICRAWLER\',\'DENY_ANTIFLOOD\',\'PASS_ANTIFLOOD\') NULL DEFAULT NULL,
-		`all_entries` INT NOT NULL,
-		`blocked_entries` INT NOT NULL,
-		`entries_timestamp` INT NOT NULL,
-		PRIMARY KEY (`id`));';
-	
-	$sqls[] = 'CREATE TABLE IF NOT EXISTS `%scleantalk_ac_log` (
-		`id` VARCHAR(40) NOT NULL,
-		`ip` VARCHAR(40) NOT NULL,
-		`ua` VARCHAR(40) NOT NULL,
-		`entries` INT DEFAULT 0,
-		`interval_start` INT NOT NULL,
-		PRIMARY KEY (`id`));';
-	
-	// Sessions
-	$sqls[] = 'CREATE TABLE IF NOT EXISTS `%scleantalk_sessions` (
-		`id` VARCHAR(64) NOT NULL,
-		`name` VARCHAR(40) NOT NULL,
-		`value` TEXT NULL DEFAULT NULL,
-		`last_update` DATETIME NULL DEFAULT NULL,
-		PRIMARY KEY (`name`(40), `id`(64)));';
-	
-	$sqls[] = 'CREATE TABLE IF NOT EXISTS `%scleantalk_spamscan_logs` (
-		`id` int(11) NOT NULL AUTO_INCREMENT,
-        `scan_type` varchar(11) NOT NULL,
-        `start_time` datetime NOT NULL,
-        `finish_time` datetime NOT NULL,
-        `count_to_scan` int(11) DEFAULT NULL,
-        `found_spam` int(11) DEFAULT NULL,
-        `found_bad` int(11) DEFAULT NULL,
-        PRIMARY KEY (`id`));';
+
+	$sqls = Schema::getSchema();
 		
 	if($network && !defined('CLEANTALK_ACCESS_KEY')){
 		$initial_blog  = get_current_blog_id();
@@ -723,7 +551,10 @@ function apbct_activation( $network = false ) {
 			Cron::addTask('send_sfw_logs',         'ct_sfw_send_logs',               3600, time() + 1800); // SFW send logs
 			Cron::addTask('get_brief_data',        'cleantalk_get_brief_data',       86400, time() + 3500); // Get data for dashboard widget
 			Cron::addTask('send_connection_report','ct_mail_send_connection_report', 86400, time() + 3500); // Send connection report to welcome@cleantalk.org
-			Cron::addTask('antiflood__clear_table',  'apbct_antiflood__clear_table',        600,    time() + 300); // Clear Anti-Flood table
+			Cron::addTask('antiflood__clear_table',  'apbct_antiflood__clear_table',        86400,    time() + 300); // Clear Anti-Flood table
+
+			// Flag for auto-updating once
+			add_option( 'sfw_update_first', true );
 		}
 		switch_to_blog($initial_blog);
 	}else{
@@ -736,14 +567,18 @@ function apbct_activation( $network = false ) {
 		Cron::addTask('send_sfw_logs',         'ct_sfw_send_logs',               3600, time() + 1800); // SFW send logs
 		Cron::addTask('get_brief_data',        'cleantalk_get_brief_data',       86400, time() + 3500); // Get data for dashboard widget
 		Cron::addTask('send_connection_report','ct_mail_send_connection_report', 86400, time() + 3500); // Send connection report to welcome@cleantalk.org
-		Cron::addTask('antiflood__clear_table',  'apbct_antiflood__clear_table',        600,    time() + 300); // Clear Anti-Flood table
-		
+		Cron::addTask('antiflood__clear_table',  'apbct_antiflood__clear_table',        86400,    time() + 300); // Clear Anti-Flood table
+
+		// Flag for auto-updating once
+		add_option( 'sfw_update_first', true );
+
 		apbct_activation__create_tables($sqls);
 		ct_account_status_check(null, false);
 	}
 	
 	// Additional options
-	add_option('ct_plugin_do_activation_redirect', true);
+	add_option( 'ct_plugin_do_activation_redirect', true );
+
 }
 
 function apbct_activation__create_tables( $sqls, $db_prefix = '' ) {
@@ -766,67 +601,27 @@ function apbct_activation__create_tables( $sqls, $db_prefix = '' ) {
 		apbct_log($errors);
 }
 
+/**
+ * On activation, set a time, frequency and name of an action hook to be scheduled for sub-sites.
+ * @throws Exception
+ */
 function apbct_activation__new_blog($blog_id, $user_id, $domain, $path, $site_id, $meta) {
     if (apbct_is_plugin_active_for_network('cleantalk-spam-protect/cleantalk.php')){
 
 		$settings = get_option('cleantalk_settings');
 
         switch_to_blog($blog_id);
-		
-		global $wpdb;
-		
-		// SFW data
-		$sqls[] = 'CREATE TABLE IF NOT EXISTS `%scleantalk_sfw` (
-			`network` int(11) unsigned NOT NULL,
-			`mask` int(11) unsigned NOT NULL,
-			INDEX (  `network` ,  `mask` )
-			);';
-	
-	    // SFW log
-	    $sqls[] = 'CREATE TABLE IF NOT EXISTS `%scleantalk_sfw_logs` (
-		`id` VARCHAR(40) NOT NULL,
-		`ip` VARCHAR(15) NOT NULL,
-		`status` ENUM(\'PASS_SFW\',\'DENY_SFW\',\'PASS_SFW__BY_WHITELIST\',\'PASS_SFW__BY_COOKIE\',\'DENY_ANTICRAWLER\',\'PASS_ANTICRAWLER\',\'DENY_ANTIFLOOD\',\'PASS_ANTIFLOOD\') NULL DEFAULT NULL,
-		`all_entries` INT NOT NULL,
-		`blocked_entries` INT NOT NULL,
-		`entries_timestamp` INT NOT NULL,
-		PRIMARY KEY (`id`));';
-	
-	    $sqls[] = 'CREATE TABLE IF NOT EXISTS `%scleantalk_ac_log` (
-		`id` VARCHAR(40) NOT NULL,
-		`ip` VARCHAR(40) NOT NULL,
-		`ua` VARCHAR(40) NOT NULL,
-		`entries` INT DEFAULT 0,
-		`interval_start` INT NOT NULL,
-		PRIMARY KEY (`id`));';
 
-		// Sessions
-		$sqls[] = 'CREATE TABLE IF NOT EXISTS `%scleantalk_sessions` (
-			`id` VARCHAR(64) NOT NULL,
-			`name` TEXT NOT NULL,
-			`value` TEXT NULL DEFAULT NULL,
-			`last_update` DATETIME NULL DEFAULT NULL,
-			PRIMARY KEY (`id`(64), `name`(64)));';
-	
-	    $sqls[] = 'CREATE TABLE IF NOT EXISTS `%scleantalk_spamscan_logs` (
-		`id` int(11) NOT NULL AUTO_INCREMENT,
-        `scan_type` varchar(11) NOT NULL,
-        `start_time` datetime NOT NULL,
-        `finish_time` datetime NOT NULL,
-        `count_to_scan` int(11) DEFAULT NULL,
-        `found_spam` int(11) DEFAULT NULL,
-        `found_bad` int(11) DEFAULT NULL,
-        PRIMARY KEY (`id`));';
+        $sqls = Schema::getSchema();
 		
 		// Cron tasks
 		Cron::addTask('check_account_status',  'ct_account_status_check',        3600, time() + 1800); // Checks account status
 		Cron::addTask('delete_spam_comments',  'ct_delete_spam_comments',        3600, time() + 3500); // Formerly ct_hourly_event_hook()
 		Cron::addTask('send_feedback',         'ct_send_feedback',               3600, time() + 3500); // Formerly ct_hourly_event_hook()
-		Cron::addTask('sfw_update',            'ct_sfw_update',                  86400, time() + 600);  // SFW update
 		Cron::addTask('send_sfw_logs',         'ct_sfw_send_logs',               3600, time() + 1800); // SFW send logs
 		Cron::addTask('get_brief_data',        'cleantalk_get_brief_data',       86400, time() + 3500); // Get data for dashboard widget
 		Cron::addTask('send_connection_report','ct_mail_send_connection_report', 86400, time() + 3500); // Send connection report to welcome@cleantalk.org
-	    Cron::addTask('antiflood__clear_table',  'apbct_antiflood__clear_table',        600,    time() + 300); // Clear Anti-Flood table
+	    Cron::addTask('antiflood__clear_table',  'apbct_antiflood__clear_table',        86400,    time() + 300); // Clear Anti-Flood table
 		apbct_activation__create_tables($sqls);
 		ct_sfw_update(); // Updating SFW
 		ct_account_status_check(null, false);
@@ -902,6 +697,11 @@ function apbct_deactivation__delete_all_options(){
 	delete_option('cleantalk_stats');
 	delete_option('cleantalk_timelabel_reg');
 	delete_option('cleantalk_debug');
+    delete_option('cleantalk_plugin_request_ids');
+    delete_option('cleantalk_fw_stats');
+    delete_option( 'ct_plugin_do_activation_redirect' );
+    delete_option( 'sfw_update_first' );
+    delete_option( 'sfw_sync_first' );
 }
 
 /**
@@ -916,18 +716,24 @@ function apbct_deactivation__delete_common_tables() {
 	global $wpdb;
 	$wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->base_prefix.'cleantalk_sfw`;');           // Deleting SFW data
 	$wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->base_prefix.'cleantalk_sfw_logs`;');      // Deleting SFW logs
+    $wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->base_prefix.'cleantalk_sfw__flood_logs`;');   // Deleting SFW logs
 	$wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->base_prefix.'cleantalk_ac_log`;');      // Deleting SFW logs
 	$wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->base_prefix.'cleantalk_sessions`;');      // Deleting session table
 	$wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->base_prefix.'cleantalk_spamscan_logs`;'); // Deleting user/comments scan result table
+    $wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->base_prefix.'cleantalk_ua_bl`;');         // Deleting AC UA black lists
+    $wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->base_prefix.'cleantalk_sfw_temp`;');      // Deleting temporary SFW data
 }
 
 function apbct_deactivation__delete_blog_tables() {
 	global $wpdb;
 	$wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->prefix.'cleantalk_sfw`;');                // Deleting SFW data
 	$wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->prefix.'cleantalk_sfw_logs`;');          // Deleting SFW logs
+	$wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->prefix.'cleantalk_sfw__flood_logs`;');   // Deleting SFW logs
 	$wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->prefix.'cleantalk_ac_log`;');           // Deleting SFW logs
 	$wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->prefix.'cleantalk_sessions`;');           // Deleting session table
 	$wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->prefix.'cleantalk_spamscan_logs`;'); // Deleting user/comments scan result table
+    $wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->prefix.'cleantalk_ua_bl`;');         // Deleting AC UA black lists
+    $wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->prefix.'cleantalk_sfw_temp`;');      // Deleting temporary SFW data
 }
 
 function apbct_deactivation__delete_meta(){
@@ -998,87 +804,168 @@ function ct_get_cookie()
 	die();
 }
 
-function ct_sfw_update($api_key = '', $immediate = false){
+// This action triggered by  wp_schedule_single_event( time() + 900, 'ct_sfw_update' );
+add_action( 'ct_sfw_update', 'ct_sfw_update' );
+
+/**
+ * @param string $api_key
+ * @param bool $immediate
+ *
+ * @return array|bool|int|string[]
+ */
+function ct_sfw_update( $api_key = '', $immediate = false ){
 	
-	global $apbct;
+	global $apbct, $wpdb;
+
+    // Prevent start another update at a time
+    if(
+        ! Get::get('firewall_updating_id') &&
+        $apbct->fw_stats['firewall_updating_id'] &&
+        time() - $apbct->fw_stats['firewall_updating_last_start'] < 60
+    ){
+        return true;
+    }
+
+    // Check if the update performs right now. Blocks remote calls with different ID
+    if( Get::get('firewall_updating_id') &&
+        Get::get('firewall_updating_id') !== $apbct->fw_stats['firewall_updating_id']
+    ) {
+        return array( 'error' => 'FIREWALL_IS_UPDATING' );
+    }
 
 	$api_key = !empty($apbct->api_key) ? $apbct->api_key : $api_key;
+    
+    if( empty( $api_key ) && ! $apbct->data['moderate_ip'] ){
+        return true;
+    }
+    
+    if( $apbct->settings['spam_firewall'] == 1 ) {
 
-    if( $apbct->settings['spam_firewall'] == 1 && ( ! empty($api_key) || $apbct->data['moderate_ip'] ) ) {
-    	
-	    $file_urls   = isset($_GET['file_urls'])   ? urldecode( $_GET['file_urls'] )   : null;
-        $url_count   = isset($_GET['url_count'])   ? urldecode( $_GET['url_count'] )   : null;
-        $current_url = isset($_GET['current_url']) ? urldecode( $_GET['current_url'] ) : null;
+        if( get_option( 'sfw_sync_first' ) ) {
+            $first = 'first';
+        } else {
+            $first = '';
+        }
+        // Set new update ID
+        if( ! $apbct->fw_stats['firewall_updating_id'] || time() - $apbct->fw_stats['firewall_updating_last_start'] > 300 ){
+            $apbct->fw_stats['firewall_updating_id'] = md5( rand( 0, 100000 ) ) . $first;
+            $apbct->fw_stats['firewall_updating_last_start'] = time();
+            $apbct->save( 'fw_stats' );
+        }
 
-		if( ! $file_urls ){
+        if( RemoteCalls::check() ) {
+            // Remote call is in process, do updating
 
-		    // @ToDo we have to implement a flag to checking is the updating is in progress
-		    // @ToDo this is the temporary solution: Setting update time at the updating start to prevent running several update processes
-            $apbct->stats['sfw']['last_update_time'] = time();
+            $file_urls   = isset($_GET['file_urls'])   ? urldecode( $_GET['file_urls'] )   : null;
+            $url_count   = isset($_GET['url_count'])   ? urldecode( $_GET['url_count'] )   : null;
+            $current_url = isset($_GET['current_url']) ? urldecode( $_GET['current_url'] ) : null;
 
-			//Reset previous entries count
-			$apbct->stats['sfw']['entries'] = 0;
-			$apbct->save('stats');
-			
-			$result = \Cleantalk\ApbctWP\Firewall\SFW::update(
-				\Cleantalk\ApbctWP\DB::getInstance(),
-				APBCT_TBL_FIREWALL_DATA,
-				$api_key,
-				null,
-				$immediate
-			);
-			
-			return ! empty( $result['error'] )
-				? $result
-				: true;
-			
-		}elseif( $file_urls && $url_count > $current_url ){
+            if( ! $file_urls ){
 
-			$result = \Cleantalk\ApbctWP\Firewall\SFW::update(
-				\Cleantalk\ApbctWP\DB::getInstance(),
-				APBCT_TBL_FIREWALL_DATA,
-				$api_key,
-                str_replace( 'multifiles', $current_url, $file_urls ),
-				$immediate
-			);
-			
-			if( empty( $result['error'] ) ){
+                // @todo We have to handle errors here
+                SFW::create_temp_tables( DB::getInstance() );
 
-                $current_url++;
+                $result = SFW::update(
+                    DB::getInstance(),
+                    APBCT_TBL_FIREWALL_DATA . '_temp',
+                    $api_key,
+                    null,
+                    $immediate
+                );
 
-				//Increment sfw entries
-				$apbct->stats['sfw']['entries'] += $result;
-				$apbct->save('stats');
+                return ! empty( $result['error'] )
+                    ? $result
+                    : true;
 
-				if ( $url_count >= $current_url ) {
-					\Cleantalk\ApbctWP\Helper::http__request(
-						get_option('siteurl'),
-						array(
-							'spbc_remote_call_token'  => md5($api_key),
-							'spbc_remote_call_action' => 'sfw_update',
-							'plugin_name'             => 'apbct',
-                            'file_urls'               => $file_urls,
-                            'url_count'               => $url_count,
-                            'current_url'             => $current_url,
-						),
-						array('get', 'async')
-					);
-				} else {
-					//Files array is empty update sfw time
-					$apbct->stats['sfw']['last_update_time'] = time();
-					$apbct->save('stats');
-					// Delete update errors
-					$apbct->error_delete( 'sfw_update', 'save_settings' );
+            }elseif( $file_urls && $url_count > $current_url ){
 
-					return $result;
-				}
-			}else
-				return $result;
-		}else
-			return array('error' => 'SFW_UPDATE WRONG_FILE_URLS');
-	}
-	
-	return array('error' => 'SFW_DISABLED');
+                $result = SFW::update(
+                    DB::getInstance(),
+                    APBCT_TBL_FIREWALL_DATA . '_temp',
+                    $api_key,
+                    str_replace( 'multifiles', $current_url, $file_urls ),
+                    $immediate
+                );
+
+                if( empty( $result['error'] ) ){
+
+                    $current_url++;
+
+                    $apbct->fw_stats['firewall_update_percent'] = round( ( ( (int) $current_url + 1 ) / (int) $url_count ), 2) * 100;
+                    $apbct->save('fw_stats');
+
+                    if ( $url_count > $current_url ) {
+                        return Helper::http__request__rc_to_host(
+                            get_option('siteurl'),
+                            array(
+                                'spbc_remote_call_token'  => md5($api_key),
+                                'spbc_remote_call_action' => 'sfw_update',
+                                'plugin_name'             => 'apbct',
+                                'file_urls'               => str_replace( array( 'http://', 'https://' ), '', $file_urls ),
+                                'url_count'               => $url_count,
+                                'current_url'             => $current_url,
+                                // Additional params
+                                'firewall_updating_id'    => $apbct->fw_stats['firewall_updating_id'],
+                            ),
+                            array('get', 'async')
+                        );
+                    } else {
+
+                        $is_first_updating = strpos( $apbct->fw_stats['firewall_updating_id'], 'first' );
+
+                        // @todo We have to handle errors here
+                        SFW::delete_main_data_tables( DB::getInstance() );
+                        // @todo We have to handle errors here
+                        SFW::rename_data_tables( DB::getInstance() );
+
+                        //Files array is empty update sfw stats
+                        $apbct->data['last_firewall_updated'] = current_time('timestamp'); // Unused
+                        $apbct->save('data'); // Unused
+                        $apbct->fw_stats['firewall_update_percent'] = 0;
+                        $apbct->fw_stats['firewall_updating_id'] = null;
+                        $apbct->save( 'fw_stats' );
+
+                        //Files array is empty update sfw time
+                        $apbct->stats['sfw']['entries'] = $wpdb->get_var('SELECT COUNT(*) FROM ' . APBCT_TBL_FIREWALL_DATA );
+                        $apbct->stats['sfw']['last_update_time'] = time();
+                        $apbct->save('stats');
+
+                        // Running sfw update once again in 12 min if entries is < 4000
+                        if( $is_first_updating !== false ) {
+                            if( $apbct->stats['sfw']['entries'] < 4000 ) {
+                                wp_schedule_single_event( time() + 720, 'ct_sfw_update' );
+                            }
+                            delete_option( 'sfw_sync_first' );
+                        }
+
+                        // Delete update errors
+                        $apbct->error_delete( 'sfw_update', 'save_settings' );
+
+                        // REMOVE AND RENAME
+                        return $result;
+                    }
+                }else
+                    return $result;
+            }else
+                return array('error' => 'SFW_UPDATE WRONG_FILE_URLS');
+
+        } else {
+            // Go to init remote call
+            return Helper::http__request__rc_to_host(
+                get_option( 'siteurl' ),
+                array(
+                    'spbc_remote_call_token'  => md5( $api_key ),
+                    'spbc_remote_call_action' => 'sfw_update',
+                    'plugin_name'             => 'apbct',
+                    // Additional params
+                    'firewall_updating_id'    => $apbct->fw_stats['firewall_updating_id'],
+                ),
+                array( 'get','async' )
+            );
+        }
+
+	}else
+        return array('error' => 'SFW_DISABLED');
 }
 
 function ct_sfw_send_logs($api_key = '')
@@ -1087,10 +974,14 @@ function ct_sfw_send_logs($api_key = '')
 
 	$api_key = !empty($apbct->api_key) ? $apbct->api_key : $api_key;
 
-	if( $apbct->settings['spam_firewall'] == 1 && ( ! empty($api_key) || $apbct->data['moderate_ip'] ) ) {
+    if( empty( $api_key ) && ! $apbct->data['moderate_ip'] ){
+        return true;
+    }
+
+	if( $apbct->settings['spam_firewall'] == 1 ) {
 		
-		$result = \Cleantalk\ApbctWP\Firewall\SFW::send_log(
-			\Cleantalk\ApbctWP\DB::getInstance(),
+		$result = SFW::send_log(
+			DB::getInstance(),
 			APBCT_TBL_FIREWALL_LOG,
 			$api_key
 		);
@@ -1104,9 +995,8 @@ function ct_sfw_send_logs($api_key = '')
 
 		return $result;
 		
-	}
-	
-	return array('error' => 'SFW_DISABLED');
+	} else 
+		return array('error' => 'SFW_DISABLED');
 }
 
 function apbct_antiflood__clear_table(){
@@ -1122,7 +1012,7 @@ function apbct_antiflood__clear_table(){
 				'chance_to_clean' => 100,
 			)
 		);
-		$anti_flood->setDb( \Cleantalk\ApbctWP\DB::getInstance() );
+		$anti_flood->setDb( DB::getInstance() );
 		$anti_flood->clear_table();
 		unset( $anti_flood );
 	}
@@ -1153,7 +1043,7 @@ function apbct_rc__send($action, $additional_params = array(), $presets = 'get',
 	$params = array_merge($additional_params, $default_params);
 	
 	return apbct_rc__parse_result(
-		\Cleantalk\ApbctWP\Helper::http__request(
+		Helper::http__request(
 			$url ? $url : get_option('siteurl'),
 			$params,
 			$presets
@@ -1404,7 +1294,7 @@ function apbct_rc__update(){
 			die('FAIL '. json_encode(array('error' => 'COULD_NOT_ACTIVATE', 'wp_error' => $result->get_error_message())));
 		}
 		
-		$httpResponseCode =  \Cleantalk\ApbctWP\Helper::http__request(get_option('siteurl'), array(), 'get_code');
+		$httpResponseCode =  Helper::http__request(get_option('siteurl'), array(), 'get_code');
 		
 		if( strpos($httpResponseCode, '200') === false ){
 			
@@ -1564,7 +1454,7 @@ function apbct__hook__wp_logout__delete_trial_notice_cookie(){
 }
 
 function apbct_alt_session__id__get(){
-	$id = \Cleantalk\ApbctWP\Helper::ip__get(array('real'))
+	$id = Helper::ip__get(array('real'))
 		 .apbct_get_server_variable( 'HTTP_USER_AGENT' )
 		 .apbct_get_server_variable( 'HTTP_ACCEPT_LANGUAGE' );
 	return hash('sha256', $id);
@@ -1580,6 +1470,21 @@ function apbct_alt_sessions__remove_old(){
 				LIMIT 100000;'
 		);
 	}
+}
+function apbct_alt_sessions__clear( $full_clear = true ) {
+    global $wpdb;
+    if( $full_clear ) {
+        $res = $wpdb->query(
+            'TRUNCATE TABLE '. APBCT_TBL_SESSIONS .';'
+        );
+    } else {
+        $res = $wpdb->query(
+            'DELETE FROM `'. APBCT_TBL_SESSIONS .'`
+            WHERE name NOT IN ( "apbct_urls", "apbct_site_referer" ) 
+            LIMIT 100000;'
+        );
+    }
+    return $res;
 }
 
 function apbct_alt_session__save($name, $value){
@@ -1729,7 +1634,7 @@ function apbct_cookie(){
 	// Prevent headers sent error
 	if(headers_sent($file, $line)){
 		$apbct->headers_sent = true;
-		$apbct->headers_sent__hook  = current_action();
+		$apbct->headers_sent__hook  = current_filter();
 		$apbct->headers_sent__where = $file.':'.$line;
 		return false;
 	}
@@ -1832,22 +1737,6 @@ function apbct_cookies_test()
 	}else{
 		return null;
 	}
-}
-
-function apbct_cookies__delete($cookie){
-	if(isset($_COOKIE[$cookie]))
-		setcookie($cookie, '', time()-3600);
-}
-
-function apbct_cookies__delete_all(){
-	if(count($_COOKIE)){
-		foreach($_COOKIE as $key => $val){
-			if(preg_match("/apbct_|ct_/", $key)){
-				setcookie($key, '', time()-3600);
-			}       
-		} unset($key, $val);
-	}
-	return false;
 }
 
 /**
@@ -1982,10 +1871,10 @@ function apbct_log($message = 'empty', $func = null, $params = array())
 	if(is_array($message) or is_object($message))
 		$message = print_r($message, true);
 	
-	if($message)  $debug[date("H:i:s", microtime(true))."_ACTION_".strval(current_action())."_FUNCTION_".strval($func)]         = $message;
-	if($cron)     $debug[date("H:i:s", microtime(true))."_ACTION_".strval(current_action())."_FUNCTION_".strval($func).'_cron'] = $apbct->cron;
-	if($data)     $debug[date("H:i:s", microtime(true))."_ACTION_".strval(current_action())."_FUNCTION_".strval($func).'_data'] = $apbct->data;
-	if($settings) $debug[date("H:i:s", microtime(true))."_ACTION_".strval(current_action())."_FUNCTION_".strval($func).'_settings'] = $apbct->settings;
+	if($message)  $debug[date("H:i:s", microtime(true))."_ACTION_".strval(current_filter())."_FUNCTION_".strval($func)]         = $message;
+	if($cron)     $debug[date("H:i:s", microtime(true))."_ACTION_".strval(current_filter())."_FUNCTION_".strval($func).'_cron'] = $apbct->cron;
+	if($data)     $debug[date("H:i:s", microtime(true))."_ACTION_".strval(current_filter())."_FUNCTION_".strval($func).'_data'] = $apbct->data;
+	if($settings) $debug[date("H:i:s", microtime(true))."_ACTION_".strval(current_filter())."_FUNCTION_".strval($func).'_settings'] = $apbct->settings;
 	
 	update_option(APBCT_DEBUG, $debug);
 }
@@ -2000,6 +1889,7 @@ function apbct_sfw__delete_tables( $blog_id, $drop ) {
 	$wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->prefix.'cleantalk_sfw`;');       // Deleting SFW data
 	$wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->prefix.'cleantalk_sfw_logs`;');  // Deleting SFW logs
 	$wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->prefix.'cleantalk_ac_log`;');  // Deleting SFW logs
+    $wpdb->query('DROP TABLE IF EXISTS `'. $wpdb->prefix.'cleantalk_ua_bl`;');   // Deleting AC UA black lists
 	
 	switch_to_blog($initial_blog);
 }

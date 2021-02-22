@@ -2,7 +2,7 @@
 Contributors: wponlinesupport, anoopranawat, pratik-jain
 Tags: post slider, posts slider, recent post slider, recent posts slider, slider, responsive post slider, responsive posts slider, responsive recent post slider, responsive recent posts slider, wordpress posts slider, post slideshow, posts slideshow, recent posts slideshow, shortcodes, wponlinesupport
 Requires at least: 4.0
-Tested up to: 5.5.1
+Tested up to: 5.6
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -21,6 +21,8 @@ This plugin displays your recent WordPress posts using :
 Check [Demo and Features](https://demo.wponlinesupport.com/recent-post-slider-demo/) for additional information.
 
 When you want to makeover your WordPress website theme with something extraordinary and creative, you must consider WP responsive recent post slider. Help your website to get a slide-wise display to show the recent posts/news. Not just eye appealing, it is also loved by the visitors as they find it quite easy to locate the recent posts. 
+
+You can also try our FREE plugin [Recent Posts Widget Designer](https://wordpress.org/plugins/recent-posts-widget-designer/) along with "Responsive Recent Post Slider/Carousel"
 
 Display unlimited number of WordPresss posts slider and carousel in a single page or post with different sets of options like category, limit, navigation type. 
 
@@ -114,10 +116,11 @@ Where designs are : design-1, design-2, design-3, design-4. You can use same par
 > * V1.3.4 Support WordPress default post as well as any custom post-type and taxonomy .
 > * Gutenberg Block Supports.
 > * Visual Composer Support.
+> * Gutenberg, Elementor, Beaver and SiteOrigin Page Builder Native Support (New).
+> * Divi Page Builder Native Support (New).
+> * Fusion Page Builder (Avada) Native Support (New).
 > * WP Templating Features.
->
 > View [PRO DEMO and Features](https://www.wponlinesupport.com/wp-plugin/wp-responsive-recent-post-slider/) for additional information.
->
 
 = Features include: =
 * Added Gutenberg block support.
@@ -165,6 +168,20 @@ Where designs are : design-1, design-2, design-3, design-4. You can use same par
 8. Gutenberg Block Support
 
 == Changelog ==
+
+= 2.6 (25, Jan 2021) =
+* [+] New - Added native shortcode support for Elementor, SiteOrigin and Beaver builder.
+* [+] New - Added Divi page builder native support.
+* [+] New - Added Fusion Page Builder (Avada) native support.
+* [*] Tweak - Code optimization and performance improvements.
+
+= 2.5.1 (27, Oct 2020) =
+* [*] Minor  Update - Fixed conflict from tgmpa (theme pluign recommends - if your theme using tgmpa library) where it was showing message inside "How It Works - Display and shortcode"
+
+= 2.5 (21, Oct 2020) =
+* [+] New - Click to copy the shortcode from the getting started page.
+* [*] Update - Regular plugin maintenance. Updated readme file.
+* [*] Added - Added our other Popular Plugins under Recent Post Slider --> Install Popular Plugins From WPOS. This will help you to save your time during creating a website.
 
 = 2.4 (14, Aug 2020) =
 * [*] jQuery( document ).ready(function($) is replaced with function( $ ) to solve the issue with 3rd party plugin and theme js error.

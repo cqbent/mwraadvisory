@@ -17,8 +17,15 @@ class Integrations
 
         foreach( $this->integrations as $integration_name => $integration_info ) {
             if( $integration_info['ajax'] ) {
-                add_action( 'wp_ajax_' . $integration_info['hook'], array( $this, 'checkSpam' ), 1 );
-                add_action( 'wp_ajax_nopriv_' . $integration_info['hook'], array( $this, 'checkSpam' ), 1 );
+            	if( is_array( $integration_info['hook'] ) ) {
+            		foreach( $integration_info['hook'] as $hook ) {
+			            add_action( 'wp_ajax_' . $hook, array( $this, 'checkSpam' ), 1 );
+			            add_action( 'wp_ajax_nopriv_' . $hook, array( $this, 'checkSpam' ), 1 );
+		            }
+	            } else {
+		            add_action( 'wp_ajax_' . $integration_info['hook'], array( $this, 'checkSpam' ), 1 );
+		            add_action( 'wp_ajax_nopriv_' . $integration_info['hook'], array( $this, 'checkSpam' ), 1 );
+	            }
             } else {
                 add_action( $integration_info['hook'], array( $this, 'checkSpam' ) );
             }
@@ -30,7 +37,7 @@ class Integrations
         global $cleantalk_executed;
 
         // Getting current integration name
-        $current_integration = $this->get_current_integration_triggered( current_action() );
+        $current_integration = $this->get_current_integration_triggered( current_filter() );
         if( $current_integration ) {
             // Instantiate the integration object
             $class = '\\Cleantalk\\Antispam\\Integrations\\' . $current_integration;
@@ -54,7 +61,8 @@ class Integrations
                                 'comment_type' => 'contact_form_wordpress_' . strtolower($current_integration),
                                 'post_url' => apbct_get_server_variable( 'HTTP_REFERER' ), // Page URL must be an previous page
                             ),
-                        )
+                        ),
+                        isset( $data['register'] ) ? true : false
                     );
 
                     $ct_result = $base_call_result['ct_result'];
@@ -77,9 +85,17 @@ class Integrations
     {
         if( $hook !== false ) {
             foreach( $this->integrations as $integration_name => $integration_info ) {
-                if( strpos( $hook, $integration_info['hook'] ) !== false ) {
-                    return $integration_name;
-                }
+            	if( is_array( $integration_info['hook'] ) ) {
+            		foreach( $integration_info['hook'] as $integration_hook ) {
+			            if( strpos( $hook, $integration_hook ) !== false ) {
+				            return $integration_name;
+			            }
+		            }
+	            } else {
+		            if( strpos( $hook, $integration_info['hook'] ) !== false ) {
+			            return $integration_name;
+		            }
+	            }
             }
         }
         return false;

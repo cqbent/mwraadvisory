@@ -6,13 +6,13 @@
  * @since 1.0.0
  */
 
-// Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 ?>
 
 <div class="wppsac-post-slides">
-	<div class="wppsac-post-content-position">	
-		<!-- Content-left/right -->
+	<div class="wppsac-post-content-position">
 		<div class="wppsac-post-content-left wp-medium-6 wpcolumns">
 			<div class="wppsac-post-inner-content">
 				<?php if( $showCategory ) { ?>
@@ -41,7 +41,6 @@ if ( !defined( 'ABSPATH' ) ) exit;
 							$excerpt = strip_shortcodes(strip_tags(get_the_content())); ?>
 							<div class="wppsac-sub-content"><?php echo wprps_limit_words($excerpt,$words_limit); ?></div>
 						<?php } ?>
-
 						<?php if( $showreadmore ) { ?>
 							<a class="wppsac-readmorebtn" href="<?php the_permalink(); ?>"><?php _e('Read More', 'wp-responsive-recent-post-slider'); ?></a>
 						<?php } ?>
@@ -52,8 +51,8 @@ if ( !defined( 'ABSPATH' ) ) exit;
 		<div class="wppsac-post-image-bg">
 			<a href="<?php the_permalink(); ?>">
 				<?php if( has_post_thumbnail() ) { ?>
-					<img <?php if($lazyload) { ?>data-lazy="<?php echo esc_url($feat_image); ?>" <?php } ?> src="<?php if(empty($lazyload)) { echo esc_url($feat_image); } ?>" alt="<?php the_title_attribute(); ?>" />
-				<?php  } ?>
+					<img <?php if( $lazyload ) { ?>data-lazy="<?php echo esc_url($feat_image); ?>" <?php } ?> src="<?php if(empty($lazyload)) { echo esc_url($feat_image); } ?>" alt="<?php the_title_attribute(); ?>" />
+				<?php } ?>
 			</a>
 		</div>
 	</div>

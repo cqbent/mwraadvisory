@@ -1,5 +1,7 @@
 <?php
 
+use Tribe__Date_Utils as Dates;
+
 /**
  *  Class that implements the export to iCal functionality
  *  both for list and single events
@@ -85,7 +87,14 @@ class Tribe__Events__iCal {
 	public function month_view_ical_link( $event_date = null ) {
 		$tec = Tribe__Events__Main::instance();
 
-		return add_query_arg( [ 'ical' => 1 ], $tec->getLink( 'month', $event_date ) );
+		// Default to current month if not set.
+		if ( empty( $event_date ) ) {
+			$event_date = Dates::build_date_object()->format( Dates::DBYEARMONTHTIMEFORMAT );
+		}
+
+		$url = $tec->getLink( 'month', $event_date );
+
+		return add_query_arg( [ 'ical' => 1 ], $url );
 	}
 
 	/**
@@ -496,7 +505,7 @@ class Tribe__Events__iCal {
 					$start = new DateTime( $transition['time'], $timezone );
 					$item[] = 'DTSTART:' . $start->format( "Ymd\THis" );
 				} catch ( Exception $e ) {
-					// TODO: report this exception
+					// @todo [BTRIA-610]: report this exception
 				}
 				$item[] = 'END:' . $type;
 				$last_transition = $transition;

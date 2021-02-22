@@ -3,7 +3,7 @@
 Plugin Name: Wp Posts Carousel
 Plugin URI: http://www.teastudio.pl/en/product/wp-posts-carousel/
 Description: WP Posts Carousel is a widget and a shortcode generator to displays posts in carousel by <a href="http://www.owlcarousel.owlgraphic.com/" target="_blank" title="OWL Carousel homepage">OWL Carousel</a>.
-Version: 1.3.6
+Version: 1.3.7
 Author: Marcin Gierada
 Author URI: http://www.teastudio.pl/
 Author Email: m.gierada@teastudio.pl
@@ -130,7 +130,7 @@ class WP_Posts_Carousel {
      * registers the scripts and styles for admin
      */
     public function admin_wp_posts_carousel_register_scripts() {
-        wp_register_script("wp-posts-carousel-js", plugin_dir_url(__FILE__) . "js/wp-posts-carousel.js");
+        wp_register_script("wp-posts-carousel-js", plugin_dir_url(__FILE__) . "js/wp-posts-carousel.js", array('jquery'), '1.0.0', true);
         wp_enqueue_script("wp-posts-carousel-js");
 
         wp_register_style("wp-posts-carousel-css", plugin_dir_url(__FILE__) . "css/wp-posts-carousel.css");
@@ -140,7 +140,6 @@ class WP_Posts_Carousel {
     /*
      * registers the scripts and styles
      */
-     
     function wp_posts_carousel_register_scripts() {
         $include_in_footer = array_key_exists('include_in_footer', $this->options) ? true  : false;
 

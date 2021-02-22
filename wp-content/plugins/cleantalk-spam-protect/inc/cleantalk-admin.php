@@ -14,7 +14,7 @@ add_action( 'admin_head','apbct_admin_set_cookie_for_anti_bot' );
 
 function apbct_admin_set_cookie_for_anti_bot(){
 	global $apbct;
-	echo '<script>document.cookie = "apbct_antibot=' . hash( 'sha256', $apbct->api_key . $apbct->data['salt'] ) . '; path=/; expires=0; samesite=lax";</script>';
+	echo '<script ' . ( class_exists('Cookiebot_WP') ? 'data-cookieconsent="ignore"' : '' ) . '>document.cookie = "apbct_antibot=' . hash( 'sha256', $apbct->api_key . $apbct->data['salt'] ) . '; path=/; expires=0; samesite=lax";</script>';
 }
 
 function apbct_add_buttons_to_comments_and_users( $unused_argument ) {
@@ -36,10 +36,6 @@ function apbct_add_buttons_to_comments_and_users( $unused_argument ) {
     <a href="' . $button_url__check . '" class="button" style="margin:1px 0 0 0; display: inline-block;">
         <img src="' . $apbct->logo__small__colored . '" alt="Cleantalk Antispam logo"  height="" style="width: 17px; vertical-align: text-bottom;" />
         ' . sprintf(__( 'Find spam %s', 'cleantalk-spam-protect'), $button_description ) . '
-    </a>
-    <a href="https://cleantalk.org/my/show_requests?service_id=' . $apbct->data['service_id'] . '&int=week" target="_blank" class="button" style="margin:1px 0 0 0; display: inline-block;">
-        <img src="' . $apbct->logo__small__colored . '" alt="Cleantalk Antispam logo"  height="" style="width: 17px; vertical-align: text-bottom;" />
-        ' . __( 'CleanTalk Anti-Spam Log', 'cleantalk-spam-protect') . '
     </a>
     ';
 
@@ -183,15 +179,14 @@ function apbct_admin__init(){
 	}
 	
 	// Getting key like hoster. Only once!
-	if(!is_main_site() && $apbct->white_label && ( empty($apbct->api_key) || $apbct->settings['apikey'] == $apbct->network_settings['apikey'] ) ){
-		
-		$_POST['submit'] = 'get_key_auto';
-		$apbct->save('settings');
-		$settings = get_option('cleantalk_settings');
-		$apbct->api_key = $settings['apikey'];
-		unset($_POST['submit']);
-		
-	}
+    if(!is_main_site() && $apbct->white_label && ( empty($apbct->api_key) || $apbct->settings['apikey'] == $apbct->network_settings['apikey'] ) ){
+        $_POST['submit'] = 'get_key_auto';
+        $settings = apbct_settings__validate(array());
+        $apbct->api_key = $settings['apikey'];
+        $apbct->save('settings');
+        unset($_POST['submit']);
+
+    }
 }
 
 function apbct_admin__init___ajax_actions(){
@@ -230,7 +225,7 @@ function apbct_admin__register_plugin_links($links, $file){
 		
 	if($apbct->white_label){
 		$links = array_slice($links, 0, 1);
-		$links[] = "<script>jQuery('.plugin-title strong').each(function(i, item){
+		$links[] = "<script " . ( class_exists('Cookiebot_WP') ? 'data-cookieconsent="ignore"' : '' ) . ">jQuery('.plugin-title strong').each(function(i, item){
 		if(jQuery(item).html() == 'Anti-Spam by CleanTalk')
 			jQuery(item).html('{$apbct->plugin_name}');
 		});</script>";
@@ -292,9 +287,11 @@ function apbct_admin__enqueue_scripts($hook){
 		if(!empty($apbct->data['brief_data']['error']))
 			$apbct->data['brief_data'] = array_merge($apbct->data['brief_data'], $apbct->def_data['brief_data']);
 		
-		foreach( $apbct->data['brief_data']['spam_stat'] as $key => $value ){
-			$to_chart[] = array( $key, $value );
-		} unset( $key, $value );
+		if (isset($apbct->data['brief_data']['spam_stat']) && is_array($apbct->data['brief_data']['spam_stat'])) {
+			foreach( $apbct->data['brief_data']['spam_stat'] as $key => $value ){
+				$to_chart[] = array( $key, $value );
+			} unset( $key, $value );
+		}
 		
 		wp_localize_script( 'ct_admin_js_widget_dashboard', 'apbctDashboardWidget', array(
 			'data' => $to_chart,
@@ -317,6 +314,8 @@ function apbct_admin__enqueue_scripts($hook){
 			'ip_license'    => $apbct->ip_license ? true : false,
             'key_changed'   => ! empty( $apbct->data['key_changed'] ) ? true : false,
 		));
+
+		wp_enqueue_script('cleantalk-modal', plugins_url( '/cleantalk-spam-protect/js/cleantalk-modal.min.js' ),   array(),     APBCT_VERSION);
 	}
 
     // COMMENTS page JavaScript
@@ -399,7 +398,7 @@ function apbct_admin__notice_message(){
 		}
 		
 		//key == "" || "enter key"
-		if (!apbct_api_key__is_correct() && $apbct->moderate_ip == 0){
+		if ( ( ! apbct_api_key__is_correct() && $apbct->moderate_ip == 0 ) && ! $apbct->white_label ){
 			echo "<div class='error'>"
 				."<h3>"
 					.sprintf(__("Please enter Access Key in %s settings to enable anti spam protection!", 'cleantalk-spam-protect'), "<a href='{$settings_link}'>$apbct->plugin_name</a>")
@@ -416,7 +415,7 @@ function apbct_admin__notice_message(){
 						"<a href='{$settings_link}'>".$apbct->plugin_name."</a>", 
 						"<a href=\"https://cleantalk.org/my/bill/recharge?utm_source=wp-backend&utm_medium=cpc&utm_campaign=WP%20backend%20trial$user_token&cp_mode=antispam\" target=\"_blank\"><b>premium version</b></a>") .
 					'</h3>
-					<h4 style = "color: gray">Account status updates every 15 minutes.</h4>
+					<h4 style = "color: gray">Account status updates every 24 hours.</h4>
 				</div>';
 				$apbct->notice_show = false;
 			}
@@ -432,7 +431,7 @@ function apbct_admin__notice_message(){
 				<h3>'. 
 					sprintf(__("Please renew your anti-spam license for %s.", 'cleantalk-spam-protect'), $link_html).
 				'</h3>
-				<h4 style = "color: gray">Account status updates every 15 minutes.</h4>
+				<h4 style = "color: gray">Account status updates every 24 hours.</h4>
 				'.$button_html.'
 				<br/><br/>
 			</div>';

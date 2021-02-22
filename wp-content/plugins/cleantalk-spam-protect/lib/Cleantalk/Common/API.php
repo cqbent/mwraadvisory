@@ -658,23 +658,6 @@ class API
 			$result = curl_exec($ch);
 			$errors = curl_error($ch);
 			curl_close($ch);
-
-			// Retry with SSL enabled if failed
-			if($result === false){
-				if($ssl === false){
-					return self::send_request($data, $url, $timeout, true, $ssl_path);
-				}
-				if (function_exists('gethostbynamel')) {
-					$server_ips = gethostbynamel('api.cleantalk.org');
-					if ($server_ips !== false && is_array($server_ips) && count($server_ips)) {
-                        foreach ($server_ips as $ip) {
-                            if( strpos( $url, $ip ) === false ) {
-                                return self::send_request($data, 'https://'.$ip);
-                            }
-                        }
-					}
-				}
-			}
 			
 		}else{
 			$errors = 'CURL_NOT_INSTALLED';
@@ -719,7 +702,7 @@ class API
 	{
 		// Errors handling
 		// Bad connection
-		if(isset($result['error'])){
+		if(is_array($result) && isset($result['error'])){
 			$last = error_get_last();
 			$out = ! empty( $result['error'] )
 				? array( 'error' => 'CONNECTION_ERROR : "' . $result['error'] . '"' )
@@ -736,15 +719,15 @@ class API
 		}
 		
 		// Server errors
-		if($result &&
-			(isset($result['error_no']) || isset($result['error_message'])) &&
-			(isset($result['error_no']) && $result['error_no'] != 12)
-		){
-			return array(
-				'error' => "SERVER_ERROR NO: {$result['error_no']} MSG: {$result['error_message']}",
-				'error_no' => $result['error_no'],
-				'error_message' => $result['error_message'],
-			);
+		if(	$result && ( isset( $result['error_no'], $result['error_message'] ) ) ){
+			
+			if( $result['error_no'] != 12 ){
+				return array(
+					'error' => "SERVER_ERROR NO: {$result['error_no']} MSG: {$result['error_message']}",
+					'error_no' => $result['error_no'],
+					'error_message' => $result['error_message'],
+				);
+			}
 		}
 		
 		// Pathces for different methods

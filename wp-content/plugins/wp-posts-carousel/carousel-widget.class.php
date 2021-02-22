@@ -123,10 +123,6 @@ public function form( $instance ) {
                     ?>
                     </select>
                 </p>
-				  <p>
-            <input class="checkbox wp-posts-carousel-field" type="checkbox" id="<?php echo $this->get_field_id("blog_post"); ?>" name="<?php echo $this->get_field_name("blog_post"); ?>" <?php array_key_exists('blog_post', $instance) ? checked( (bool) $instance["blog_post"], true ): null; ?> value="1" />
-            <label for="<?php echo $this->get_field_id("blog_post"); ?>"><?php _e("Exclude Selected Blogs", "wp-posts-carousel"); ?></label>
-        </p>
                 <p><?php _e('but', "wp-posts-carousel") ?></p>
                 <p>
                     <label for="<?php echo $this->get_field_id("exclude"); ?>"><?php _e("exclude IDs", "wp-posts-carousel"); ?>:</label>
@@ -383,5 +379,8 @@ public function form( $instance ) {
 <?php
     }
 }
-add_action("widgets_init", create_function("", "return register_widget('WpPostsCarouselWidget');"));
+
+add_action("widgets_init", function() {
+    return register_widget('WpPostsCarouselWidget');
+});
 ?>

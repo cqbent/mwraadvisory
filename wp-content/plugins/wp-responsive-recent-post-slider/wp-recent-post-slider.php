@@ -6,7 +6,7 @@
  * Domain Path: /languages/
  * Description: Add and display Responsive WordPresss Recent Post Slider and Carousel on your website with 4 designs (Slider) and 1 designs (Carousel) using a shortcode. Also added Gutenberg block support. 
  * Author: WP OnlineSupport
- * Version: 2.4
+ * Version: 2.6
  * Author URI: https://www.wponlinesupport.com/
  *
  * @package WordPress
@@ -23,19 +23,19 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package WP Responsive Recent Post Slider
  * @since 1.0.0
  */
-if( !defined( 'WPRPS_VERSION' ) ) {
-	define( 'WPRPS_VERSION', '2.4' ); // Version of plugin
+if( ! defined( 'WPRPS_VERSION' ) ) {
+	define( 'WPRPS_VERSION', '2.6' ); // Version of plugin
 }
-if( !defined( 'WPRPS_DIR' ) ) {
+if( ! defined( 'WPRPS_DIR' ) ) {
 	define( 'WPRPS_DIR', dirname( __FILE__ ) ); // Plugin dir
 }
-if( !defined( 'WPRPS_URL' ) ) {
+if( ! defined( 'WPRPS_URL' ) ) {
 	define( 'WPRPS_URL', plugin_dir_url( __FILE__ ) ); // Plugin url
 }
-if( !defined( 'WPRPS_POST_TYPE' ) ) {
+if( ! defined( 'WPRPS_POST_TYPE' ) ) {
 	define( 'WPRPS_POST_TYPE', 'post' ); // Plugin post type
 }
-if(!defined( 'WPRPS_PLUGIN_LINK' ) ) {
+if( ! defined( 'WPRPS_PLUGIN_LINK' ) ) {
 	define( 'WPRPS_PLUGIN_LINK', 'https://www.wponlinesupport.com/wp-plugin/wp-responsive-recent-post-slider/?utm_source=WP&utm_medium=Post-Slider&utm_campaign=Features-PRO' ); // Plugin link
 }
 
@@ -51,8 +51,8 @@ function wprps_load_textdomain() {
 	global $wp_version;
 
 	// Set filter for plugin's languages directory
-	$wpls_pro_lang_dir = dirname( plugin_basename( __FILE__ ) ) . '/languages/';
-	$wpls_pro_lang_dir = apply_filters( 'wprps_languages_directory', $wpls_pro_lang_dir );
+	$wprps_lang_dir = dirname( plugin_basename( __FILE__ ) ) . '/languages/';
+	$wprps_lang_dir = apply_filters( 'wprps_languages_directory', $wprps_lang_dir );
 
 	// Traditional WordPress plugin locale filter.
 	$get_locale = get_locale();
@@ -71,7 +71,7 @@ function wprps_load_textdomain() {
 	if ( file_exists( $mofile_global ) ) { // Look in global /wp-content/languages/plugin-name folder
 		load_textdomain( 'wp-responsive-recent-post-slider', $mofile_global );
 	} else { // Load the default language files
-		load_plugin_textdomain( 'wp-responsive-recent-post-slider', false, $wpls_pro_lang_dir );
+		load_plugin_textdomain( 'wp-responsive-recent-post-slider', false, $wprps_lang_dir );
 	}
 }
 add_action('plugins_loaded', 'wprps_load_textdomain');
@@ -162,10 +162,17 @@ if ( function_exists( 'register_block_type' ) ) {
 	require_once( WPRPS_DIR . '/includes/admin/supports/gutenberg-block.php' );
 }
 
-// How it work file, Load admin files
-if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
-	require_once( WPRPS_DIR . '/includes/admin/wprps-how-it-work.php' );
+/* Recommended Plugins Starts */
+if ( is_admin() ) {
+	require_once( WPRPS_DIR . '/wpos-plugins/wpos-recommendation.php' );
+
+	wpos_espbw_init_module( array(
+							'prefix'	=> 'wprps',
+							'menu'		=> 'wprps-about',
+							'position'	=> 1,
+						));
 }
+/* Recommended Plugins Ends */
 
 /* Plugin Wpos Analytics Data Starts */
 function wpos_analytics_anl18_load() {

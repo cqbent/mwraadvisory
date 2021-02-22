@@ -26,7 +26,7 @@ class UsersChecker extends Checker
             'ct_prev_till'                => !empty($prev_check['till'])     ? $prev_check['till'] : false,
             'ct_timeout'                  => __('Failed from timeout. Going to check users again.', 'cleantalk-spam-protect'),
             'ct_timeout_delete'           => __('Failed from timeout. Going to run a new attempt to delete spam users.', 'cleantalk-spam-protect'),
-            'ct_confirm_deletion_all'     => __('Delete all spam users?', 'cleantalk-spam-protect'),
+            'ct_confirm_deletion_all'     => __('Do you confirm deletion selected accounts and all content owned by the accounts? Please do backup of the site before deletion!', 'cleantalk-spam-protect'),
             'ct_iusers'                   => __('users.', 'cleantalk-spam-protect'),
             'ct_csv_filename'             => "user_check_by_".$current_user->user_login,
             'ct_status_string'            => __("Checked %s, found %s spam users and %s bad users (without IP or email)", 'cleantalk-spam-protect'),
@@ -45,6 +45,7 @@ class UsersChecker extends Checker
         echo '<form action="" method="POST">';
         $this->list_table->display();
         echo '</form>';
+        $this->getFooter();
 
     }
 
@@ -195,7 +196,7 @@ class UsersChecker extends Checker
             // Checking comments IP/Email. Gathering $data for check.
             $data = array();
 
-            for( $i=0; $i < count($u); $i++ ){
+            for($i=0, $iMax = count($u); $i < $iMax; $i++ ){
 
                 $user_meta = get_user_meta( $u[$i]->ID, 'session_tokens', true );
                 if( is_array( $user_meta ) )
@@ -208,7 +209,7 @@ class UsersChecker extends Checker
                 $curr_ip    = preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $curr_ip) === 1 ? $curr_ip    : null;
                 $curr_email = preg_match('/^\S+@\S+\.\S+$/', $curr_email) === 1                    ? $curr_email : null;
 
-                if( empty( $curr_ip ) && empty( $curr_email ) ){
+                if( empty( $curr_ip ) || empty( $curr_email ) ){
                     $check_result['bad']++;
                     update_user_meta( $u[$i]->ID,'ct_bad','1',true );
                     update_user_meta( $u[$i]->ID, 'ct_checked', date("Y-m-d H:m:s"), true) ;
@@ -406,10 +407,12 @@ class UsersChecker extends Checker
         }
 
         $backup_notice = '&nbsp;';
+        $spam_system_notice = '&nbsp;';
         if ($cnt_spam > 0) {
             $backup_notice = __("Please do backup of WordPress database before delete any accounts!", 'cleantalk-spam-protect');
+            $spam_system_notice = __("Results are based on the decision of our spam checking system and do not give a complete guarantee that these users are spammers.", 'cleantalk-spam-protect');
         }
-        $return['message'] .= "<p>$backup_notice</p>";
+        $return['message'] .= "<p>$backup_notice</p><p>$spam_system_notice</p>";
 
         if($direct_call){
             return $return['message'];
@@ -608,39 +611,6 @@ class UsersChecker extends Checker
 
         $columns['apbct_status hidden'] = '';
         return $columns;
-
-    }
-
-    /**
-     * Generates <span> with information about user scan using user's meta.
-     *
-     * @param $value
-     * @param $column_name
-     * @param $user_id
-     * @return string
-     */
-    public static function ct_manage_users_custom_column( $value, $column_name, $user_id ) {
-
-        if( 'apbct_status hidden' == $column_name ) {
-
-            $is_checked = get_user_meta( $user_id, 'ct_checked', true);
-            if( ! empty( $is_checked ) ) {
-                $is_checked = date( 'M d Y', strtotime( $is_checked ) );
-                $is_spam = get_user_meta( $user_id, 'ct_marked_as_spam', true );
-                if( ! empty( $is_spam ) ) {
-                    $text = sprintf( esc_html__( 'SPAM. Checked %s.', 'cleantalk-spam-protect'), $is_checked );
-                    $value = '<span id="apbct_checked_spam">' . $text . '</span>';
-                } else {
-                    $text = sprintf( esc_html__( 'Not spam. Checked %s.', 'cleantalk-spam-protect'), $is_checked );
-                    $value = '<span id="apbct_checked_not_spam">' . $text . '</span>';
-                }
-            } else {
-                $value = '<span id="apbct_not_checked">' . esc_html__( 'Not checked yet. Anti-Spam by CleanTalk.', 'cleantalk-spam-protect') . '</span>';
-            }
-
-        }
-
-        return $value;
 
     }
 

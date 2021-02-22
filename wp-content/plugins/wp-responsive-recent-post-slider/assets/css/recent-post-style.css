@@ -11,48 +11,11 @@
 .wppsac-clearfix::after{clear: both;}
 .wppsac-clearfix{clear: both;}
 
-/************************************************************
-				Slick slider
-************************************************************/
-.wppsac-post-slider{visibility: hidden; opacity:0; transition:opacity 0.5s linear;}
-.wppsac-post-slider.slick-initialized { visibility: visible; opacity:1;}
-.wppsac-hide{display:none;}
-.wppsac-post-slider .slick-arrow, .wppsac-post-carousel .slick-arrow{text-indent:-99999px;}
-.wppsac-post-slider button.slick-arrow, .wppsac-post-carousel button.slick-arrow  {background-color: transparent!important; cursor:pointer; width:30px; height:45px; position:absolute; z-index:9; border:0px !important;padding:0 !important; margin:0px !important; border-radius:0px !important;  -webkit-transition-duration: 0.4s;  transition-duration: 0.4s;}
-.wppsac-post-slider button.slick-next, .wppsac-post-carousel button.slick-next {background:rgba(0,0,0,0.5) url(arrow-right.png) center center no-repeat !important; background-size:25px 25px !important; outline:none !important; box-shadow: none;}
-.wppsac-post-slider button.slick-prev, .wppsac-post-carousel button.slick-prev{background:rgba(0,0,0,0.5) url(arrow-left.png) center center no-repeat !important; background-size:25px 25px !important;  outline:none !important; box-shadow: none;}
-.wppsac-post-slider button.slick-next:hover, .wppsac-post-slider button.slick-next:focus, .wppsac-post-carousel button.slick-next:hover, .wppsac-post-carousel button.slick-next:focus,
-.wppsac-post-slider button.slick-prev:hover, .wppsac-post-slider button.slick-prev:focus, .wppsac-post-carousel button.slick-prev:hover, .wppsac-post-carousel button.slick-prev:focus{background-color:rgba(0,0,0,0.8) !important;}
-
-.wppsac-post-slider .slick-dots{padding:0 !important; margin:0 !important; position:absolute;  text-align:center;}
-.wppsac-post-slider .slick-dots li button{text-indent:-99999px;}
-.wppsac-post-slider .slick-dots li {list-style:none !important; display:inline-block !important; margin:0 2px !important; padding:0px !important;}
-.wppsac-post-slider .slick-dots li button{background:#fff !important; margin:0px !important; padding:0px !important; border:1px solid #000; border-radius:50% !important; width:13px !important; height:13px !important;}
-.wppsac-post-slider .slick-dots li button:focus{outline:none !important}
-.wppsac-post-slider button:active{box-shadow: none;}
-.wppsac-post-slider .slick-dots li.slick-active button{background:#444 !important;}
-.wppsac-post-slider .slick-slide{padding:0px !important}
-.wppsac-post-overlay{ position:relative;}
-.wppsac-post-slider .wppsac-post-content a.wppsac-readmorebtn {padding: 5px 10px;border: 1px solid #e7e7e7;text-decoration: none;margin: 5px 0; font-size:14px; -moz-transition:all 0.5s ease-out 0s;-ms-transition:all 0.5s ease-out 0s;-o-transition:all 0.5s ease-out 0s; transition: all 0.5s ease-out 0s; }
-.wppsac-post-content {padding-bottom: 10px;}
-.wppsac-sub-content {padding-bottom: 10px;}
-.wppsac-post-slider h2.wppsac-post-title{margin:5px 0 !important; line-height:26px;}
-.wppsac-post-slider h2.wppsac-post-title a{font-size:22px; line-height:26px;}
-.wppsac-post-slider .wppsac-post-date{margin-bottom:10px; position:relative; font-size:13px;}
-.wppsac-post-slider .wppsac-post-date::after {  background: #e96656; bottom: -4px;content: "";height: 2px; left: 0; margin: auto ; position: absolute; width: 50px; z-index: 1;}
-.wppsac-post-slider .wppsac-post-categories ul.wppsac-post-categories-list{margin:0px 0px 10px 0 !important; padding:0px !important; list-style:none !important; font-size: 0;}
-.wppsac-post-slider .wppsac-post-categories ul.wppsac-post-categories-list li{display:inline-block !important; margin: 2px !important; padding: 0 !important;}
-.wppsac-post-slider .wppsac-post-categories ul.wppsac-post-categories-list li a{padding:4px 10px; text-transform:uppercase; font-size:11px; text-decoration:none; color: #fff; display: block; line-height: normal;}
-.wppsac-post-slider .wppsac-post-categories ul.wppsac-post-categories-list li:nth-child(4n+1) a{background:#1abc9c;}
-.wppsac-post-slider .wppsac-post-categories ul.wppsac-post-categories-list li:nth-child(4n+2) a{background:#3498db;}
-.wppsac-post-slider .wppsac-post-categories ul.wppsac-post-categories-list li:nth-child(4n+3) a{background:#e74c3c;}
-.wppsac-post-slider .wppsac-post-categories ul.wppsac-post-categories-list li:nth-child(4n+4) a{background:#34495e;}
-
-.wppsac-post-slider .wppsac-post-image-bg img{height: 100%;width: 100%;object-fit: cover;object-position: top center;border-radius: 0px;}
+/* Avada CSS */
+.fusion-flex-container.wppsac-fusion-flex{ flex-direction: column; }
 
 /***************Design-1**************/
 .wppsac-post-slider a{text-decoration:none !important;}
-
 .wppsac-post-slider.design-1 .wppsac-post-content-position{position:relative} 
 .wppsac-post-slider.design-1 .wppsac-post-content-left{position:absolute !important; left:0; bottom: 0px; background:rgba(0, 0, 0, 0.5); z-index:999; color:#fff;}
 .wppsac-post-slider.design-1 .wppsac-post-content-left a {color:#fff;}
@@ -113,30 +76,44 @@
 .wppsac-post-slider.design-4 .wppsac-post-content a.wppsac-readmorebtn {color: #444; border-color: #444;}
 .wppsac-post-slider.design-4 a.wppsac-readmorebtn:hover{color:#fff; background:rgba(0,0,0,0.5);}
 
+
 /************************************************************
-				Slick carousel
+        Slick Slider and Carousel
 ************************************************************/
-.wppsac-post-carousel{visibility: hidden; opacity:0; transition:opacity 0.5s linear;}
-.wppsac-post-carousel.slick-initialized { visibility: visible; opacity:1;}
+.wppsac-post-slider, .wppsac-post-carousel{visibility: hidden; opacity:0; transition:opacity 0.5s linear;}
+.wppsac-post-slider.slick-initialized, .wppsac-post-carousel.slick-initialized { visibility: visible; opacity:1;}
 .wppsac-hide{display:none;}
 .wppsac-post-carousel .slick-dots{padding:0 !important; margin:0 !important; position:absolute;  text-align:center;}
-.wppsac-post-carousel .slick-dots li button{text-indent:-99999px;}
-.wppsac-post-carousel .slick-dots li {list-style:none !important; display:inline-block !important; margin:0 2px !important; padding:0px !important;}
-.wppsac-post-carousel .slick-dots li button{background:#fff !important; margin:0px !important; padding:0px !important; border:1px solid #000; border-radius:50% !important; width:13px !important; height:13px !important;}
-.wppsac-post-carousel .slick-dots li button:focus{outline:none !important}
-.wppsac-post-carousel button:active{box-shadow: none;}
-.wppsac-post-carousel .slick-dots li.slick-active button{background:#444 !important;}
-.wppsac-post-carousel .wppsac-post-content a.wppsac-readmorebtn {padding: 5px 10px;border: 1px solid #e7e7e7;text-decoration: none;margin: 5px 0; font-size:14px; -moz-transition:all 0.5s ease-out 0s;-ms-transition:all 0.5s ease-out 0s;-o-transition:all 0.5s ease-out 0s; transition: all 0.5s ease-out 0s; }
-.wppsac-post-carousel h2.wppsac-post-title{margin:5px 0 !important; line-height:26px;}
-.wppsac-post-carousel h2.wppsac-post-title a{font-size:22px; line-height:26px;}
-.wppsac-post-carousel .wppsac-post-date{margin-bottom:10px; position:relative; font-size:13px;}
-.wppsac-post-carousel .wppsac-post-categories ul.wppsac-post-categories-list{margin:0px 0px 10px 0 !important; padding:0px !important; list-style:none !important; font-size: 0;}
-.wppsac-post-carousel .wppsac-post-categories ul.wppsac-post-categories-list li{display:inline-block !important; margin: 2px !important; padding: 0 !important;}
-.wppsac-post-carousel .wppsac-post-categories ul.wppsac-post-categories-list li a{padding:4px 10px; text-transform:uppercase; font-size:11px; text-decoration:none; color: #fff; display: block; line-height: normal;}
-.wppsac-post-carousel .wppsac-post-categories ul.wppsac-post-categories-list li:nth-child(4n+1) a{background:#1abc9c;}
-.wppsac-post-carousel .wppsac-post-categories ul.wppsac-post-categories-list li:nth-child(4n+2) a{background:#3498db;}
-.wppsac-post-carousel .wppsac-post-categories ul.wppsac-post-categories-list li:nth-child(4n+3) a{background:#e74c3c;}
-.wppsac-post-carousel .wppsac-post-categories ul.wppsac-post-categories-list li:nth-child(4n+4) a{background:#34495e;}
+.wppsac-post-slider .slick-arrow, .wppsac-post-carousel .slick-arrow{text-indent:-99999px;}
+.wppsac-post-slider button.slick-arrow, .wppsac-post-carousel button.slick-arrow  {background-color: transparent!important; cursor:pointer; width:30px; height:45px; position:absolute; z-index:9; border:0px !important;padding:0 !important; margin:0px !important; border-radius:0px !important;  -webkit-transition-duration: 0.4s;  transition-duration: 0.4s;}
+.wppsac-post-slider button.slick-next, .wppsac-post-carousel button.slick-next {background:rgba(0,0,0,0.5) url(arrow-right.png) center center no-repeat !important; background-size:25px 25px !important; outline:none !important; box-shadow: none;}
+.wppsac-post-slider button.slick-prev, .wppsac-post-carousel button.slick-prev{background:rgba(0,0,0,0.5) url(arrow-left.png) center center no-repeat !important; background-size:25px 25px !important;  outline:none !important; box-shadow: none;}
+.wppsac-post-slider button.slick-next:hover, .wppsac-post-slider button.slick-next:focus, .wppsac-post-carousel button.slick-next:hover, .wppsac-post-carousel button.slick-next:focus,
+.wppsac-post-slider button.slick-prev:hover, .wppsac-post-slider button.slick-prev:focus, .wppsac-post-carousel button.slick-prev:hover, .wppsac-post-carousel button.slick-prev:focus{background-color:rgba(0,0,0,0.8) !important;}
+.wppsac-post-slider .slick-dots{padding:0 !important; margin:0 !important; position:absolute;  text-align:center;}
+.wppsac-post-slider .slick-dots li button, .wppsac-post-carousel .slick-dots li button{text-indent:-99999px;}
+.wppsac-post-slider .slick-dots li, .wppsac-post-carousel .slick-dots li {list-style:none !important; display:inline-block !important; margin:0 2px !important; padding:0px !important;}
+.wppsac-post-slider .slick-dots li button, .wppsac-post-carousel .slick-dots li button{background:#fff !important; margin:0px !important; padding:0px !important; border:1px solid #000; border-radius:50% !important; width:13px !important; height:13px !important;}
+.wppsac-post-slider .slick-dots li button:focus, .wppsac-post-carousel .slick-dots li button:focus{outline:none !important}
+.wppsac-post-slider button:active, .wppsac-post-carousel button:active{box-shadow: none;}
+.wppsac-post-slider .slick-dots li.slick-active button, .wppsac-post-carousel .slick-dots li.slick-active button{background:#444 !important;}
+.wppsac-post-slider .slick-slide{padding:0px !important}
+.wppsac-post-overlay{ position:relative;}
+.wppsac-post-slider .wppsac-post-content a.wppsac-readmorebtn, .wppsac-post-carousel .wppsac-post-content a.wppsac-readmorebtn {padding: 5px 10px;border: 1px solid #e7e7e7;text-decoration: none;margin: 5px 0; font-size:14px; -moz-transition:all 0.5s ease-out 0s;-ms-transition:all 0.5s ease-out 0s;-o-transition:all 0.5s ease-out 0s; transition: all 0.5s ease-out 0s; }
+.wppsac-post-content {padding-bottom: 10px;}
+.wppsac-sub-content {padding-bottom: 10px;}
+.wppsac-post-slider h2.wppsac-post-title, .wppsac-post-carousel h2.wppsac-post-title{margin:5px 0 !important; line-height:26px;}
+.wppsac-post-slider h2.wppsac-post-title a, .wppsac-post-carousel h2.wppsac-post-title a{font-size:22px; line-height:26px;}
+.wppsac-post-slider .wppsac-post-date, .wppsac-post-carousel .wppsac-post-date{margin-bottom:10px; position:relative; font-size:13px;}
+.wppsac-post-slider .wppsac-post-date::after {  background: #e96656; bottom: -4px;content: "";height: 2px; left: 0; margin: auto ; position: absolute; width: 50px; z-index: 1;}
+.wppsac-post-slider .wppsac-post-categories ul.wppsac-post-categories-list, .wppsac-post-carousel .wppsac-post-categories ul.wppsac-post-categories-list{margin:0px 0px 10px 0 !important; padding:0px !important; list-style:none !important; font-size: 0;}
+.wppsac-post-slider .wppsac-post-categories ul.wppsac-post-categories-list li, .wppsac-post-carousel .wppsac-post-categories ul.wppsac-post-categories-list li{display:inline-block !important; margin: 2px !important; padding: 0 !important;}
+.wppsac-post-slider .wppsac-post-categories ul.wppsac-post-categories-list li a, .wppsac-post-carousel .wppsac-post-categories ul.wppsac-post-categories-list li a{padding:4px 10px; text-transform:uppercase; font-size:11px; text-decoration:none; color: #fff; display: block; line-height: normal;}
+.wppsac-post-slider .wppsac-post-categories ul.wppsac-post-categories-list li:nth-child(4n+1) a, .wppsac-post-carousel .wppsac-post-categories ul.wppsac-post-categories-list li:nth-child(4n+1) a{background:#1abc9c;}
+.wppsac-post-slider .wppsac-post-categories ul.wppsac-post-categories-list li:nth-child(4n+2) a, .wppsac-post-carousel .wppsac-post-categories ul.wppsac-post-categories-list li:nth-child(4n+2) a{background:#3498db;}
+.wppsac-post-slider .wppsac-post-categories ul.wppsac-post-categories-list li:nth-child(4n+3) a, .wppsac-post-carousel .wppsac-post-categories ul.wppsac-post-categories-list li:nth-child(4n+3) a{background:#e74c3c;}
+.wppsac-post-slider .wppsac-post-categories ul.wppsac-post-categories-list li:nth-child(4n+4) a, .wppsac-post-carousel .wppsac-post-categories ul.wppsac-post-categories-list li:nth-child(4n+4) a{background:#34495e;}
+.wppsac-post-slider .wppsac-post-image-bg img{height: 100%;width: 100%;object-fit: cover;object-position: top center;border-radius: 0px;}
 
 /***************Design-1**************/
 .wppsac-post-carousel a{text-decoration:none !important;}

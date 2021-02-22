@@ -6,18 +6,19 @@
  * @since 1.0.0
  */
 
-// Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 ?>
 
 <div class="wppsac-carousel-slides">
 	<?php if( has_post_thumbnail()  ) { ?>
 		<div class="wppsac-post-image-bg">
 			<a href="<?php the_permalink(); ?>">
-				<img class="wppsac-post-image-bg" <?php if($lazyload) { ?>data-lazy="<?php echo esc_url($feat_image); ?>" <?php } ?> src="<?php if(empty($lazyload)) { echo esc_url($feat_image); } ?>" alt="<?php the_title_attribute(); ?>" />
+				<img class="wppsac-post-image-bg" <?php if( $lazyload ) { ?>data-lazy="<?php echo esc_url($feat_image); ?>" <?php } ?> src="<?php if(empty($lazyload)) { echo esc_url($feat_image); } ?>" alt="<?php the_title_attribute(); ?>" />
 			</a>
 		</div>
-	<?php  } ?>
+	<?php } ?>
 	<div class="wppsac-post-content-position">
 		<?php if( $showCategory ) { ?>
 			<div class="wppsac-post-categories"><?php echo $cat_list; ?></div>
@@ -27,9 +28,9 @@ if ( !defined( 'ABSPATH' ) ) exit;
 		</h2>
 		<?php if( $showDate || $showAuthor ) { ?>
 			<div class="wppsac-post-date">
-				<?php if($showAuthor) { ?>
+				<?php if( $showAuthor ) { ?>
 					<span><?php  esc_html_e( 'By', 'wp-responsive-recent-post-slider' ); ?> <?php the_author(); ?></span>
-				<?php } 
+				<?php }
 				$authorPar = ( $showAuthor && $showDate ) ? '&nbsp;/&nbsp;' : '';
 				echo $authorPar;
 				if( $showDate ) { echo get_the_date(); } ?>
@@ -45,7 +46,6 @@ if ( !defined( 'ABSPATH' ) ) exit;
 					$excerpt = strip_shortcodes(strip_tags(get_the_content())); ?>
 					<div class="wppsac-sub-content"><?php echo wprps_limit_words($excerpt,$words_limit); ?></div>
 				<?php } ?>
-
 				<?php if( $showreadmore ) { ?>
 					<a class="wppsac-readmorebtn" href="<?php the_permalink(); ?>"><?php _e('Read More', 'wp-responsive-recent-post-slider'); ?></a>
 				<?php } ?>

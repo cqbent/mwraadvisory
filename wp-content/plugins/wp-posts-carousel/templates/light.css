@@ -1,7 +1,7 @@
 /*
 * light theme
 */
-.light-theme.wp-posts-carousel { overflow: hidden;z-index:0; }
+.light-theme.wp-posts-carousel { overflow: hidden; }
 .light-theme.wp-posts-carousel .wp-posts-carousel-slide { display: none; padding: 1%; position: relative; margin-left: 2%; width: 95%; }
 .light-theme.wp-posts-carousel.owl-loaded .wp-posts-carousel-slide { display: block; }
 .light-theme.wp-posts-carousel .wp-posts-carousel-container { border: 1px solid transparent; padding: 10px; transition: all 0.3s ease 0s; }
@@ -38,10 +38,10 @@
 * navigation
 */
 .light-theme.wp-posts-carousel .owl-nav div:before  { font-family: "FontAwesome"; font-size: 30px; display: inline-block; content: '\f104'; }
-.light-theme.wp-posts-carousel .owl-controls .owl-nav div  {background: #fff; color: #ccc; border: 1px solid #ccc !important; text-align: center; text-decoration: none; display: block; width: 0px; height: 50px;line-height: 50px; margin: -45px 0 0; position: absolute; top: 50%; z-index: 1; overflow: hidden; opacity: 0; cursor: pointer; -webkit-transition: all .3s ease; -moz-transition: all .3s ease; transition: all .3s ease; border-radius: 50%; -webkit-border-radius: 50%; }
-.light-theme.wp-posts-carousel .owl-controls .owl-nav .owl-prev { left: -50px; padding: 0px 30px 0px 17px !important; }
+.light-theme.wp-posts-carousel .owl-controls .owl-nav div  {background: #fff; color: #ccc; border: 1px solid #ccc; text-align: center; text-decoration: none; display: block; width: 0px; height: 50px;line-height: 50px; margin: -45px 0 0; position: absolute; top: 50%; z-index: 10; overflow: hidden; opacity: 0; cursor: pointer; -webkit-transition: all .3s ease; -moz-transition: all .3s ease; transition: all .3s ease; border-radius: 50%; -webkit-border-radius: 50%; }
+.light-theme.wp-posts-carousel .owl-controls .owl-nav .owl-prev { left: -50px; padding: 0px 30px 0px 17px; }
 .light-theme.wp-posts-carousel .owl-nav .owl-next:before  { content: '\f105'; }
-.light-theme.wp-posts-carousel .owl-controls .owl-nav .owl-next { right: -50px; padding: 0px 27px 0px 20px !important; }
+.light-theme.wp-posts-carousel .owl-controls .owl-nav .owl-next { right: -50px; padding: 0px 27px 0px 20px; }
 .light-theme.wp-posts-carousel:hover .owl-controls .owl-nav .owl-prev { opacity: 0.7; left: 0px; }
 .light-theme.wp-posts-carousel:hover .owl-controls .owl-nav .owl-next  { opacity: 0.7; right: 0px; }
 .light-theme.wp-posts-carousel:hover .owl-controls .owl-nav .owl-prev:hover,

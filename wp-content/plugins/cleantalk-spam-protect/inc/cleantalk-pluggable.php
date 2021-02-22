@@ -1,5 +1,8 @@
 <?php
 
+use Cleantalk\Variables\Post;
+use Cleantalk\Variables\Server;
+
 /**
  * Getting current user by cookie
  *
@@ -187,6 +190,17 @@ function apbct_is_plugin_active( $plugin ) {
 }
 
 /**
+ * Checks if the theme is active
+ *
+ * @param string $theme_name template name
+ *
+ * @return bool
+ */
+function apbct_is_theme_active ( $theme_name) {
+	return get_option( 'template' ) == $theme_name ? true : false;
+}
+
+/**
  * Checks if the plugin is active for network
  *
  * @param string $plugin relative path from plugin folder like cleantalk-spam-protect/cleantalk.php
@@ -308,4 +322,114 @@ function apbct_wp_blacklist_check($author, $email, $url, $comment, $user_ip, $us
         return wp_blacklist_check( $author, $email, $url, $comment, $user_ip, $user_agent );
     }
 
+}
+
+/**
+ * Check if the site is being previewed in the Customizer.
+ * We can not use is_customize_preview() - the function must be called from init hook.
+ *
+ * @return bool
+ */
+function apbct_is_customize_preview() {
+
+    // Maybe not enough to check the Customizer preview
+    $uri = parse_url(Server::get('REQUEST_URI'));
+    return $uri && isset( $uri['query'] ) && strpos( $uri['query'], 'customize_changeset_uuid' ) !== false;
+}
+
+
+/**
+ * Checking if the request must be skipped.
+ *
+ * @param $ajax bool The current request is the ajax request?
+ *
+ * @return bool|string   false or request name for logging
+ */
+function apbct_is_skip_request( $ajax = false ) {
+
+    /* !!! Have to use more than one factor to detect the request - is_plugin active() && $_POST['action'] !!! */
+    //@ToDo Implement direct integration checking - if have the direct integration will be returned false
+
+    switch ( $ajax ) {
+        case true :
+            /*****************************************/
+            /*    Here is ajax requests skipping     */
+            /*****************************************/
+
+            // Bookly Plugin admin actions skip
+            if( apbct_is_plugin_active( 'bookly-responsive-appointment-booking-tool/main.php' ) &&
+                isset( $_POST['action'] ) &&
+                strpos( $_POST['action'], 'bookly' ) !== false &&
+                is_admin() )
+            {
+                return 'bookly_pro_update_staff_advanced';
+            }
+            // Youzier login form skip
+            if( apbct_is_plugin_active( 'youzer/youzer.php' ) &&
+                isset( $_POST['action'] ) &&
+                $_POST['action'] === 'yz_ajax_login' )
+            {
+                return 'youzier_login_form';
+            }
+            // InJob theme lost password skip
+            if( apbct_is_plugin_active( 'iwjob/iwjob.php' ) &&
+                isset( $_POST['action'] ) &&
+                $_POST['action'] === 'iwj_lostpass' )
+            {
+                return 'injob_theme_plugin';
+            }
+            // Divi builder save epanel
+            if ( apbct_is_theme_active( 'Divi' ) &&
+        		isset( $_POST['action'] ) &&
+        		$_POST['action'] == 'save_epanel' )
+            {
+            	return 'divi_builder_save_epanel';
+            }
+	        // Email Before Download plugin https://wordpress.org/plugins/email-before-download/ action skip
+	        if ( apbct_is_plugin_active( 'email-before-download/email-before-download.php' ) &&
+	             isset( $_POST['action'] ) &&
+	             $_POST['action'] === 'ebd_inline_links' )
+	        {
+		        return 'ebd_inline_links';
+	        }
+	        // WP Discuz skip service requests. The plugin have the direct integration
+	        if ( apbct_is_plugin_active( 'wpdiscuz/class.WpdiscuzCore.php' ) &&
+	             isset( $_POST['action'] ) &&
+	             strpos( $_POST['action'], 'wpd' ) !== false )
+	        {
+		        return 'ebd_inline_links';
+	        }
+            // Exception for plugin https://ru.wordpress.org/plugins/easy-login-woocommerce/ login form
+            if(
+                apbct_is_plugin_active( 'easy-login-woocommerce\xoo-el-main.php' ) &&
+                Post::get( '_xoo_el_form' ) === 'login'
+            ){
+                return 'xoo_login';
+            }
+            
+            break;
+
+        case false :
+        default:
+            /*****************************************/
+            /*  Here is non-ajax requests skipping   */
+            /*****************************************/
+            // BuddyPress edit profile checking skip
+            if( apbct_is_plugin_active( 'buddypress/bp-loader.php' ) &&
+                array_key_exists( 'profile-group-edit-submit', $_POST ) )
+            {
+                return 'buddypress_profile_edit';
+            }
+            // UltimateMember password reset skip
+            if( apbct_is_plugin_active( 'ultimate-member/ultimate-member.php' ) &&
+                isset( $_POST['_um_password_reset'] ) && $_POST['_um_password_reset'] == 1 )
+            {
+                return 'ultimatemember_password_reset';
+            }
+
+            break;
+
+    }
+
+    return false;
 }
