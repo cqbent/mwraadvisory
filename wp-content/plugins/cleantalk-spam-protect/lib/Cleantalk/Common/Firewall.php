@@ -35,9 +35,11 @@ class Firewall
 		// Lowest
 		'PASS_SFW',
 		'PASS_SFW__BY_COOKIE',
+		'PASS_ANTIFLOOD_UA',
 		'PASS_ANTIFLOOD',
         'PASS_ANTICRAWLER_UA',
 		'PASS_ANTICRAWLER',
+		'DENY_ANTIFLOOD_UA',
 		'DENY_ANTIFLOOD',
         'DENY_ANTICRAWLER_UA',
 		'DENY_ANTICRAWLER',
@@ -57,18 +59,18 @@ class Firewall
 	public function __construct( $db ){
 		$this->db       = $db;
 		$this->debug    = !! Get::get( 'debug' );
-		$this->ip_array = $this->ip__get( array('real'), true );
+		$this->ip_array = $this->ip__get( 'real', true );
 	}
 	
 	/**
 	 * Getting arrays of IP (REMOTE_ADDR, X-Forwarded-For, X-Real-Ip, Cf_Connecting_Ip)
 	 *
-	 * @param array $ips_input type of IP you want to receive
+	 * @param string $ips_input type of IP you want to receive
 	 * @param bool  $v4_only
 	 *
 	 * @return array|mixed|null
 	 */
-	public function ip__get( $ips_input = array( 'real', 'remote_addr', 'x_forwarded_for', 'x_real_ip', 'cloud_flare' ), $v4_only = true ){
+	public function ip__get( $ips_input = 'real', $v4_only = true ){
 		
 		$result = Helper::ip__get( $ips_input, $v4_only );
 		
@@ -128,7 +130,7 @@ class Firewall
         foreach ( $this->fw_modules as $module ) {
             if( array_key_exists( $module->module_name, $results ) ){
                 foreach ( $results[$module->module_name] as $result ) {
-                    if( in_array( $result['status'], array( 'PASS_SFW__BY_WHITELIST', 'PASS_SFW', 'PASS_ANTIFLOOD', 'PASS_ANTICRAWLER', 'PASS_ANTICRAWLER_UA' ) ) ){
+                    if( in_array( $result['status'], array( 'PASS_SFW__BY_WHITELIST', 'PASS_SFW', 'PASS_ANTIFLOOD', 'PASS_ANTICRAWLER', 'PASS_ANTICRAWLER_UA', 'PASS_ANTIFLOOD_UA' ) ) ){
                         continue;
                     }
                     $module->update_log( $result['ip'], $result['status'] );

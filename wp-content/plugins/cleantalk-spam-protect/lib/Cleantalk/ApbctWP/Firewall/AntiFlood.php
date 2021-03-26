@@ -11,6 +11,7 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 	public $module_name = 'ANTIFLOOD';
 	
 	private $db__table__ac_logs;
+	private $db__table__ac_ua_bl;
 
 	private $api_key = '';
 	private $view_limit = 20;
@@ -20,7 +21,7 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 	private $chance_to_clean = 20;
 
     public $isExcluded = false;
-	
+
 	/**
 	 * AntiCrawler constructor.
 	 *
@@ -32,6 +33,7 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 		
 		$this->db__table__logs    = $log_table ?: null;
 		$this->db__table__ac_logs = $ac_logs_table ?: null;
+		$this->db__table__ac_ua_bl= defined('APBCT_TBL_AC_UA_BL') ? APBCT_TBL_AC_UA_BL : null;
 		
 		foreach( $params as $param_name => $param ){
 			$this->$param_name = isset( $this->$param_name ) ? $param : false;
@@ -53,6 +55,32 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 		$time = time() - $this->store_interval;
 		
 		foreach( $this->ip_array as $ip_origin => $current_ip ){
+
+			// UA check
+			$ua_bl_results = $this->db->fetch_all(
+				"SELECT * FROM " . $this->db__table__ac_ua_bl . " ORDER BY `ua_status` DESC;"
+			);
+
+			if( ! empty( $ua_bl_results ) ){
+
+				foreach( $ua_bl_results as $ua_bl_result ){
+
+					if( ! empty( $ua_bl_result['ua_template'] ) && preg_match( "%". str_replace( '"', '', $ua_bl_result['ua_template'] ) ."%i", Server::get('HTTP_USER_AGENT') ) ) {
+
+						$this->ua_id = $ua_bl_result['id'];
+
+						if( $ua_bl_result['ua_status'] == 1 ) {
+							// Whitelisted
+							$results[] = array('ip' => $current_ip, 'is_personal' => false, 'status' => 'PASS_ANTIFLOOD_UA',);
+							return $results;
+							break;
+						}
+
+					}
+
+				}
+
+			}
 			
 			// Passed
 			if( Cookie::get( 'apbct_antiflood_passed' ) === md5( $current_ip . $this->api_key ) ){
@@ -88,14 +116,14 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 			return $results;
 		} else{
 			// Do logging entries
-			$this->update_ac_log();
+			add_action( 'template_redirect', array( & $this, 'update_ac_log' ), 999 );
 		}
 		
 		return $results;
 		
 	}
 	
-	private function update_ac_log() {
+	public function update_ac_log() {
 		
 		$interval_time = Helper::time__get_interval_start( $this->store_interval );
 		
@@ -152,16 +180,17 @@ class AntiFlood extends \Cleantalk\Common\Firewall\FirewallModule{
 			all_entries = 1,
 			blocked_entries = " . ( strpos( $status, 'DENY' ) !== false ? 1 : 0 ) . ",
 			entries_timestamp = '" . intval( $time ) . "',
-			ua_name = '" . Server::get('HTTP_USER_AGENT') . "'
+			ua_name = %s
 		ON DUPLICATE KEY
 		UPDATE
 			status = '$status',
 			all_entries = all_entries + 1,
 			blocked_entries = blocked_entries" . ( strpos( $status, 'DENY' ) !== false ? ' + 1' : '' ) . ",
 			entries_timestamp = '" . intval( $time ) . "',
-			ua_name = '" . Server::get('HTTP_USER_AGENT') . "'";
-		
-		$this->db->execute( $query );
+			ua_name = %s";
+
+		$this->db->prepare( $query, array( Server::get('HTTP_USER_AGENT'), Server::get('HTTP_USER_AGENT') ) );
+		$this->db->execute( $this->db->get_query() );
 	}
 	
 	public function _die( $result ) {

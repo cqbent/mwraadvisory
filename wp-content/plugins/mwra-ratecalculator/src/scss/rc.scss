@@ -3,5 +3,33 @@
 		select {
 			height: 30px;
 		}
+		label {
+			display: block;
+			font-weight: 600;
+		}
+		h4 {
+			font-size: 1.2rem;
+			padding: 0;
+		}
+	}
+	.error-msg {
+		font-weight: 700;
+		color: red;
+		margin-bottom: 20px;
+	}
+	.result {
+		label {
+			min-width: 100px;
+			font-weight: 700;
+			font-size: 1.25rem;
+		}
+		.amount {
+			font-size: 2rem;
+		}
+	}
+}
+.tooltip {
+	.tooltip-inner {
+		min-width: 400px;
 	}
 }

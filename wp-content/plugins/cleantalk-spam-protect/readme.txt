@@ -2,16 +2,16 @@
 Contributors: safronik 
 Tags: spam, antispam, anti-spam, comments, firewall
 Requires at least: 3.0
-Tested up to: 5.6
+Tested up to: 5.7
 Requires PHP: 5.4
-Stable tag: 5.153.1
+Stable tag: 5.154
 License: GPLv2
 
 Spam protection, anti-spam, firewall, premium plugin. No spam comments & users, no spam contact form & WooCommerce anti-spam.
 
 == Description ==
 
-**Supports: Contact Form 7, Contact Form by WPForms, Ninja Forms, Gravity Forms, MailChimp, Formidable forms, WooCommerce, JetPack comments and contact form, BuddyPress, bbPress, S2Member, MailPoet, wpDiscuz, ConvertKit, ActiveCampaign, any WordPress registrations & contact forms and themes. Just set up and forget the spam!**
+**Supports: Contact Form 7, Contact Form by WPForms, Ninja Forms, Gravity Forms, MailChimp, Formidable forms, WooCommerce, JetPack comments and contact form, BuddyPress, bbPress, S2Member, MailPoet, wpDiscuz, ConvertKit, ActiveCampaign, Events Manager, Avada Theme Form Builder, any WordPress registrations & contact forms and themes. Just set up and forget the spam!**
 
 No CAPTCHA, no questions, no animal counting, no puzzles, no math and no spam bots. Universal AntiSpam plugin.
 
@@ -60,7 +60,7 @@ Native spam protection for WordPress, JetPack comments and any other comment plu
 Filters spam bots on registration forms of WordPress, BuddyPress, bbPress, S2Member, WooCommerce, Profile builder, Login with AJAX and any other registration plugins.
 
 = Spam filter for contact forms =
-The plugin is tested and ready to protect from spam emails via Formidable forms, Contact form 7, JetPack Contact form, Fast Secure Contact form, Ninja forms, Landing Page Builder, Gravity forms, Contact Form by BestWebSoft, Simple Contact Form Plugin - PirateForms, Visual Form Builder, Contact Form by WebDorado, Contact Form Email, MW WP Form, Contact Form by Jeff Bulllins, Contact Us Form, WCP Contact Form, WPForms Lite, Custom Contact, Forms, Caldera Forms, Visual Form Builder, Contact Form Clean and Simple, Divi by Elegant Themes, The7 theme and any other themes or custom contact forms, amoForms, Ultimate Form Builder, Contact Bank - Contact Forms Builder, Forms easily built with Smart Forms, Usernoise contact form, Contact Form by Web-Settler, HubSpot Marketing Free, QuForm, Form Maker by 10Web, WP User Frontend, NEX-Forms.
+The plugin is tested and ready to protect from spam emails via Formidable forms, Contact form 7, JetPack Contact form, Fast Secure Contact form, Ninja forms, Landing Page Builder, Gravity forms, Contact Form by BestWebSoft, Simple Contact Form Plugin - PirateForms, Visual Form Builder, Contact Form by WebDorado, Contact Form Email, MW WP Form, Contact Form by Jeff Bulllins, Contact Us Form, WCP Contact Form, WPForms Lite, Custom Contact, Forms, Caldera Forms, Visual Form Builder, Contact Form Clean and Simple, Divi by Elegant Themes, The7 theme and any other themes or custom contact forms, amoForms, Ultimate Form Builder, Contact Bank - Contact Forms Builder, Forms easily built with Smart Forms, Usernoise contact form, Contact Form by Web-Settler, HubSpot Marketing Free, QuForm, Form Maker by 10Web, WP User Frontend, NEX-Forms, Avada Theme Form Builder.
 
 = WooCommerce spam filter =
 Anti-spam by CleanTalk filters spam registrations and spam reviews for WooCommerce. The plugin is fully compatible with WooCommerce 2.1 and higher.
@@ -580,10 +580,62 @@ If your website has forms that send data to external sources, you can enable opt
 
 == Changelog ==
 
+= 5.154 Mar 17 2021 =
+ * New: Settings Templates functionality implemented.
+ * New: SFW. Anti-flood protection uses UA lists for filtration.
+ * Fix: Forms. Getting check_js delay removed.
+ * Fix: Forms. Rotation check_js fixed.
+ * Fix: Integration. Newspaper-theme login form protection skipped.
+ * Fix: Integration. Newspaper-theme reset password form protection skipped.
+ * Fix: Forms. Gravity Forms paypal addon processing skipped.
+ * Fix: Exclusion for wpDiscuz - Online Users Addon.
+ * Fix: Remote Calls. Wrapper http__request__rc_to_host() don't get an array
+ * Fix: JS. Modal window fixed.
+ * Fix: JS. Show AJAX result fixed.
+ * Fix: Skip. Save abandoned cart checking skip.
+ * Fix: Skip. SUMODISCOUNT discout request skip.
+ * Fix: Skip. WP eMember login form skip.
+ * Fix: SFW. Do not cache constants added.
+ * Fix: SFW. AC/AF logging fixed.
+
+= 5.153.7 Mar 15 2021 =
+ * Fix: SFW. Updating fixed.
+
+= 5.153.6 Mar 12 2021 =
+ * Fix: Show response for all AJAX forms #2.
+
+= 5.153.5 Mar 10 2021 =
+ * Fix: Show response for all AJAX forms.
+
+= 5.153.4 Mar 10 2021 =
+ * New: SFW. Log could be sent not more often than 3 minutes.
+ * New: SFW. Possibility to use DELETE instead of TRUNCATE to delete SFW log.
+ * New: Show response for all AJAX forms.
+ * Fix: SFW. Sending log. Committing transaction after TRUNCATE log table.
+ * Fix: Integration. CF7 different versions compatibility fixed.
+ * Fix: Exclusion for WooCommerce.
+ * Fix: Possible SQL-injections fixed.
+
+= 5.153.3 Feb 25 2021 =
+ * Fix: Security. Preparing UA string for writing to the DB.
+
+= 5.153.2 Feb 25 2021 =
+ * Fix: Integration. Registration on WICITY theme.
+ * Fix: Integration. Registration on Paid Memberships Pro
+ * Fix: IP detection.
+ * Fix: Error: SFW_DISABLED.
+ * Fix: Formidable form. Error with sophisticated field types.
+ * Fix: Remote Calls. Cooldown checking for the SFW update fixed.
+ * Fix: easy-login-woocommerce requests exclusion fixed.
+ * Fix: Jackmail plugin. Skip all admin-side actions.
+ * Fix: Remote Calls. Unused deactivation option removed.
+ * Fix: Users checker. Last check date fixed.
+ * Fix: Users checker. Total users count description fixed.
+
 = 5.153.1 Feb 20 2021 =
  * Fix: CF7. Modified spam hook #2
 
-= 5.153 Feb 17.02.2021 =
+= 5.153 Feb 17 2021 =
  * New: Integrations. WPDiscuz integration implemented.
  * New: Using custom modal message instead allert.
  * New: JS cleantalk-modal added.

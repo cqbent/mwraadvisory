@@ -123,10 +123,6 @@ function get_surver_entries($form_id, $community, $year)
             array(
                 'key' => '152',
                 'value' => $year
-            ),
-            array(
-                'key' => 'is_approved',
-                'value' => 1
             )
 
         )
@@ -135,6 +131,7 @@ function get_surver_entries($form_id, $community, $year)
     $entries = GFAPI::get_entries($form_id, $search_criteria);
 
     return $entries;
+
 }
 
 function get_community()

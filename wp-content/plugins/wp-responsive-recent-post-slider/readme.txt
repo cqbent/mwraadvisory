@@ -2,7 +2,7 @@
 Contributors: wponlinesupport, anoopranawat, pratik-jain
 Tags: post slider, posts slider, recent post slider, recent posts slider, slider, responsive post slider, responsive posts slider, responsive recent post slider, responsive recent posts slider, wordpress posts slider, post slideshow, posts slideshow, recent posts slideshow, shortcodes, wponlinesupport
 Requires at least: 4.0
-Tested up to: 5.6
+Tested up to: 5.7
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -18,7 +18,7 @@ This plugin displays your recent WordPress posts using :
 * Posts Slider (4 designs), 
 * Posts Carousel (1 designs)
 
-Check [Demo and Features](https://demo.wponlinesupport.com/recent-post-slider-demo/) for additional information.
+Check [Features and Demo](https://www.wponlinesupport.com/wp-plugin/wp-responsive-recent-post-slider/) for additional information.
 
 When you want to makeover your WordPress website theme with something extraordinary and creative, you must consider WP responsive recent post slider. Help your website to get a slide-wise display to show the recent posts/news. Not just eye appealing, it is also loved by the visitors as they find it quite easy to locate the recent posts. 
 
@@ -168,6 +168,9 @@ Where designs are : design-1, design-2, design-3, design-4. You can use same par
 8. Gutenberg Block Support
 
 == Changelog ==
+
+= 2.7 (15, March 2021) =
+Tested up to: 5.7
 
 = 2.6 (25, Jan 2021) =
 * [+] New - Added native shortcode support for Elementor, SiteOrigin and Beaver builder.

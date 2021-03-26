@@ -15,7 +15,8 @@
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
     "node-sass": "^4.14.1",
-    "rangeslider.js": "^2.3.3"
+    "rangeslider.js": "^2.3.3",
+    "popper.js": "^1.16.1"
   },
   "scripts": {
     "scss": "node-sass src/scss -o assets/css",

@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require( '//Users/charlesbent/Google Drive/Websites/mwraadvisory/project/wp-blog-header.php' );
 
 function get_survey_entries($form_id, $community, $year) {
@@ -7,7 +10,6 @@ function get_survey_entries($form_id, $community, $year) {
         //'is_approved' =>	'1',
         'status' => 'active',
         'field_filters' => array(
-            //'mode' => 'any',
             array(
                 'key' => '136',
                 'value' => $community
@@ -15,14 +17,11 @@ function get_survey_entries($form_id, $community, $year) {
             array(
                 'key' => '152',
                 'value' => $year
-            ),
-            array(
-                'key' => 'is_approved',
-                'value' => 1
             )
 
         )
     );
+
 
     $result = GFAPI::get_entries($form_id, $search_criteria);
 
@@ -38,8 +37,8 @@ function get_survey_entries($form_id, $community, $year) {
 
     return $result;
 }
-
-$data = get_survey_entries('62', 'SOUTHBOROUGH', '2019');
+//$data = 'this';
+$data = get_survey_entries('62', 'Town of Arlington', '2019');
 
 header('Content-Type: application/json');
 echo json_encode($data);

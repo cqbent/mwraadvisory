@@ -1,15 +1,14 @@
 <?php
 /**
- * Admin View: Widget Dropdown Component
+ * Admin View: Widget Component Dropdown field.
  *
- * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/admin-views/widgets/components/dropdown.php
+ * Administration Views cannot be overwritten by default from your theme.
  *
  * See more documentation about our views templating system.
  *
  * @link    http://evnt.is/1aiy
  *
- * @version 5.3.0
+ * @version 4.12.18
  *
  * @var string $label      Label for the dropdown.
  * @var string $value      Value for the dropdown.

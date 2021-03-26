@@ -241,7 +241,7 @@ class AntiCrawler extends \Cleantalk\Common\Firewall\FirewallModule{
 			}else{
 
                 if( ! Cookie::get('apbct_antibot') ) {
-                    $this->update_ac_log();
+                    add_action( 'template_redirect', array( & $this, 'update_ac_log' ), 999 );
                 }
 				
 				add_action( 'wp_head', array( '\Cleantalk\ApbctWP\Firewall\AntiCrawler', 'set_cookie' ) );
@@ -255,8 +255,7 @@ class AntiCrawler extends \Cleantalk\Common\Firewall\FirewallModule{
 		
 	}
 	
-	private function update_ac_log() {
-		
+	public function update_ac_log() {
 		$interval_time = Helper::time__get_interval_start( $this->store_interval );
 		
 		// @todo Rename ip column to sign. Use IP + UserAgent for it.
@@ -311,7 +310,7 @@ class AntiCrawler extends \Cleantalk\Common\Firewall\FirewallModule{
 				blocked_entries = " . ( strpos( $status, 'DENY' ) !== false ? 1 : 0 ) . ",
 				entries_timestamp = '" . intval( $time ) . "',
 				ua_id = " . $this->ua_id . ",
-				ua_name = '" . Server::get('HTTP_USER_AGENT') . "'
+				ua_name = %s
 			ON DUPLICATE KEY
 			UPDATE
 			    status = '$status',
@@ -319,9 +318,10 @@ class AntiCrawler extends \Cleantalk\Common\Firewall\FirewallModule{
 				blocked_entries = blocked_entries" . ( strpos( $status, 'DENY' ) !== false ? ' + 1' : '' ) . ",
 				entries_timestamp = '" . intval( $time ) . "',
 				ua_id = " . $this->ua_id . ",
-				ua_name = '" . Server::get('HTTP_USER_AGENT') . "'";
-		
-		$this->db->execute( $query );
+				ua_name = %s";
+
+		$this->db->prepare( $query, array( Server::get('HTTP_USER_AGENT'), Server::get('HTTP_USER_AGENT') ) );
+		$this->db->execute( $this->db->get_query() );
 	}
 	
 	public function _die( $result ){

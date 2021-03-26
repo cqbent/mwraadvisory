@@ -3043,6 +3043,7 @@ input[type="button"] {
     }
   }
 }
+
 .blog {
   .site-content {
     padding: 50px 0;
@@ -3058,7 +3059,8 @@ input[type="button"] {
     }
   }
 }
-.single {
+
+.single, .page {
   .site-content {
     padding: 50px 0;
   }
@@ -3072,6 +3074,14 @@ input[type="button"] {
     }
   }
 }
+
+.page {
+  #primary {
+    width: auto;
+    float: none;
+  }
+}
+
 .archive {
   .site-content {
     padding: 50px 0;
@@ -7930,3 +7940,4 @@ img.animation {
     }
   }
 }
+

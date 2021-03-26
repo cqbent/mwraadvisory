@@ -1,2 +1,26 @@
 .ratecalculator form select {
   height: 30px; }
+
+.ratecalculator form label {
+  display: block;
+  font-weight: 600; }
+
+.ratecalculator form h4 {
+  font-size: 1.2rem;
+  padding: 0; }
+
+.ratecalculator .error-msg {
+  font-weight: 700;
+  color: red;
+  margin-bottom: 20px; }
+
+.ratecalculator .result label {
+  min-width: 100px;
+  font-weight: 700;
+  font-size: 1.25rem; }
+
+.ratecalculator .result .amount {
+  font-size: 2rem; }
+
+.tooltip .tooltip-inner {
+  min-width: 400px; }

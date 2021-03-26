@@ -12,7 +12,7 @@ class RateCalculatorAdmin {
 	function rcadmin_load() {
 		// add actions/filters
 		if (is_admin()) {
-
+			// do something
 		}
 		// register settings and add fields; form page; display ga code
 		add_action('admin_init', array($this, 'rc_register_settings')); // register settings and fields
@@ -46,7 +46,7 @@ class RateCalculatorAdmin {
 		$forms = GFAPI::get_forms();
 		$field = '<select name="rc_settings[rc_gf_id]">';
 		foreach ($forms as $form) {
-			$field .= '<option value="'.$form['id']. '"' . selected($options['rc_gf_id'], $form['id']) . '>' .$form['title'].'</option>';
+			$field .= '<option value="'.$form['id']. '" ' . selected($options['rc_gf_id'], $form['id'], false) . '">' .$form['title'].'</option>';
 		}
 		$field .= '</select>';
 		print $field;

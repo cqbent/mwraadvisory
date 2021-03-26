@@ -1,6 +1,9 @@
 import 'rangeslider.js';
+//import 'popper.js';
+//import 'bootstrap';
 
 (function ($) {
+	$('[data-toggle="tooltip"]').tooltip();
 	$('#ratecalculator_form #rc_year').change(function() {
 		$.post(rc_ajax_obj.ajax_url, {
 			'action': 'get_communities',
