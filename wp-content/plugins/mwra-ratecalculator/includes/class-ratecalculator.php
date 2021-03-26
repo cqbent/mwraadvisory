@@ -147,7 +147,7 @@ class RateCalculatorDisplay
 			'status' => 'active',
 			'field_filters' => array(
 				array(
-					'key' => '136',
+					'key' => '337',
 					'value' => $community
 				),
 				array(
@@ -191,7 +191,7 @@ class RateCalculatorDisplay
 
 	function calculate_data($community, $year) {
 		// get survey entries
-		$result = $this->get_survey_entries('62', $community, $year);
+		$result = $this->get_survey_entries('66', $community, $year);
 		/*
 	 * 54 - residential water rate table: "[{"Tier Start":"0","Tier End":"15","Unit":"HCF","Rate":"4.99"},]"
 	 * 55 - residential sewer rate table: "[{"Tier Start":"0","Tier End":"15","Unit":"HCF","Rate":"4.99"},]"
@@ -269,8 +269,9 @@ class RateCalculatorDisplay
 			$this->fee = round($fee_water + $fee_sewer);
 		}
 		// set month and annual fees
-		$this->fee_month = round($this->fee * $this->usage_frequency / 12);
-		$this->fee_year = round($this->fee_month * 12);
+		$this->fee_month = number_format(round($this->fee * $this->usage_frequency / 12));
+		$this->fee_year = number_format(round($this->fee_month * 12));
+		$this->fee = number_format($this->fee);
 
 	}
 
