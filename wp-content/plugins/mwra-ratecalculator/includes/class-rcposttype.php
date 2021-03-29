@@ -1,6 +1,6 @@
 <?php
 
-class SurveyData {
+class SurveyPostType {
 	// create survey data post type
 	// store custom field config in plugin
 	/*
@@ -26,5 +26,54 @@ class SurveyData {
 	 * 182 - billing_month_when_same_rate_year
 	 *
 	 */
+
+	function __construct() {
+		add_action('init', array($this, 'rate_survey_post_type'));
+		add_action('acf/update_field_group', array($this, 'rate_survey_update_field_group'), 1, 1);
+		// Load - includes the /acf-json folder in this plugin to the places to look for ACF Local JSON files
+		add_filter('acf/settings/load_json', function($paths) {
+			$paths[] = RC_PLUGIN_DIRPATH . '/acf-json';
+			return $paths;
+		});
+	}
+
+	// register survey data post type
+	function rate_survey_post_type() {
+		register_post_type('rate_survey',
+			array(
+				'labels' => array(
+					'name' => __('Rate Survey Data'),
+					'singular_name' => __('Rate Survey Entry')
+				),
+				'public' => TRUE,
+				'has_archive' => TRUE,
+				'rewrite' => array('slug' => 'rate-survey', 'with_front' => FALSE),
+				'hierarchical' => FALSE,
+				'supports' => array(
+					'title',
+					'author',
+					'custom-fields',
+					'editor',
+					'thumbnail'
+				),
+				'not-found' => __('Nothing was found. what to do?'),
+				'menu_icon' => 'dashicons-clipboard'
+			)
+		);
+	}
+
+	function rate_survey_update_field_group($group) {
+		// list of field groups that should be saved to my-plugin/acf-json
+		$groups = array('group_6060db4a7d0b1');
+
+		if (in_array($group['key'], $groups)) {
+			add_filter('acf/settings/save_json', function() {
+				return RC_PLUGIN_DIRPATH . '/acf-json';
+			});
+		}
+	}
+
+
+
 
 }

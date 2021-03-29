@@ -32,13 +32,16 @@ elseif ($this->service_type == 'water_sewer') {
 
 $kgal_selected = '';
 $hcf_selected = '';
-if ($this->unit_type == 'KGAL') {
+if ($this->unit_type == '2') {
 	$kgal_selected = ' selected';
 }
-elseif ($this->unit_type == 'HCF') {
+elseif ($this->unit_type == '1') {
 	$hcf_selected = ' selected';
 	$service_type = 'Water + Sewer';
 }
+$fee = number_format($this->fee);
+$fee_month = number_format($this->fee_month);
+$fee_year = number_format($this->fee_year);
 
 $form = <<<EOT
 <!-- Modal -->
@@ -61,7 +64,7 @@ $form = <<<EOT
 					<fieldset class="year">
 						<label>Year</label>
 						<select name="rc_year" id="rc_year">
-							$this->year_list;
+							$this->year_list
 						</select>
 					</fieldset>
 					<fieldset class="community">
@@ -87,8 +90,8 @@ $form = <<<EOT
 					<fieldset class="unit-type">
 						<label>Units <i class="fa fa-question-circle" data-toggle="tooltip" data-html="true" title="KGAL (Kilogallons) = 1000 Gallons <br> HCF (Hundreds of Cubic Feet) = 748 Gallons"></i></label>
 						<select name="unit_type" id="unit_type">
-							<option value="KGAL" $kgal_selected >KGAL</option>
 							<option value="HCF" $hcf_selected >HCF</option>
+							<option value="KGAL" $kgal_selected >KGAL</option>
 						</select>
 					</fieldset>
 					<fieldset class="usage-frequency">
@@ -115,15 +118,15 @@ $form = <<<EOT
 				<h3>$service_type_name Usage</h3>
 				<div class="fee">
 					<label>Bill</label>
-					<span class="amount">$$this->fee</span>
+					<span class="amount">$$fee</span>
 				</div>
 				<div class="fee-month">
 					<label>Monthly</label>
-					<span class="amount">$$this->fee_month</span>
+					<span class="amount">$$fee_month</span>
 				</div>
 				<div class="fee-year">
 					<label>Annually</label>
-					<span class="amount">$$this->fee_year</span>
+					<span class="amount">$$fee_year</span>
 				</div>
 			</div>
 		</div>

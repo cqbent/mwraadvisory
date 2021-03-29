@@ -6,7 +6,7 @@ import 'rangeslider.js';
 	$('[data-toggle="tooltip"]').tooltip();
 	$('#ratecalculator_form #rc_year').change(function() {
 		$.post(rc_ajax_obj.ajax_url, {
-			'action': 'get_communities',
+			'action': 'get_rate_survey_communities',
 			'option_value': this.value
 		}, function(response) {
 				// do something here

@@ -42,10 +42,11 @@ function activate_ratecalculator() {
  */
 function deactivate_ratecalculator() {
 	// do some deactivating
-
 }
+
 register_activation_hook( __FILE__, 'activate_ratecalculator' );
 register_deactivation_hook( __FILE__, 'deactivate_ratecalculator' );
+
 
 /*
  * require and load rate calculator classes
@@ -53,7 +54,9 @@ register_deactivation_hook( __FILE__, 'deactivate_ratecalculator' );
 require RC_PLUGIN_DIRPATH . 'includes/class-rcadmin.php';
 require RC_PLUGIN_DIRPATH . 'includes/class-ratecalculator.php';
 require RC_PLUGIN_DIRPATH . 'includes/class-surveyform.php';
+require RC_PLUGIN_DIRPATH . 'includes/class-rcposttype.php';
 
+$rcposttype = new SurveyPostType();
 $rcform = new RCSurveyForm();
 $rcadmin = new RateCalculatorAdmin();
 $rcdisplay = new RateCalculatorDisplay();
