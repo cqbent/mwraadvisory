@@ -5,14 +5,15 @@
 $url_parsed = parse_url("//$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
 $url_path = $url_parsed['path'];
 $frequency_list = '';
+$selected_frequency = '';
 foreach($this->frequency_array as $key => $value) {
 	$frequency_selected = '';
 	if ($_REQUEST['usage_frequency'] == $value) {
 		$frequency_selected = ' selected';
+		$selected_frequency = ' (' . $key . ')';
 	}
 	$frequency_list .= '<option value="'.$value.'" '.$frequency_selected.'>'.$key.'</option>';
 }
-
 $water_checked = '';
 $sewer_checked = '';
 $water_sewer_checked = '';
@@ -117,7 +118,7 @@ $form = <<<EOT
 			<div class="result">
 				<h3>$service_type_name Usage</h3>
 				<div class="fee">
-					<label>Bill</label>
+					<label>Bill $selected_frequency</label>
 					<span class="amount">$$fee</span>
 				</div>
 				<div class="fee-month">

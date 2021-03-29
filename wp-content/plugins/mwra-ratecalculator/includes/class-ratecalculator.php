@@ -19,7 +19,7 @@ class RateCalculatorDisplay
 	public $usage_frequency = 1;
 	public $unit_type = 'KGAL';
 	public $service_type = 'water';
-	public $frequency_array = ['Annually' => 1, 'Semi-Annualy' => 2, 'Triannully' => 3, 'Quarterly' => 4, 'Monthly' => 12, 'Daily' => 136];
+	public $frequency_array = ['Annually' => 1, 'Semi-Annualy' => 2, 'Triannully' => 3, 'Quarterly' => 4, 'Monthly' => 12, 'Daily' => 365];
 	public $fee = 0;
 	public $fee_month = 0;
 	public $fee_year = 0;
@@ -319,9 +319,8 @@ class RateCalculatorDisplay
 		// calculate fee based on usage and rate table
 		$fee_water = $this->calculate_rate_table($result['water_rate_table'], $usage_water, $calculated_frequency_water);
 		$fee_sewer = $this->calculate_rate_table($result['sewer_rate_table'], $usage_sewer, $calculated_frequency_sewer);
-		//
-		$fee_water = $fee_water * $calculated_frequency_water;
-		$fee_sewer = $fee_sewer * $calculated_frequency_sewer;
+		//$fee_water = $fee_water * $calculated_frequency_water;
+		//$fee_sewer = $fee_sewer * $calculated_frequency_sewer;
 		// add base fee per calculated frequency
 		$fee_water += (float)$result['water_base_fee'] / $calculated_frequency_water;
 		$fee_sewer += (float)$result['sewer_base_fee'] / $calculated_frequency_sewer;
