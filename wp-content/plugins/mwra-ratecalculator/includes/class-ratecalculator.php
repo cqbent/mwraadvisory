@@ -335,17 +335,17 @@ class RateCalculatorDisplay
 		}
 		// set fee based on selected service type (water, sewer, water+sewer)
 		if ($this->service_type == 'water') {
-			$this->fee = round($fee_water);
+			$this->fee = $fee_water;
 		}
 		elseif ($this->service_type == 'sewer') {
-			$this->fee = round($fee_sewer);
+			$this->fee = $fee_sewer;
 		}
 		elseif ($this->service_type == 'water_sewer') {
-			$this->fee = round($fee_water + $fee_sewer);
+			$this->fee = $fee_water + $fee_sewer;
 		}
 		// set month and annual fees
-		$this->fee_month = round($this->fee * $this->usage_frequency / 12);
-		$this->fee_year = round($this->fee_month * 12);
+		$this->fee_month = $this->fee * $this->usage_frequency / 12;
+		$this->fee_year = $this->fee_month * 12;
 	}
 
 	function calculate_rate_table($table, $usage, $frequency) {

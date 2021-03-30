@@ -40,9 +40,9 @@ elseif ($this->unit_type == '1') {
 	$hcf_selected = ' selected';
 	$service_type = 'Water + Sewer';
 }
-$fee = number_format($this->fee);
-$fee_month = number_format($this->fee_month);
-$fee_year = number_format($this->fee_year);
+$fee = number_format($this->fee, 0);
+$fee_month = number_format($this->fee_month, 0);
+$fee_year = number_format($this->fee_year, 0);
 
 $form = <<<EOT
 <!-- Modal -->
