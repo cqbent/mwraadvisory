@@ -12,7 +12,7 @@ import 'rangeslider.js';
 		}, function(response) {
 				// do something here
 				var list = response;
-				console.log('this: ' + valx);
+				//console.log('this: ' + valx);
 				$('#ratecalculator_form #rc_community').html(list);
 			}
 		)
