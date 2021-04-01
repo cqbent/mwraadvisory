@@ -103,7 +103,7 @@ class RateCalculatorDisplay
 		$result = '';
 		$args = [
 			'post_type' => 'rate_survey',
-			'numberposts' => -1,
+			'posts_per_page' => -1,
 			'post_status' => 'publish',
 			'meta_key' => 'year',
 			'meta_value' => $year
@@ -250,6 +250,7 @@ class RateCalculatorDisplay
 				$survey_data['sewer_minimum_fee_include_amount'] = get_field('sewer_minimum_fee');
 				$survey_data['water_rate_table'] = get_field('water_rate_table');
 				$survey_data['sewer_rate_table'] = get_field('sewer_rate_table');
+				$survey_data['sewer_discount_rate'] = get_field('sewer_discount_rate');
 				/*
 				if (have_rows('water_rate_table')) {
 					$count_water = 0;
@@ -300,27 +301,26 @@ class RateCalculatorDisplay
 	}
 
 	function calculate_data($community, $year) {
-		// get survey entries
-		//$result = $this->get_survey_entries('66', $community, $year);
+		// get survey data based on community + year
 		$result = $this->get_rate_survey_data($community, $year);
-		//var_dump($result);
 		// set initial variables
 		$fee_water = 0;
 		$fee_sewer = 0;
 		$usage = $this->usage_amount;
-		// adjust usage based on selected unit type vs community unit type
+		// calculate usage based on selected unit type vs community unit type (HCF vs KGAL)
 		$usage_water = $this->calculate_usage($usage, $this->unit_type, $result['unit_type_water']);
 		$usage_sewer = $this->calculate_usage($usage, $this->unit_type, $result['unit_type_sewer']);
 		// set calculated frequency based on frequency selected / community frequency if they are different
-		//$calculated_frequency_water = $this->calculate_frequency($this->usage_frequency, $this->frequency_array[$result['water_billing_frequency']]);
-		//$calculated_frequency_sewer = $this->calculate_frequency($this->usage_frequency, $this->frequency_array[$result['sewer_billing_frequency']]);
 		$calculated_frequency_water = $this->calculate_frequency($this->usage_frequency, $result['water_billing_frequency']);
 		$calculated_frequency_sewer = $this->calculate_frequency($this->usage_frequency, $result['sewer_billing_frequency']);
 		// calculate fee based on usage and rate table
 		$fee_water = $this->calculate_rate_table($result['water_rate_table'], $usage_water, $calculated_frequency_water);
 		$fee_sewer = $this->calculate_rate_table($result['sewer_rate_table'], $usage_sewer, $calculated_frequency_sewer);
-		//$fee_water = $fee_water * $calculated_frequency_water;
-		//$fee_sewer = $fee_sewer * $calculated_frequency_sewer;
+		// if sewer rate discount then calulate discount based on discount rate
+		if ($result['sewer_discount_rate']) {
+			$sewer_discount = 1 - ($result['sewer_discount_rate'] / 100);
+			$fee_sewer = $fee_sewer * $sewer_discount;
+		}
 		// add base fee per calculated frequency
 		$fee_water += (float)$result['water_base_fee'] / $calculated_frequency_water;
 		$fee_sewer += (float)$result['sewer_base_fee'] / $calculated_frequency_sewer;

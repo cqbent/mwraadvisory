@@ -404,6 +404,27 @@
             "min": "",
             "max": "",
             "step": ""
+        },
+        {
+            "key": "field_606600cef8b52",
+            "label": "Sewer Discount Rate",
+            "name": "sewer_discount_rate",
+            "type": "number",
+            "instructions": "Enter percentage as a whole number (e.g. 30% would be 30).",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "min": "",
+            "max": "",
+            "step": ""
         }
     ],
     "location": [
@@ -423,5 +444,5 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1616963836
+    "modified": 1617297728
 }
