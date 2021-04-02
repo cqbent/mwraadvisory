@@ -117,6 +117,7 @@ $form = <<<EOT
 		<div class="col-sm-5">
 			<div class="result">
 				<h3>$service_type_name Usage</h3>
+				<div class="error-msg">$this->message</div>
 				<div class="fee">
 					<label>Bill $selected_frequency</label>
 					<span class="amount">$$fee</span>

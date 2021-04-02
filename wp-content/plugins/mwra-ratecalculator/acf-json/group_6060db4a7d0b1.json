@@ -113,8 +113,9 @@
                 "2": "Semi-Annually",
                 "3": "Tri-Annually",
                 "4": "Quarterly",
+                "6": "Bi-Monthly",
                 "12": "Monthly",
-                "136": "Daily"
+                "365": "Daily"
             },
             "default_value": false,
             "allow_null": 0,
@@ -142,8 +143,9 @@
                 "2": "Semi-Annually",
                 "3": "Tri-Annually",
                 "4": "Quarterly",
+                "6": "Bi-Monthly",
                 "12": "Monthly",
-                "136": "Daily"
+                "365": "Daily"
             },
             "default_value": false,
             "allow_null": 0,
@@ -425,6 +427,31 @@
             "min": "",
             "max": "",
             "step": ""
+        },
+        {
+            "key": "field_60675ae470b57",
+            "label": "Discount Rate Type",
+            "name": "discount_rate_type",
+            "type": "select",
+            "instructions": "Discount based on water:",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "Usage": "Usage",
+                "Fee": "Fee"
+            },
+            "default_value": false,
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
         }
     ],
     "location": [
@@ -444,5 +471,5 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1617297728
+    "modified": 1617394331
 }
