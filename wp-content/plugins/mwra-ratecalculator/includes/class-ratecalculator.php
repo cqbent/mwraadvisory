@@ -151,7 +151,7 @@ class RateCalculatorDisplay
 	function process_rcform()
 	{
 		// process the rc field data
-		$this->usage_amount = (int)$_REQUEST['usage_amount'];
+		$this->usage_amount = (float)$_REQUEST['usage_amount'];
 		$this->community = $_REQUEST['rc_community'];
 		$this->year = $_REQUEST['rc_year'];
 		$this->state = $_REQUEST['rc_state'];
@@ -370,24 +370,42 @@ class RateCalculatorDisplay
 		// calculate fee based on usage sand rate table
 		$fee = 0;
 		$calculated_usage = $usage * $frequency;
+		$count = 0;
 		foreach ($table as $item) {
 			//$tier_start = (int)$item['Tier Start'];
 			//$tier_end = (int)$item['Tier End'];
-			$tier_start = (int)$item['tier_start'];
-			$tier_end = (int)$item['tier_end'];
-			$tier_range = $tier_end - $tier_start;
+			$tier_start = (float)$item['tier_start'];
+			$tier_end = (float)$item['tier_end'];
+			// added tier range calculation adjustment to fix rate table issue where 1st row is 0 - x and
+			// next rows are x+1 - y
+			if ($count > 0) {
+				if (strpos($tier_start, '.')) {
+					$tier_range = $tier_end - ($tier_start - .1);
+				}
+				else {
+					$tier_range = $tier_end - ($tier_start - 1);
+				}
+			}
+			else {
+				$tier_range = $tier_end - $tier_start;
+			}
+
 			if ($calculated_usage > $tier_range && $tier_range > 0) {
 				//$fee += (float)$item['Rate'] * $tier_range;
 				$fee += (float)$item['rate'] * $tier_range;
 				$calculated_usage = $calculated_usage - $tier_range;
+				//var_dump((float)$item['rate'] . ' x ' . $tier_range . ' = ' . $fee);
 			}
 			else {
 				//$fee += (float)$item['Rate'] * $calculated_usage;
 				$fee += (float)$item['rate'] * $calculated_usage;
+				//var_dump((float)$item['rate'] . ' x ' . $calculated_usage . ' = ' . $fee);
 				break;
 			}
+			$count++;
 		}
 		$fee = $fee / $frequency;
+		//var_dump('fee/frequency: ' . $fee);
 		return $fee;
 	}
 

@@ -6,6 +6,7 @@ $url_parsed = parse_url("//$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
 $url_path = $url_parsed['path'];
 $frequency_list = '';
 $selected_frequency = '';
+
 foreach($this->frequency_array as $key => $value) {
 	$frequency_selected = '';
 	if ($_REQUEST['usage_frequency'] == $value) {
@@ -107,7 +108,7 @@ $form = <<<EOT
 						<h4>Step 3: Enter Usage amount</h4>
 					</div>
 					<fieldset class="usage-amount col">
-						<input type="number" name="usage_amount" id="usage_amount" value="$this->usage_amount" />
+						<input type="number" step=".01" name="usage_amount" id="usage_amount" value="$this->usage_amount" />
 					</fieldset>
 				</div>
 				<button type="submit" name="submit">Calculate Usage</button>
