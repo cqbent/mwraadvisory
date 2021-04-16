@@ -79,7 +79,7 @@ $form = <<<EOT
 				</div>
 				<div class="service-units row">
 					<div class="col-12">
-						<h4>Step 2: Choose service type, unit type and time period</h4>
+						<h4>Step 2: Choose service type</h4>
 					</div>
 					<fieldset class="service-type">
 						<label>Select service type</label>
@@ -88,6 +88,15 @@ $form = <<<EOT
 							<option value="sewer" $sewer_checked>Sewer Bill</option>
 							<option value="water_sewer" $water_sewer_checked>Water + Sewer Bill</option>
 						</select>
+					</fieldset>
+				</div>
+				<div class="usage row">
+					<div class="col-12">
+						<h4>Step 3: Enter Usage amount, unit type and time period</h4>
+					</div>
+					<fieldset class="usage-amount">
+						<label>Usage Amount</label>
+						<input type="number" step=".01" name="usage_amount" id="usage_amount" value="$this->usage_amount" />
 					</fieldset>
 					<fieldset class="unit-type">
 						<label>Units <i class="fa fa-question-circle" data-toggle="tooltip" data-html="true" title="KGAL (Kilogallons) = 1000 Gallons <br> HCF (Hundreds of Cubic Feet) = 748 Gallons"></i></label>
@@ -101,14 +110,6 @@ $form = <<<EOT
 						<select id="usage_frequency" name="usage_frequency">
 							$frequency_list
 						</select>
-					</fieldset>
-				</div>
-				<div class="usage row">
-					<div class="col-12">
-						<h4>Step 3: Enter Usage amount</h4>
-					</div>
-					<fieldset class="usage-amount col">
-						<input type="number" step=".01" name="usage_amount" id="usage_amount" value="$this->usage_amount" />
 					</fieldset>
 				</div>
 				<button type="submit" name="submit">Calculate Usage</button>
